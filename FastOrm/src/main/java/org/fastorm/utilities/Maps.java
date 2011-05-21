@@ -122,12 +122,43 @@ public class Maps {
 		return result;
 	}
 
+	public static <K, V, P> Map<P, Map<K, V>> partitionByKey(Map<K, V> input, IFunction1<K, P> partitionFunction) {
+		try {
+			Map<P, Map<K, V>> result = Maps.newMap();
+			for (Entry<K, V> entry : input.entrySet()) {
+				K key = entry.getKey();
+				P partition = partitionFunction.apply(key);
+				V value = entry.getValue();
+				Maps.addToMapOfLinkedMaps(result, partition, key, value);
+			}
+			return result;
+		} catch (Exception e) {
+			throw WrappedException.wrap(e);
+		}
+	}
+
+	public static <K, V, P> Map<P, Map<K, V>> partitionByValue(Map<K, V> input, IFunction1<V, P> partitionFunction) {
+		try {
+			Map<P, Map<K, V>> result = Maps.newMap();
+			for (Entry<K, V> entry : input.entrySet()) {
+				K key = entry.getKey();
+				V value = entry.getValue();
+				P partition = partitionFunction.apply(value);
+				Maps.addToMapOfLinkedMaps(result, partition, key, value);
+			}
+			return result;
+		} catch (Exception e) {
+			throw WrappedException.wrap(e);
+		}
+	}
+
 	public static <K, V> Map<K, V> newMap() {
 		return new HashMap<K, V>();
 	}
 
 	public static <K, V> IFunction1<K, V> get(final Map<K, V> map) {
 		return new IFunction1<K, V>() {
+			@Override
 			public V apply(K from) throws Exception {
 				return map.get(from);
 			}
@@ -136,6 +167,7 @@ public class Maps {
 
 	public static <K, V> IFunction1<Entry<String, String>, String> entryToStr(final String pattern) {
 		return new IFunction1<Map.Entry<String, String>, String>() {
+			@Override
 			public String apply(Entry<String, String> from) throws Exception {
 				return MessageFormat.format(pattern, from.getKey(), from.getValue());
 			}
@@ -145,6 +177,7 @@ public class Maps {
 	/** The map is from K to a pattern. The parameters passed to MessageFormat are key + extraParameters */
 	public static <K, V> IFunction1<K, String> keyToValuePatternToStr(final Map<K, V> map, final Object... extraParameters) {
 		return new IFunction1<K, String>() {
+			@Override
 			public String apply(K from) throws Exception {
 				List<Object> arguments = new ArrayList<Object>();
 				arguments.add(from);

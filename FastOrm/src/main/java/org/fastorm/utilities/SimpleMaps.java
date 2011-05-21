@@ -55,4 +55,32 @@ public class SimpleMaps {
 		};
 	}
 
+	public static <K, V, P> Map<P, Map<K, V>> partitionByKey(ISimpleMap<K, V> input, IFunction1<K, P> partitionFunction) {
+		try {
+			Map<P, Map<K, V>> result = Maps.newMap();
+			for (K key : input.keys()) {
+				V value = input.get(key);
+				P partition = partitionFunction.apply(key);
+				Maps.addToMapOfLinkedMaps(result, partition, key, value);
+			}
+			return result;
+		} catch (Exception e) {
+			throw WrappedException.wrap(e);
+		}
+	}
+
+	public static <K, V, P> Map<P, Map<K, V>> partitionByValue(ISimpleMap<K, V> input, IFunction1<V, P> partitionFunction) {
+		try {
+			Map<P, Map<K, V>> result = Maps.newMap();
+			for (K key : input.keys()) {
+				V value = input.get(key);
+				P partition = partitionFunction.apply(value);
+				Maps.addToMapOfLinkedMaps(result, partition, key, value);
+			}
+			return result;
+		} catch (Exception e) {
+			throw WrappedException.wrap(e);
+		}
+	}
+
 }

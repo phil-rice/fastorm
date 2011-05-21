@@ -73,4 +73,18 @@ public class Lists {
 
 	}
 
+	public static <T> List<T> append(List<T> initial, T... more) {
+		List<T> result = new ArrayList<T>(initial.size() + more.length);
+		result.addAll(initial);
+		result.addAll(Arrays.asList(more));
+		return result;
+	}
+
+	public static <T> List<T> addAtStart(List<T> initial, T... more) {
+		List<T> result = new ArrayList<T>(initial.size() + more.length);
+		result.addAll(Arrays.asList(more));
+		result.addAll(initial);
+		return result;
+	}
+
 }

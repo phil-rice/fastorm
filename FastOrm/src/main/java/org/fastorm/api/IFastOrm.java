@@ -39,6 +39,16 @@ public interface IFastOrm extends IFastOrmFactoryConfigurator {
 			};
 		}
 
+		public static IFunction1<IFastOrm, String> getMemoryManagerSimpleClassname() {
+			return new IFunction1<IFastOrm, String>() {
+
+				@Override
+				public String apply(IFastOrm from) throws Exception {
+					return from.getContainer().getMemoryManager().getClass().getSimpleName();
+				}
+			};
+		}
+
 		public static IFunction1<IFastOrm, Boolean> getUseTemporaryTables() {
 			return new IFunction1<IFastOrm, Boolean>() {
 

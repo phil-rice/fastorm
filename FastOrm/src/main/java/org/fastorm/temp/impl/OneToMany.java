@@ -27,8 +27,8 @@ public class OneToMany extends AbstractSqlExecutor implements ISecondaryTempTabl
 	@Override
 	public void create(IFastOrmContainer fastOrm, OrmReadContext context, IEntityDefn parent, IEntityDefn child) {
 		update(fastOrm, context, FastOrmStringTemplates.createOneToManyTempTable, child, FastOrmKeys.parentIdType, parent.getIdType());
-		// if (fastOrm.getOptions().addIndiciesToIntermediateTemporaryTables)
-		update(fastOrm, context, FastOrmStringTemplates.addIndexToTempTable, child);
+		if (fastOrm.getOptions().indexSecondaryTables)
+			update(fastOrm, context, FastOrmStringTemplates.addIndexToTempTable, child);
 	}
 
 	@Override

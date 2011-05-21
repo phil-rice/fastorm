@@ -24,6 +24,11 @@
 		</dependency>
 		<dependency>
 			<groupId>org.fastorm</groupId>
+			<artifactId>FastOrmStats</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.fastorm</groupId>
 			<artifactId>FastOrm</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 			<type>test-jar</type>
