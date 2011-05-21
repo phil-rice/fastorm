@@ -36,6 +36,7 @@ public class Iterables {
 
 	public static <From, To> Future<To> fold(ExecutorService service, final Iterable<From> iterable, final IFoldFunction<From, To> foldFunction, final To initial) {
 		return service.submit(new Callable<To>() {
+			@Override
 			public To call() throws Exception {
 				return fold(foldFunction, iterable, initial);
 			}
@@ -81,6 +82,7 @@ public class Iterables {
 	@SuppressWarnings("unchecked")
 	public static <T> Future<Void> processCallbacks(ExecutorService service, final Iterable<T> iterable, final ICallback<T> callback) {
 		return (Future<Void>) service.submit(new Runnable() {
+			@Override
 			public void run() {
 				processCallbacks(iterable, callback);
 			}
@@ -104,14 +106,17 @@ public class Iterables {
 		if (from == null)
 			throw new NullPointerException();
 		return new Iterable<To>() {
+			@Override
 			public Iterator<To> iterator() {
 				return new Iterator<To>() {
 					private final Iterator<From> iterator = from.iterator();
 
+					@Override
 					public boolean hasNext() {
 						return iterator.hasNext();
 					}
 
+					@Override
 					public To next() {
 						try {
 							return convertor.apply(iterator.next());
@@ -120,6 +125,7 @@ public class Iterables {
 						}
 					}
 
+					@Override
 					public void remove() {
 						iterator.remove();
 					}
@@ -131,6 +137,7 @@ public class Iterables {
 
 	public static <T> Iterable<T> iterable(final Iterator<T> iterator) {
 		return new Iterable<T>() {
+			@Override
 			public Iterator<T> iterator() {
 				return iterator;
 			}
@@ -221,4 +228,5 @@ class SplitContext<From, To> {
 			throw WrappedException.wrap(e);
 		}
 	}
+
 }

@@ -39,8 +39,7 @@ public class FastOrm implements IFastOrmContainer {
 	private final IPrimaryTempTableMaker primaryTempTableMaker;
 	private final IMemoryManager memoryManager;
 	private final FastOrmOptions options;
-	private final int dataSetSize;
-	private final int maxForOneThread;
+
 	private final ISqlLogger sqlLogger;
 
 	public FastOrm() {
@@ -49,7 +48,7 @@ public class FastOrm implements IFastOrmContainer {
 
 	public FastOrm(FastOrmServices optimisation, IEntityReaderThin entityReaderThin, ISqlStrings sqlStrings, //
 			IEntityDefn entityDefn, ITempTableMakerFactory tempTableMakerFactory, JdbcTemplate jdbcTemplate, //
-			IPrimaryTempTableMaker primaryTempTableMaker, IMemoryManager memoryManager, ISqlLogger sqlLogger, FastOrmOptions options, int dataSetSize, int maxForOneThread) {
+			IPrimaryTempTableMaker primaryTempTableMaker, IMemoryManager memoryManager, ISqlLogger sqlLogger, FastOrmOptions options) {
 		this.services = optimisation;
 		this.entityReaderThin = entityReaderThin;
 		this.sqlStrings = sqlStrings;
@@ -60,81 +59,68 @@ public class FastOrm implements IFastOrmContainer {
 		this.memoryManager = memoryManager;
 		this.sqlLogger = sqlLogger;
 		this.options = options;
-		this.dataSetSize = dataSetSize;
-		this.maxForOneThread = maxForOneThread;
 	}
 
 	public FastOrm(IEntityDefn entityDefn, DataSource dataSource) {
 		this(new FastOrmServices(), new EntityReaderThin(),//
 				new SqlStrings(new ClassPathResource("MySql.st")), entityDefn, new TempTableMakerFactory(), //
 				dataSource == null ? null : new JdbcTemplate(dataSource),//
-				new AllEntitiesTempTableMaker(), new NoMemoryManager(), new NoSqlLogger(), new FastOrmOptions(), 100, 10);
+				new AllEntitiesTempTableMaker(), new NoMemoryManager(), new NoSqlLogger(), new FastOrmOptions());
 	}
 
 	@Override
 	public IFastOrm withOptimisation(FastOrmServices optimisation) {
-		return new FastOrm(optimisation, entityReaderThin, sqlStrings, entityDefn, tempTableMakerFactory, jdbcTemplate, primaryTempTableMaker, memoryManager, sqlLogger, options, dataSetSize,
-				maxForOneThread);
+		return new FastOrm(optimisation, entityReaderThin, sqlStrings, entityDefn, tempTableMakerFactory, jdbcTemplate, primaryTempTableMaker, memoryManager, sqlLogger, options);
 	}
 
 	@Override
 	public IFastOrm withThinInterface(IEntityReaderThin entityReaderThin) {
-		return new FastOrm(services, entityReaderThin, sqlStrings, entityDefn, tempTableMakerFactory, jdbcTemplate, primaryTempTableMaker, memoryManager, sqlLogger, options, dataSetSize,
-				maxForOneThread);
+		return new FastOrm(services, entityReaderThin, sqlStrings, entityDefn, tempTableMakerFactory, jdbcTemplate, primaryTempTableMaker, memoryManager, sqlLogger, options);
 	}
 
 	@Override
 	public IFastOrm withSqlDialect(ISqlStrings sqlStrings) {
-		return new FastOrm(services, entityReaderThin, sqlStrings, entityDefn, tempTableMakerFactory, jdbcTemplate, primaryTempTableMaker, memoryManager, sqlLogger, options, dataSetSize,
-				maxForOneThread);
+		return new FastOrm(services, entityReaderThin, sqlStrings, entityDefn, tempTableMakerFactory, jdbcTemplate, primaryTempTableMaker, memoryManager, sqlLogger, options);
 	}
 
 	@Override
 	public IFastOrm withEntityDefn(IEntityDefn entityDefn) {
-		return new FastOrm(services, entityReaderThin, sqlStrings, entityDefn, tempTableMakerFactory, jdbcTemplate, primaryTempTableMaker, memoryManager, sqlLogger, options, dataSetSize,
-				maxForOneThread);
+		return new FastOrm(services, entityReaderThin, sqlStrings, entityDefn, tempTableMakerFactory, jdbcTemplate, primaryTempTableMaker, memoryManager, sqlLogger, options);
 	}
 
 	@Override
 	public IFastOrm withTempTableMaker(ISecondaryTempTableMaker intermediateTempTableMaker) {
-		return new FastOrm(services, entityReaderThin, sqlStrings, entityDefn, tempTableMakerFactory, jdbcTemplate, primaryTempTableMaker, memoryManager, sqlLogger, options, dataSetSize,
-				maxForOneThread);
+		return new FastOrm(services, entityReaderThin, sqlStrings, entityDefn, tempTableMakerFactory, jdbcTemplate, primaryTempTableMaker, memoryManager, sqlLogger, options);
 	}
 
 	@Override
 	public IFastOrm withMemoryManager(IMemoryManager memoryManager) {
-		return new FastOrm(services, entityReaderThin, sqlStrings, entityDefn, tempTableMakerFactory, jdbcTemplate, primaryTempTableMaker, memoryManager, sqlLogger, options, dataSetSize,
-				maxForOneThread);
+		return new FastOrm(services, entityReaderThin, sqlStrings, entityDefn, tempTableMakerFactory, jdbcTemplate, primaryTempTableMaker, memoryManager, sqlLogger, options);
 	}
 
 	@Override
 	public IFastOrm withDataSource(DataSource dataSource) {
-		return new FastOrm(services, entityReaderThin, sqlStrings, entityDefn, tempTableMakerFactory, new JdbcTemplate(dataSource), primaryTempTableMaker, memoryManager, sqlLogger, options,
-				dataSetSize, maxForOneThread);
+		return new FastOrm(services, entityReaderThin, sqlStrings, entityDefn, tempTableMakerFactory, new JdbcTemplate(dataSource), primaryTempTableMaker, memoryManager, sqlLogger, options);
 	}
 
 	@Override
 	public IFastOrm withOptions(FastOrmOptions options) {
-		return new FastOrm(services, entityReaderThin, sqlStrings, entityDefn, tempTableMakerFactory, jdbcTemplate, primaryTempTableMaker, memoryManager, sqlLogger, options, dataSetSize,
-				maxForOneThread);
+		return new FastOrm(services, entityReaderThin, sqlStrings, entityDefn, tempTableMakerFactory, jdbcTemplate, primaryTempTableMaker, memoryManager, sqlLogger, options);
 	}
 
 	@Override
 	public IFastOrm withMaxForOneThread(int maxForOneThread) {
-		return new FastOrm(services, entityReaderThin, sqlStrings, entityDefn, tempTableMakerFactory, jdbcTemplate, primaryTempTableMaker, memoryManager, sqlLogger, options, dataSetSize,
-				maxForOneThread);
+		return new FastOrm(services, entityReaderThin, sqlStrings, entityDefn, tempTableMakerFactory, jdbcTemplate, primaryTempTableMaker, memoryManager, sqlLogger, options);
 	}
 
 	@Override
 	public IFastOrm withDataSize(int dataSetSize) {
-		return new FastOrm(services, entityReaderThin, sqlStrings, entityDefn, tempTableMakerFactory, jdbcTemplate, primaryTempTableMaker, memoryManager, sqlLogger, options, dataSetSize,
-				maxForOneThread);
+		return new FastOrm(services, entityReaderThin, sqlStrings, entityDefn, tempTableMakerFactory, jdbcTemplate, primaryTempTableMaker, memoryManager, sqlLogger, options);
 	}
 
 	@Override
 	public IFastOrm withSqlLogger(ISqlLogger sqlLogger) {
-		return new FastOrm(services, entityReaderThin, sqlStrings, entityDefn, tempTableMakerFactory, jdbcTemplate, primaryTempTableMaker, memoryManager, sqlLogger, options, dataSetSize,
-				maxForOneThread);
+		return new FastOrm(services, entityReaderThin, sqlStrings, entityDefn, tempTableMakerFactory, jdbcTemplate, primaryTempTableMaker, memoryManager, sqlLogger, options);
 	}
 
 	@Override
@@ -206,12 +192,12 @@ public class FastOrm implements IFastOrmContainer {
 
 	@Override
 	public int getMaxForOneThread() {
-		return maxForOneThread;
+		return options.maxForOneThread;
 	}
 
 	@Override
-	public int getDataSetSize() {
-		return dataSetSize;
+	public int getBatchSize() {
+		return options.batchSize;
 	}
 
 	@Override

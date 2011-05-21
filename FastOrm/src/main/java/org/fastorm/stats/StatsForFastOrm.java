@@ -1,12 +1,10 @@
-package org.fastorm.sample;
+package org.fastorm.stats;
 
 import java.util.Arrays;
 import java.util.Map;
-import java.util.concurrent.Callable;
 
 import javax.sql.DataSource;
 
-import org.apache.commons.math.stat.descriptive.moment.StandardDeviation;
 import org.fastorm.api.ICallback;
 import org.fastorm.api.IFastOrm;
 import org.fastorm.api.IFastOrmContainer;
@@ -31,38 +29,6 @@ public class StatsForFastOrm {
 	private static int[] batchSizes = new int[] { 1, 10, 100, 1000, 10000 };
 	private static int runs = 10;
 	private static int walmUpCount = 1;
-
-	static class Stats {
-
-		static void add(Map<Object, Stats> statsMap, long duration, Object key) {
-			Stats stats = Maps.findOrCreate(statsMap, key, new Callable<Stats>() {
-				@Override
-				public Stats call() throws Exception {
-					return new Stats();
-				}
-			});
-			stats.add(duration);
-		}
-
-		StandardDeviation deviation = new StandardDeviation();
-		private long totalDuration;
-		private int count;
-
-		public void add(long duration) {
-			count++;
-			totalDuration += duration;
-			deviation.increment(duration);
-		}
-
-		long averageDuration() {
-			return totalDuration / count;
-		}
-
-		double standardDeviation() {
-			return deviation.getResult();
-		}
-
-	}
 
 	public static interface ISpecWalker {
 		void acceptMakeData(int databaseSize);
@@ -97,6 +63,7 @@ public class StatsForFastOrm {
 				MakeData.makeData(fastOrm, databaseSize, new NoCallback());
 			}
 
+			@Override
 			@SuppressWarnings("unused")
 			public void accept(Object key, Object keyForSize1, int databaseSize, int batchSize, IMemoryManager manager) {
 				displayTitle("");

@@ -23,7 +23,7 @@ public class AllEntitiesTempTableMaker extends AbstractSqlExecutor implements IP
 	@Override
 	public void create(IFastOrmContainer fastOrm, OrmReadContext context) {
 		updatePrimary(fastOrm, context, FastOrmStringTemplates.createAllEntitiesTempTable);
-		if (fastOrm.getOptions().addIndiciesToPrimaryTemporaryTables)
+		if (fastOrm.getOptions().indexPrimaryTables)
 			updatePrimary(fastOrm, context, FastOrmStringTemplates.addIndexToTempTable);
 	}
 
@@ -34,7 +34,7 @@ public class AllEntitiesTempTableMaker extends AbstractSqlExecutor implements IP
 
 	@Override
 	public int populate(IFastOrmContainer fastOrm, OrmReadContext context, int page) {
-		int size = fastOrm.getDataSetSize();
+		int size = fastOrm.getBatchSize();
 		int start = size * page;
 		return updatePrimary(fastOrm, context, FastOrmStringTemplates.populateAllEntitiesTempTable, FastOrmKeys.start, start, FastOrmKeys.size, size);
 	}

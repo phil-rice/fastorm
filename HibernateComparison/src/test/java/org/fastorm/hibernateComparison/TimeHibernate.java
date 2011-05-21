@@ -2,8 +2,8 @@ package org.fastorm.hibernateComparison;
 
 import java.util.List;
 
-import org.fastorm.sample.MakeData;
 import org.fastorm.sql.ISqlLogger;
+import org.fastorm.stats.MakeData;
 import org.fastorm.utilities.Sets;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;

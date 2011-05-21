@@ -1,4 +1,4 @@
-package org.fastorm.sample;
+package org.fastorm.stats;
 
 import javax.sql.DataSource;
 
