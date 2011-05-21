@@ -1,0 +1,7 @@
+<!-- and the id defaults to id -->
+<person versionColumn="p_version">
+	<address idColumn="a_id" childLink="a_person" />
+	<telephone childLink="t_person" />
+	<employer parentLink="p_employer" />
+</person>
+

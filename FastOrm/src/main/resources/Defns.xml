@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+
+	<description>This defines the parser used to parse EntityDefinitions</description>
+
+
+	<bean id="entityMapStrategy" class="org.fastorm.xmlToMap.XmlToMapStrategy">
+		<constructor-arg>
+			<map>
+				<entry key="entityName">
+					<bean class=" org.fastorm.xmlItemStrategies.SimpleStringUseElementNameItemStrategy" />
+				</entry>
+				<entry key="tableName">
+					<bean p:key="entityName" class=" org.fastorm.xmlItemStrategies.SimpleStringUseOtherValueItemStrategy" />
+				</entry>
+				<entry key="idColumn">
+					<bean p:defaultValue="id" class=" org.fastorm.xmlItemStrategies.SimpleStringItemStrategy" />
+				</entry>
+				<entry key="versionColumn">
+					<bean p:defaultValue="version" class=" org.fastorm.xmlItemStrategies.SimpleStringItemStrategy" />
+				</entry>
+				<entry key="tempTableName">
+					<bean p:postFix="_temp" p:otherKey="tableName" class=" org.fastorm.xmlItemStrategies.SimpleStringItemAppendStrategy" />
+				</entry>
+				<entry key="idType">
+					<bean p:defaultValue="integer" class=" org.fastorm.xmlItemStrategies.SimpleStringItemStrategy" />
+				</entry>
+				<entry key="childLink">
+					<bean class=" org.fastorm.xmlItemStrategies.SimpleStringItemStrategy" />
+				</entry>
+				<entry key="parentLink">
+					<bean class=" org.fastorm.xmlItemStrategies.SimpleStringItemStrategy" />
+				</entry>
+				<entry key="useTemporaryTable">
+					<bean p:defaultValue="true" class=" org.fastorm.xmlItemStrategies.SimpleBooleanItemStrategy" />
+				</entry>
+			</map>
+		</constructor-arg>
+		<constructor-arg>
+			<bean class="org.fastorm.xmlToMap.AllowElementLikeMeUnrecognisedStrategy" />
+		</constructor-arg>
+	</bean>
+
+	<bean id="entityMapParser" class="org.fastorm.xmlToMap.XmlToMapParser">
+		<constructor-arg ref="entityMapStrategy" />
+	</bean>
+
+
+</beans>

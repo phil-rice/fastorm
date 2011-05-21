@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+
+	<description>This defines the parser used to parse EntityDefinitions
+	</description>
+
+
+	<bean id="mysql" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<property name="url" value="jdbc:mysql://localhost/fastorm" />
+		<property name="username" value="root" />
+		<property name="password" value="iwtbde" />
+		<property name="initialSize" value="1" />
+		<property name="maxActive" value="10" />
+	</bean>
+
+
+	<bean id="mySessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+		<property name="dataSource" ref="mysql" />
+		<property name="annotatedClasses">
+			<list>
+				<value>org.fastorm.hibernateComparison.Person</value>
+			</list>
+		</property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect"> org.hibernate.dialect.HSQLDialect</prop>
+				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.hbm2ddl.auto">create</prop>
+			</props>
+		</property>
+	</bean>
+	
+	<bean id="personDAO" class="org.fastorm.hibernateComparison.PersonDao">
+		<property name="sessionFactory" ref="mySessionFactory" />
+	</bean>
+
+</beans>

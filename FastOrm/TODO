@@ -1,0 +1,46 @@
+Tests:
+ Not bad. Smoke tests or good tests for mosts things
+ Split into unit/integration tests...and have a test that tests this has happened
+ 
+ 
+ 
+ToDo:
+ HelloWorld
+ Make and populate fake data from an entity defn..
+ 
+ Turning Object[] into maps...(Why not write an adapter...less memory)
+ Indicies on IDrainedTableData
+Big review
+
+
+
+
+
+
+
+
+
+
+
+Test s:
+ FastOrmFactory
+ FastOrmOptimisation
+ the utilities...especially the fork join..DONE
+ EntityReader with some mock entityReaderThin..DONE
+ FastOrmKeys and Messages (just strings...)
+  
+Work:
+ DataSet
+ EntityReaderThin  ..DONE
+ MySqlSqlDialect ..DONE
+ ITempTableMaker and its children ..DONE
+ 
+Think about
+ Consider the IAggregator story...its fast...so keep fast...so add ISimpleSet, ISimpleMap...
+ 
+CleanUp
+ CrossThreadAggregator or eliminate
+ 
+Future work:
+ Mutate
+
