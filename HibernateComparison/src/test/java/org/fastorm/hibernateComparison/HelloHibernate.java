@@ -20,12 +20,15 @@ public class HelloHibernate {
 			Transaction tx = session.beginTransaction();
 
 			Query createQuery = session.createQuery("from Person");
+			@SuppressWarnings("unchecked")
 			List<Person> people = createQuery.list();
 			int count = 0;
 			for (Person person : people) {
-				for (Address address : person.getAddresses())
+				for (@SuppressWarnings("unused")
+				Address address : person.getAddresses())
 					;
-				for (Telephone telephone : person.getTelephones())
+				for (@SuppressWarnings("unused")
+				Telephone telephone : person.getTelephones())
 					;
 				count++;
 			}

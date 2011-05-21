@@ -2,7 +2,7 @@ group MySql;
 
 makeTemp(useTemporaryTable) ::= "<if(useTemporaryTable)>temporary<endif>"
 
-dropTempTable(tempTableName,useTemporaryTable) ::= "drop <makeTemp(useTemporaryTable)> table if exists <tempTableName> "
+dropTempTable(tempTableName,useTemporaryTable) ::= "drop  table if exists <tempTableName> "
 
 createAllEntitiesTempTable(tempTableName,idColumn,idType,useTemporaryTable) ::= "create <makeTemp(useTemporaryTable)> table <tempTableName>(<idColumn> <idType> ) engine=memory"
 

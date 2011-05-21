@@ -2,7 +2,6 @@ package org.fastorm.hibernateComparison;
 
 import java.util.List;
 
-import org.fastorm.sql.ISqlLogger;
 import org.fastorm.stats.MakeData;
 import org.fastorm.utilities.Sets;
 import org.hibernate.Query;
@@ -15,10 +14,11 @@ import org.springframework.core.io.ClassPathResource;
 public class TimeHibernate {
 	private static int[] dbSizes = new int[] { 1, 10, 100, 1000, 10000, 1, 10, 100, 1000, 10000, 1, 10, 100, 1000, 10000 };
 
+	@SuppressWarnings({ "unchecked", "unused" })
 	public static void main(String[] args) throws ClassNotFoundException {
 		System.out.println("Hello");
-		Sets.makeSet(1);//testing classes found
-		
+		Sets.makeSet(1);// testing classes found
+
 		SessionFactory factory = new AnnotationConfiguration().configure().buildSessionFactory();
 		for (int dbSize : dbSizes) {
 			MakeData.makeData(new ClassPathResource("MySqlDataSource.xml", MakeData.class), new ClassPathResource("sample.xml", MakeData.class), dbSize);
@@ -32,8 +32,8 @@ public class TimeHibernate {
 				for (Person person : people)
 					;
 
-				double duration = (System.nanoTime() - startTime )/ 1000000.0;
-				System.out.println(String.format ("DB: %10d Took %10.3f %10.3f", dbSize ,duration, duration/dbSize));
+				double duration = (System.nanoTime() - startTime) / 1000000.0;
+				System.out.println(String.format("DB: %10d Took %10.3f %10.3f", dbSize, duration, duration / dbSize));
 				tx.commit();
 			}
 		}

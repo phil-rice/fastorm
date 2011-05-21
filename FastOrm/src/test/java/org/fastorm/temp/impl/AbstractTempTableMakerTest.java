@@ -58,7 +58,7 @@ public abstract class AbstractTempTableMakerTest extends TestCase implements IIn
 		fastOrm = new FastOrm().withDataSource(dataSource).//
 				withOptions(FastOrmOptions.withOutTempTables()).//
 				withEntityDefn(new EntityDefn(null, parameters, Collections.<IEntityDefn> emptyList())).getContainer();
-		fastOrm5 = fastOrm.withDataSize(5).getContainer();
+		fastOrm5 = fastOrm.withBatchSize(5).getContainer();
 	}
 
 	protected void execute(final ICallback<OrmReadContext> callback) {

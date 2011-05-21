@@ -54,7 +54,7 @@ public class OneToManyTempTableMakerTest extends AbstractTempTableMakerTest {
 
 	public void testPopulate() {
 		makePrimaryAndChildTables();
-		final IFastOrmContainer fastOrm5 = fastOrm.withDataSize(5).withSqlLogger(new SysOutSqlLogger()).getContainer();
+		final IFastOrmContainer fastOrm5 = fastOrm.withBatchSize(5).withSqlLogger(new SysOutSqlLogger()).getContainer();
 		sqlHelper.insert(childTableName, childIdColumn, 1, childLinkColumn, 1);
 		sqlHelper.insert(childTableName, childIdColumn, 2, childLinkColumn, 1);
 		sqlHelper.insert(childTableName, childIdColumn, 3, childLinkColumn, 1);
@@ -110,7 +110,7 @@ public class OneToManyTempTableMakerTest extends AbstractTempTableMakerTest {
 		sqlHelper.insertWithOffset(childTableName, 3, 0, childIdColumn, "{1}", childLinkColumn, 5, "childData", "''{0}_{1}''");
 		sqlHelper.insertWithOffset(childTableName, 1, 3, childIdColumn, "{1}", childLinkColumn, 6, "childData", "''{0}_{1}''");
 		sqlHelper.insertWithOffset(childTableName, 2, 4, childIdColumn, "{1}", childLinkColumn, 8, "childData", "''{0}_{1}''");
-		final IFastOrmContainer fastOrm5 = fastOrm.withDataSize(5).getContainer();
+		final IFastOrmContainer fastOrm5 = fastOrm.withBatchSize(5).getContainer();
 		final AllEntitiesTempTableMaker primaryMaker = new AllEntitiesTempTableMaker();
 		IDrainedTableData table = query(new IFunction1<OrmReadContext, IDrainedTableData>() {
 			@Override

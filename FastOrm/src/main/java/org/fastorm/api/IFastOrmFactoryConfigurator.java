@@ -33,5 +33,5 @@ public interface IFastOrmFactoryConfigurator {
 
 	IFastOrm withMaxForOneThread(int max);
 
-	IFastOrm withDataSize(int size);
+	IFastOrm withBatchSize(int size);
 }

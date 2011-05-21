@@ -11,13 +11,12 @@ public class ChildForeignKeyGenerator extends AbstractGenerator {
 		super(columnName);
 	}
 
-	@Override
-	public void contribute(Map<IEntityDefn, List<Map<String, Object>>> data, Map<IEntityDefn, Integer> sizeMap,  IEntityDefn primary) {
+	public void contribute(Map<IEntityDefn, List<Map<String, Object>>> data, Map<IEntityDefn, Integer> sizeMap, IEntityDefn primary) {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public void contribute(Map<IEntityDefn, List<Map<String, Object>>> data, Map<IEntityDefn, Integer> sizeMap,  IEntityDefn parent, IEntityDefn child) {
+	public void contribute(Map<IEntityDefn, List<Map<String, Object>>> data, Map<IEntityDefn, Integer> sizeMap, IEntityDefn parent, IEntityDefn child) {
 		Object parentIdColumn = parent.getIdColumn();
 		Object latestParentId = getLatest(data, parent).get(parentIdColumn);
 		add(data, child, latestParentId);

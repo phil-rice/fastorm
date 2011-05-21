@@ -10,20 +10,18 @@ public class RowGenerator implements IRowGenerator {
 		return "RowGenerator [generators=" + generators + ", fanout=" + fanout + "]";
 	}
 
-	private List<IGenerator> generators;
-	private int fanout;
+	private final List<IGenerator> generators;
+	private final int fanout;
 
 	public RowGenerator(List<IGenerator> generators, int fanout) {
 		this.generators = generators;
 		this.fanout = fanout;
 	}
 
-	@Override
 	public Iterator<IGenerator> iterator() {
 		return generators.iterator();
 	}
 
-	@Override
 	public int fanout() {
 		return fanout;
 	}

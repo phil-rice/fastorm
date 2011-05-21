@@ -1,9 +1,15 @@
 package org.fastorm.api;
 
+import org.fastorm.api.impl.NoCallback;
+
 public interface ICallback<T> {
 	void process(T t) throws Exception;
 
 	static class Utils {
+		public static final <T> ICallback<T> noCallback() {
+			return new NoCallback<T>();
+		};
+
 		public static ICallback<Integer> count = new ICallback<Integer>() {
 			@Override
 			public void process(Integer count) throws Exception {

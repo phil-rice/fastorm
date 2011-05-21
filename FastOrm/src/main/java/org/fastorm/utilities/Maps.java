@@ -14,7 +14,6 @@ import java.util.Map.Entry;
 import java.util.concurrent.Callable;
 
 import org.fastorm.constants.FastOrmMessages;
-import org.fastorm.defns.IEntityDefn;
 
 public class Maps {
 

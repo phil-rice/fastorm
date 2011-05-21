@@ -17,6 +17,11 @@ import org.springframework.core.io.Resource;
 
 public class SqlStrings implements ISqlStrings {
 
+	@Override
+	public String toString() {
+		return "SqlStrings [templateGroup=" + templateGroup.getName() + "]";
+	}
+
 	private final StringTemplateGroup templateGroup;
 
 	public SqlStrings(Resource resource) {

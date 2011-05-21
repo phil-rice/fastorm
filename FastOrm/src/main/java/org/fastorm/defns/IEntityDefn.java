@@ -5,9 +5,6 @@ import java.util.Map;
 
 import org.fastorm.api.ICallback;
 import org.fastorm.api.IFastOrmContainer;
-import org.fastorm.dataGenerator.IGenerator;
-import org.fastorm.dataGenerator.IRowGenerator;
-import org.fastorm.dataGenerator.RowGenerator;
 import org.fastorm.defns.impl.MapToEntityDefn;
 import org.fastorm.temp.IPrimaryTempTableMaker;
 import org.fastorm.temp.ISecondaryTempTableMaker;
@@ -15,8 +12,6 @@ import org.fastorm.temp.ITempTableMakerFactory;
 import org.fastorm.temp.impl.SqlHelper;
 import org.fastorm.utilities.Files;
 import org.fastorm.utilities.IFoldFunction;
-import org.fastorm.utilities.IFunction1;
-import org.fastorm.utilities.Iterables;
 import org.fastorm.utilities.Maps;
 import org.fastorm.utilities.WrappedException;
 import org.fastorm.utilities.aggregators.IAggregator;
@@ -85,29 +80,6 @@ public interface IEntityDefn {
 				}
 			});
 			return entityToColumnsAndTypes;
-		}
-
-		public static Map<IEntityDefn, IRowGenerator> findDefaultRowGenerators(IFastOrmContainer fastOrm, final int defaultFanOut) {
-			final Map<IEntityDefn, Map<String, IGenerator>> entityToColumnsToRowGenerator = Maps.newMap();
-			walk(fastOrm, new IMakerAndEntityDefnVisitor() {
-
-				@Override
-				public void acceptPrimary(IPrimaryTempTableMaker maker, IEntityDefn primary) throws Exception {
-					maker.enrichWithGenerators(entityToColumnsToRowGenerator, primary);
-				}
-
-				@Override
-				public void acceptChild(ISecondaryTempTableMaker maker, IEntityDefn parent, IEntityDefn child) throws Exception {
-					maker.enrichWithGenerators(entityToColumnsToRowGenerator, parent, child);
-
-				}
-			});
-			return Maps.mapTheMap(entityToColumnsToRowGenerator, new IFunction1<Map<String, IGenerator>, IRowGenerator>() {
-				@Override
-				public IRowGenerator apply(Map<String, IGenerator> from) throws Exception {
-					return new RowGenerator(Iterables.list(from.values()), defaultFanOut);
-				}
-			});
 		}
 
 		@SuppressWarnings("unchecked")

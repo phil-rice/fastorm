@@ -1,7 +1,7 @@
 package org.fastorm.defns;
 
-import org.fastorm.temp.ISecondaryTempTableMaker;
 import org.fastorm.temp.IPrimaryTempTableMaker;
+import org.fastorm.temp.ISecondaryTempTableMaker;
 
 public interface IMakerAndEntityDefnFoldVisitor<From, To> {
 

@@ -46,10 +46,10 @@ public class FastOrm implements IFastOrmContainer {
 		this(null, null);
 	}
 
-	public FastOrm(FastOrmServices optimisation, IEntityReaderThin entityReaderThin, ISqlStrings sqlStrings, //
+	public FastOrm(FastOrmServices services, IEntityReaderThin entityReaderThin, ISqlStrings sqlStrings, //
 			IEntityDefn entityDefn, ITempTableMakerFactory tempTableMakerFactory, JdbcTemplate jdbcTemplate, //
 			IPrimaryTempTableMaker primaryTempTableMaker, IMemoryManager memoryManager, ISqlLogger sqlLogger, FastOrmOptions options) {
-		this.services = optimisation;
+		this.services = services;
 		this.entityReaderThin = entityReaderThin;
 		this.sqlStrings = sqlStrings;
 		this.entityDefn = entityDefn;
@@ -110,12 +110,13 @@ public class FastOrm implements IFastOrmContainer {
 
 	@Override
 	public IFastOrm withMaxForOneThread(int maxForOneThread) {
-		return new FastOrm(services, entityReaderThin, sqlStrings, entityDefn, tempTableMakerFactory, jdbcTemplate, primaryTempTableMaker, memoryManager, sqlLogger, options);
+		return new FastOrm(services, entityReaderThin, sqlStrings, entityDefn, tempTableMakerFactory, jdbcTemplate, primaryTempTableMaker, memoryManager, sqlLogger,
+				options.withMaxInOneThread(maxForOneThread));
 	}
 
 	@Override
-	public IFastOrm withDataSize(int dataSetSize) {
-		return new FastOrm(services, entityReaderThin, sqlStrings, entityDefn, tempTableMakerFactory, jdbcTemplate, primaryTempTableMaker, memoryManager, sqlLogger, options);
+	public IFastOrm withBatchSize(int batchSize) {
+		return new FastOrm(services, entityReaderThin, sqlStrings, entityDefn, tempTableMakerFactory, jdbcTemplate, primaryTempTableMaker, memoryManager, sqlLogger, options.withBatchSize(batchSize));
 	}
 
 	@Override
@@ -218,5 +219,84 @@ public class FastOrm implements IFastOrmContainer {
 	@Override
 	public FastOrmOptions getOptions() {
 		return options;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((entityDefn == null) ? 0 : entityDefn.hashCode());
+		result = prime * result + ((entityReaderThin == null) ? 0 : entityReaderThin.hashCode());
+		result = prime * result + ((jdbcTemplate == null) ? 0 : jdbcTemplate.hashCode());
+		result = prime * result + ((memoryManager == null) ? 0 : memoryManager.hashCode());
+		result = prime * result + ((options == null) ? 0 : options.hashCode());
+		result = prime * result + ((primaryTempTableMaker == null) ? 0 : primaryTempTableMaker.hashCode());
+		result = prime * result + ((services == null) ? 0 : services.hashCode());
+		result = prime * result + ((sqlLogger == null) ? 0 : sqlLogger.hashCode());
+		result = prime * result + ((sqlStrings == null) ? 0 : sqlStrings.hashCode());
+		result = prime * result + ((tempTableMakerFactory == null) ? 0 : tempTableMakerFactory.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		FastOrm other = (FastOrm) obj;
+		if (entityDefn == null) {
+			if (other.entityDefn != null)
+				return false;
+		} else if (!entityDefn.equals(other.entityDefn))
+			return false;
+		if (entityReaderThin == null) {
+			if (other.entityReaderThin != null)
+				return false;
+		} else if (!entityReaderThin.equals(other.entityReaderThin))
+			return false;
+		if (jdbcTemplate == null) {
+			if (other.jdbcTemplate != null)
+				return false;
+		} else if (!jdbcTemplate.equals(other.jdbcTemplate))
+			return false;
+		if (memoryManager == null) {
+			if (other.memoryManager != null)
+				return false;
+		} else if (!memoryManager.equals(other.memoryManager))
+			return false;
+		if (options == null) {
+			if (other.options != null)
+				return false;
+		} else if (!options.equals(other.options))
+			return false;
+		if (primaryTempTableMaker == null) {
+			if (other.primaryTempTableMaker != null)
+				return false;
+		} else if (!primaryTempTableMaker.equals(other.primaryTempTableMaker))
+			return false;
+		if (services == null) {
+			if (other.services != null)
+				return false;
+		} else if (!services.equals(other.services))
+			return false;
+		if (sqlLogger == null) {
+			if (other.sqlLogger != null)
+				return false;
+		} else if (!sqlLogger.equals(other.sqlLogger))
+			return false;
+		if (sqlStrings == null) {
+			if (other.sqlStrings != null)
+				return false;
+		} else if (!sqlStrings.equals(other.sqlStrings))
+			return false;
+		if (tempTableMakerFactory == null) {
+			if (other.tempTableMakerFactory != null)
+				return false;
+		} else if (!tempTableMakerFactory.equals(other.tempTableMakerFactory))
+			return false;
+		return true;
 	}
 }
