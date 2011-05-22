@@ -83,4 +83,16 @@ public class OneToMany extends AbstractSqlExecutor implements ISecondaryTempTabl
 		Maps.addToList(columnsToIndex, child, child.parameters().get(FastOrmKeys.childLink));
 	}
 
+	@Override
+	public void createStoredProcedure(IFastOrmContainer fastOrm, OrmReadContext context, IEntityDefn parent, IEntityDefn child) {
+		update(fastOrm, context, FastOrmStringTemplates.dropStoredProcedure, child, FastOrmKeys.procName, makeProcName(child));
+		update(fastOrm, context, FastOrmStringTemplates.createOneToManyStoredProcedure, child, "procName", makeProcName(child),//
+				FastOrmKeys.parentTemp, parent.getTempTableName(),//
+				FastOrmKeys.parentIdColumn, parent.getIdColumn());
+	}
+
+	@Override
+	public IDrainedTableData drainFromStoredProcedure(IFastOrmContainer fastOrm, OrmReadContext ormReadContext, IEntityDefn parent, IEntityDefn child) {
+		return drainSecondary(fastOrm, ormReadContext, child, FastOrmStringTemplates.drainFromStoredProcedure, FastOrmKeys.procName, makeProcName(child));
+	}
 }

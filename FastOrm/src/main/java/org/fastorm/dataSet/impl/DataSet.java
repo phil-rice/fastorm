@@ -17,6 +17,7 @@ import org.fastorm.utilities.SimpleLists;
 public class DataSet implements IDataSet, IGetDrainedTableForEntityDefn {
 
 	private List<IDrainedTableData> tableData;
+
 	private final IDrainedTableData primaryTable;
 
 	public DataSet(List<IDrainedTableData> tableData) {
@@ -24,18 +25,22 @@ public class DataSet implements IDataSet, IGetDrainedTableForEntityDefn {
 		this.primaryTable = tableData.get(0);
 	}
 
+	@Override
 	public int size() {
 		return primaryTable.size();
 	}
 
+	@Override
 	public ISimpleMap<String, Object> get(final int index) {
 		return primaryTable.getMap(this, index);
 	}
 
+	@Override
 	public List<ISimpleMap<String, Object>> getList() {
 		return SimpleLists.asList(this);
 	}
 
+	@Override
 	public IDrainedTableData getPrimaryTable() {
 		return primaryTable;
 	}
@@ -60,6 +65,11 @@ public class DataSet implements IDataSet, IGetDrainedTableForEntityDefn {
 		for (IDrainedTableData data : oldData) {
 			data.dispose(memoryManager);
 		}
+	}
+
+	@Override
+	public String toString() {
+		return "DataSet [primary=" + primaryTable.getEntityDefn().getEntityName() + ", tableData=" + tableData + "]";
 	}
 
 }

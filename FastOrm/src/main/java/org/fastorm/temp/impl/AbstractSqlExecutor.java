@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.fastorm.api.IFastOrmContainer;
+import org.fastorm.constants.FastOrmConstants;
 import org.fastorm.dataSet.IDrainedTableData;
 import org.fastorm.dataSet.impl.DrainedTableData;
 import org.fastorm.defns.IEntityDefn;
@@ -68,6 +69,14 @@ public class AbstractSqlExecutor {
 		int result = fastOrm.getJdbcTemplate().update(sql);
 		fastOrm.getSqlLogger().updated(System.nanoTime() - startTime, sql, result);
 		return result;
+	}
+
+	protected String makeProcName(IEntityDefn entityDefn) {
+		return FastOrmConstants.procNamePrefix + entityDefn.getEntityName();
+	}
+
+	public Object makeProcName(IEntityDefn entityDefn, String postFix) {
+		return "proc_" + entityDefn.getEntityName() + postFix;
 	}
 
 }

@@ -4,7 +4,7 @@ import java.util.Set;
 
 import junit.framework.TestCase;
 
-import org.fastorm.constants.FastOrmOptions;
+import org.fastorm.api.FastOrmOptions;
 import org.fastorm.constants.FastOrmStringTemplates;
 import org.fastorm.utilities.Fields;
 import org.fastorm.utilities.Lists;

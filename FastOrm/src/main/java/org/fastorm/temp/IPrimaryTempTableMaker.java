@@ -24,4 +24,7 @@ public interface IPrimaryTempTableMaker {
 
 	void enrichWithGenerators(Map<IEntityDefn, Map<String, IGenerator>> entityToColumnsToRowGenerator, IEntityDefn primary);
 
+	void createStoredProcedure(IFastOrmContainer fastOrm, OrmReadContext ormReadContext);
+
+	IDrainedTableData drainFromStoredProcedure(IFastOrmContainer fastOrm, OrmReadContext ormReadContext, int page);
 }

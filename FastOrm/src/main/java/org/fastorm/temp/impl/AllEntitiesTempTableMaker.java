@@ -3,6 +3,7 @@ package org.fastorm.temp.impl;
 import java.util.Map;
 
 import org.fastorm.api.IFastOrmContainer;
+import org.fastorm.constants.FastOrmConstants;
 import org.fastorm.constants.FastOrmKeys;
 import org.fastorm.constants.FastOrmStringTemplates;
 import org.fastorm.dataGenerator.IGenerator;
@@ -55,4 +56,21 @@ public class AllEntitiesTempTableMaker extends AbstractSqlExecutor implements IP
 		Maps.addToMapOfLinkedMaps(entityToColumnsToRowGenerator, primary, idColumn, new SizeIntegerGenerator(idColumn));
 	}
 
+	@Override
+	public void createStoredProcedure(IFastOrmContainer fastOrm, OrmReadContext context) {
+		updatePrimary(fastOrm, context, FastOrmStringTemplates.dropStoredProcedure, "procName", super.makeProcName(fastOrm.getEntityDefn(), FastOrmConstants.allEntitiesPostfix));
+		updatePrimary(fastOrm, context, FastOrmStringTemplates.createAllEntitiesStoredProcedure, FastOrmKeys.procName, myProcName(fastOrm));
+	}
+
+	@Override
+	public IDrainedTableData drainFromStoredProcedure(IFastOrmContainer fastOrm, OrmReadContext ormReadContext, int page) {
+		int size = fastOrm.getBatchSize();
+		int start = size * page;
+		return drainPrimary(fastOrm, ormReadContext, FastOrmStringTemplates.drainFromStoredProcedureWithStartAndSize,//
+				FastOrmKeys.procName, myProcName(fastOrm), FastOrmKeys.start, start, FastOrmKeys.size, size);
+	}
+
+	private Object myProcName(IFastOrmContainer fastOrm) {
+		return makeProcName(fastOrm.getEntityDefn(), FastOrmConstants.allEntitiesPostfix);
+	}
 }

@@ -9,11 +9,11 @@ import javax.sql.DataSource;
 
 import junit.framework.TestCase;
 
+import org.fastorm.api.FastOrmOptions;
 import org.fastorm.api.ICallback;
 import org.fastorm.api.IFastOrmContainer;
 import org.fastorm.api.impl.FastOrm;
 import org.fastorm.constants.FastOrmKeys;
-import org.fastorm.constants.FastOrmOptions;
 import org.fastorm.constants.FastOrmTestValues;
 import org.fastorm.defns.IEntityDefn;
 import org.fastorm.defns.impl.EntityDefn;

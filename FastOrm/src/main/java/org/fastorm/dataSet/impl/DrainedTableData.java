@@ -29,6 +29,11 @@ public class DrainedTableData implements IDrainedTableData {
 	private int columnCount;
 	private Map<Integer, Map<Object, List<ISimpleMap<String, Object>>>> indices;
 
+	@Override
+	public String toString() {
+		return "DrainedTableData [entityDefn=" + entityDefn.getEntityName() + ", data=" + data.size() + "]";
+	}
+
 	public DrainedTableData(IMemoryManager memoryManager, IEntityDefn entityDefn, ResultSet rs) {
 		data = new ArrayList<Object[]>();
 		try {

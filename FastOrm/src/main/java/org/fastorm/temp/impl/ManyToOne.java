@@ -79,4 +79,14 @@ public class ManyToOne extends AbstractSqlExecutor implements ISecondaryTempTabl
 		Maps.addToList(columnsToIndex, parent, child.parameters().get(FastOrmKeys.parentLink));
 	}
 
+	@Override
+	public void createStoredProcedure(IFastOrmContainer fastOrm, OrmReadContext context, IEntityDefn parent, IEntityDefn child) {
+		update(fastOrm, context, FastOrmStringTemplates.createManyToOneStoredProcedure, child, "procname", makeProcName(child));
+	}
+
+	@Override
+	public IDrainedTableData drainFromStoredProcedure(IFastOrmContainer fastOrm, OrmReadContext ormReadContext, IEntityDefn parent, IEntityDefn child) {
+		return drainSecondary(fastOrm, ormReadContext, child, FastOrmStringTemplates.drainFromStoredProcedure, FastOrmKeys.procName, makeProcName(child));
+	}
+
 }

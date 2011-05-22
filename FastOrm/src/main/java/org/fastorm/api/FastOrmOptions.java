@@ -1,4 +1,4 @@
-package org.fastorm.constants;
+package org.fastorm.api;
 
 public class FastOrmOptions {
 

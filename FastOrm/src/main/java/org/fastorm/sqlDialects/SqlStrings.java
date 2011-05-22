@@ -9,8 +9,8 @@ import java.util.Set;
 
 import org.antlr.stringtemplate.StringTemplate;
 import org.antlr.stringtemplate.StringTemplateGroup;
+import org.fastorm.api.FastOrmOptions;
 import org.fastorm.constants.FastOrmKeys;
-import org.fastorm.constants.FastOrmOptions;
 import org.fastorm.utilities.Maps;
 import org.fastorm.utilities.WrappedException;
 import org.springframework.core.io.Resource;

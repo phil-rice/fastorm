@@ -3,7 +3,6 @@ package org.fastorm.api;
 import javax.sql.DataSource;
 
 import org.fastorm.api.impl.FastOrmServices;
-import org.fastorm.constants.FastOrmOptions;
 import org.fastorm.defns.IEntityDefn;
 import org.fastorm.memory.IMemoryManager;
 import org.fastorm.reader.IEntityReaderThin;

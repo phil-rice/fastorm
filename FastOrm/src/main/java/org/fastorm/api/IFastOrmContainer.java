@@ -1,7 +1,6 @@
 package org.fastorm.api;
 
 import org.fastorm.api.impl.FastOrmServices;
-import org.fastorm.constants.FastOrmOptions;
 import org.fastorm.memory.IMemoryManager;
 import org.fastorm.reader.IEntityReaderThin;
 import org.fastorm.sql.ISqlLogger;

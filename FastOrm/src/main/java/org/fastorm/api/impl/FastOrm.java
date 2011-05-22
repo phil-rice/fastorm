@@ -4,10 +4,10 @@ import java.text.MessageFormat;
 
 import javax.sql.DataSource;
 
+import org.fastorm.api.FastOrmOptions;
 import org.fastorm.api.IFastOrm;
 import org.fastorm.api.IFastOrmContainer;
 import org.fastorm.constants.FastOrmMessages;
-import org.fastorm.constants.FastOrmOptions;
 import org.fastorm.defns.IEntityDefn;
 import org.fastorm.memory.IMemoryManager;
 import org.fastorm.memory.NoMemoryManager;

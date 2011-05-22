@@ -22,5 +22,6 @@ public class FastOrmKeys {
 	public static final String parentIdColumn = "parentIdColumn";
 	public static final String parentTemp = "parentTemp";
 	public static final String useTemporaryTable = "useTemporaryTable";
+	public static final Object procName = "procName";
 
 }

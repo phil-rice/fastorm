@@ -37,41 +37,5 @@ drainPrimaryTable(tableName, tempTableName,idColumn) ::="select * from <tempTabl
 
 drainSecondaryTable(tableName,tempTableName,idColumn) ::= "select * from <tempTableName> t left outer join <tableName> r on r.<idColumn>=t.<idColumn>"
 
-dropStoredProcedure(procName) ::= "drop procedure if exists <procName>"
 
-createAllEntitiesStoredProcedure(procName, tableName, tempTableName,idColumn,start,size) ::= <<
-   create procedure <procName>(theStart INT, theSize INT)
-     begin
-       <truncateTempTable(...)>;
-       prepare stmt from "insert into <tempTableName> (<idColumn>) select <idColumn> from <tableName> limit ?,?";
-       set @start = theStart;
-       set @size = theSize;
-       execute stmt using @start,@size;
-       <drainPrimaryTable(...)>;
-     end
->>
-createOneToManyStoredProcedure(procName, parentTemp, tableName, tempTableName,idColumn,parentIdColumn,childLink) ::=<<
-   create procedure <procName>()
-     begin
-       <truncateTempTable(...)>;
-       <populateOneToManyTempTable(...)>;
-       <drainSecondaryTable(...)>;
-     end
->>
-createManyToOneStoredProcedure(procName, parentTemp, tableName, tempTableName,idColumn,parentIdColumn,childLink) ::=<<
-   create procedure <procName>
-     begin
-       <truncateTempTable(...)>;
-       prepare stmt from "insert into <tempTableName> (<idColumn>) select <idColumn> from <tableName> limit ?,?";
-       set @start = theStart;
-       set @size = theSize;
-       execute stmt using @start,@size;
-       <populateManyToOneTempTable(...)>;
-       <drainSecondaryTable(...)>;
-     end
->>
-
-drainFromStoredProcedureWithStartAndSize(procName,start,size) ::= "call <procName>(<start>,<size>)"
-
-drainFromStoredProcedure(procName) ::= "call <procName>()"
 

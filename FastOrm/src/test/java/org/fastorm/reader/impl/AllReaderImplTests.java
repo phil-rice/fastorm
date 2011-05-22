@@ -9,6 +9,8 @@ public class AllReaderImplTests {
 		TestSuite suite = new TestSuite(AllReaderImplTests.class.getName());
 		//$JUnit-BEGIN$
 		suite.addTestSuite(EntityReaderTest.class);
+		suite.addTestSuite(StoredProceduresEntityReaderThinTest.class);
+		suite.addTestSuite(AbstractEntityReaderTest.class);
 		//$JUnit-END$
 		return suite;
 	}

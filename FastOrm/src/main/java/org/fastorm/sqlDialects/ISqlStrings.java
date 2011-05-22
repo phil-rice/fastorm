@@ -3,7 +3,7 @@ package org.fastorm.sqlDialects;
 import java.util.Map;
 import java.util.Set;
 
-import org.fastorm.constants.FastOrmOptions;
+import org.fastorm.api.FastOrmOptions;
 
 public interface ISqlStrings {
 	Set<String> getTemplateNames();

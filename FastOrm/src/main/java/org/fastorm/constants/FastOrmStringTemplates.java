@@ -16,6 +16,13 @@ public class FastOrmStringTemplates {
 	public static final String truncateTempTable = "truncateTempTable";
 	public static final String addIndexToTempTable = "addIndexToTempTable";
 
+	public static final String dropStoredProcedure = "dropStoredProcedure";
+	public static final String createAllEntitiesStoredProcedure = "createAllEntitiesStoredProcedure";
+	public static final String createOneToManyStoredProcedure = "createOneToManyStoredProcedure";
+	public static final String createManyToOneStoredProcedure = "createManyToOneStoredProcedure";
+	public static final String drainFromStoredProcedureWithStartAndSize = "drainFromStoredProcedureWithStartAndSize";
+	public static final String drainFromStoredProcedure = "drainFromStoredProcedure";
+
 	public static Collection<? extends String> internalTemplateNames() {
 		return Arrays.asList("makeTemp");
 	}
