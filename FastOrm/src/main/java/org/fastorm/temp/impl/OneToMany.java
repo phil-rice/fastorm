@@ -85,7 +85,6 @@ public class OneToMany extends AbstractSqlExecutor implements ISecondaryTempTabl
 
 	@Override
 	public void createStoredProcedure(IFastOrmContainer fastOrm, OrmReadContext context, IEntityDefn parent, IEntityDefn child) {
-		update(fastOrm, context, FastOrmStringTemplates.dropStoredProcedure, child, FastOrmKeys.procName, makeProcName(child));
 		update(fastOrm, context, FastOrmStringTemplates.createOneToManyStoredProcedure, child, "procName", makeProcName(child),//
 				FastOrmKeys.parentTemp, parent.getTempTableName(),//
 				FastOrmKeys.parentIdColumn, parent.getIdColumn());
@@ -94,5 +93,10 @@ public class OneToMany extends AbstractSqlExecutor implements ISecondaryTempTabl
 	@Override
 	public IDrainedTableData drainFromStoredProcedure(IFastOrmContainer fastOrm, OrmReadContext ormReadContext, IEntityDefn parent, IEntityDefn child) {
 		return drainSecondary(fastOrm, ormReadContext, child, FastOrmStringTemplates.drainFromStoredProcedure, FastOrmKeys.procName, makeProcName(child));
+	}
+
+	@Override
+	public void dropStoredProcedure(IFastOrmContainer fastOrm, OrmReadContext ormReadContext, IEntityDefn parent, IEntityDefn child) {
+		update(fastOrm, ormReadContext, FastOrmStringTemplates.dropStoredProcedure, child, FastOrmKeys.procName, makeProcName(child));
 	}
 }

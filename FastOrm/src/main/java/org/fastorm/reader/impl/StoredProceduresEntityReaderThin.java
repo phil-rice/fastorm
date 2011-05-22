@@ -37,19 +37,31 @@ public class StoredProceduresEntityReaderThin implements IEntityReaderThin {
 					@Override
 					public IDataSet doInConnection(Connection connection) throws SQLException, DataAccessException {
 						final OrmReadContext ormReadContext = new OrmReadContext(connection);
+						class DropAndCreateStoredProcedures implements IMakerAndEntityDefnVisitor {
+							@Override
+							public void acceptPrimary(IPrimaryTempTableMaker maker, IEntityDefn primary) {
+								maker.dropStoredProcedure(fastOrm, ormReadContext);
+								maker.createStoredProcedure(fastOrm, ormReadContext);
+							}
+
+							@Override
+							public void acceptChild(ISecondaryTempTableMaker maker, IEntityDefn parent, IEntityDefn child) {
+								maker.dropStoredProcedure(fastOrm, ormReadContext, parent, child);
+								maker.createStoredProcedure(fastOrm, ormReadContext, parent, child);
+							}
+						}
+
 						class CreateTempTables implements IMakerAndEntityDefnVisitor {
 							@Override
 							public void acceptPrimary(IPrimaryTempTableMaker maker, IEntityDefn primary) {
 								maker.drop(fastOrm, ormReadContext);
 								maker.create(fastOrm, ormReadContext);
-								maker.createStoredProcedure(fastOrm, ormReadContext);
 							}
 
 							@Override
 							public void acceptChild(ISecondaryTempTableMaker maker, IEntityDefn parent, IEntityDefn child) {
 								maker.drop(fastOrm, ormReadContext, child);
 								maker.create(fastOrm, ormReadContext, parent, child);
-								maker.createStoredProcedure(fastOrm, ormReadContext, parent, child);
 							}
 						}
 
@@ -71,8 +83,11 @@ public class StoredProceduresEntityReaderThin implements IEntityReaderThin {
 								fastOrm.getSqlLogger().total(t);
 							}
 						};
-						if (page == 0)
+						if (page == 0) {
 							IEntityDefn.Utils.walk(fastOrm, new CreateTempTables());
+							if (fastOrm.getOptions().createAnddropProceduresAtStartOfRun)
+								IEntityDefn.Utils.walk(fastOrm, new DropAndCreateStoredProcedures());
+						}
 						last = IEntityDefn.Utils.aggregateAndTime(fastOrm, new CallStoredProcs(), new DataSetBuilder(), total);
 						if (last.getPrimaryTable().size() == 0)
 							return null;

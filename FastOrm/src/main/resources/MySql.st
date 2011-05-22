@@ -43,18 +43,22 @@ createAllEntitiesStoredProcedure(procName, tableName, tempTableName,idColumn,sta
    create procedure <procName>(theStart INT, theSize INT)
      begin
        <truncateTempTable(...)>;
+       alter table <tempTableName> disable keys;
        prepare stmt from "insert into <tempTableName> (<idColumn>) select <idColumn> from <tableName> limit ?,?";
        set @start = theStart;
        set @size = theSize;
        execute stmt using @start,@size;
+       alter table <tempTableName> enable keys;
        <drainPrimaryTable(...)>;
      end
 >>
 createOneToManyStoredProcedure(procName, parentTemp, tableName, tempTableName,idColumn,parentIdColumn,childLink) ::=<<
    create procedure <procName>()
      begin
-       <truncateTempTable(...)>;
+       <truncateTempTable(...)>;  
+       alter table <tempTableName> disable keys;
        <populateOneToManyTempTable(...)>;
+       alter table <tempTableName> enable keys;
        <drainSecondaryTable(...)>;
      end
 >>

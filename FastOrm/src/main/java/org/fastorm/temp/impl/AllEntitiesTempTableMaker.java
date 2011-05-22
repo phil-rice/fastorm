@@ -58,7 +58,6 @@ public class AllEntitiesTempTableMaker extends AbstractSqlExecutor implements IP
 
 	@Override
 	public void createStoredProcedure(IFastOrmContainer fastOrm, OrmReadContext context) {
-		updatePrimary(fastOrm, context, FastOrmStringTemplates.dropStoredProcedure, "procName", super.makeProcName(fastOrm.getEntityDefn(), FastOrmConstants.allEntitiesPostfix));
 		updatePrimary(fastOrm, context, FastOrmStringTemplates.createAllEntitiesStoredProcedure, FastOrmKeys.procName, myProcName(fastOrm));
 	}
 
@@ -72,5 +71,10 @@ public class AllEntitiesTempTableMaker extends AbstractSqlExecutor implements IP
 
 	private Object myProcName(IFastOrmContainer fastOrm) {
 		return makeProcName(fastOrm.getEntityDefn(), FastOrmConstants.allEntitiesPostfix);
+	}
+
+	@Override
+	public void dropStoredProcedure(IFastOrmContainer fastOrm, OrmReadContext ormReadContext) {
+		updatePrimary(fastOrm, ormReadContext, FastOrmStringTemplates.dropStoredProcedure, "procName", super.makeProcName(fastOrm.getEntityDefn(), FastOrmConstants.allEntitiesPostfix));
 	}
 }

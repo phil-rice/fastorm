@@ -21,5 +21,6 @@
 		<mapping class="org.fastorm.hibernateComparison.Person" />
 		<mapping class="org.fastorm.hibernateComparison.Address" />
 		<mapping class="org.fastorm.hibernateComparison.Telephone" />
+		<mapping class="org.fastorm.hibernateComparison.Favourite" />
 	</session-factory>
 </hibernate-configuration>

@@ -1,8 +1,12 @@
 package org.fastorm.hibernateComparison;
 
+import java.util.Collection;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -11,7 +15,8 @@ public class Telephone {
 
 	private long Id;
 	private long person;
-//	private Collection<Favourite> favourites;
+	private Collection<Favourite> favourites;
+
 	@Id
 	@Column(name = "id")
 	public long getId() {
@@ -35,13 +40,14 @@ public class Telephone {
 	public void setPerson(long person) {
 		this.person = person;
 	}
-//	@OneToMany(targetEntity = org.fastorm.hibernateComparison.Favourite.class, cascade = CascadeType.ALL, mappedBy = "Favourite")
-//	public Collection<Favourite> getTelephones() {
-//		return favourites;
-//	}
-//
-//	public void setTelephones(Collection<Favourite> favourites) {
-//		this.favourites = favourites;
-//	}
+
+	@OneToMany(targetEntity = org.fastorm.hibernateComparison.Favourite.class, cascade = CascadeType.ALL, mappedBy = "telephone")
+	public Collection<Favourite> getFavourites() {
+		return favourites;
+	}
+
+	public void setFavourites(Collection<Favourite> favourites) {
+		this.favourites = favourites;
+	}
 
 }

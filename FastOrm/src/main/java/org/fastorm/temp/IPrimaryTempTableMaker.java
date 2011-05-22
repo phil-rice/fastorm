@@ -27,4 +27,6 @@ public interface IPrimaryTempTableMaker {
 	void createStoredProcedure(IFastOrmContainer fastOrm, OrmReadContext ormReadContext);
 
 	IDrainedTableData drainFromStoredProcedure(IFastOrmContainer fastOrm, OrmReadContext ormReadContext, int page);
+
+	void dropStoredProcedure(IFastOrmContainer fastOrm, OrmReadContext ormReadContext);
 }
