@@ -16,6 +16,8 @@ public class Person {
 	private long Id;
 	private Collection<Address> addresses;
 	private Collection<Telephone> telephones;
+	private String name;
+	private int age;
 
 	@Id
 	@Column(name = "id")
@@ -48,6 +50,24 @@ public class Person {
 
 	public void setTelephones(Collection<Telephone> telephones) {
 		this.telephones = telephones;
+	}
+
+	@Column(name = "name")
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	@Column(name = "age")
+	public int getAge() {
+		return age;
+	}
+
+	public void setAge(int age) {
+		this.age = age;
 	}
 
 }

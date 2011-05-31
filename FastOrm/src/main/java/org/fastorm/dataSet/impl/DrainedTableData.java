@@ -15,10 +15,10 @@ import org.fastorm.dataSet.IDrainedTableData;
 import org.fastorm.dataSet.IGetDrainedTableForEntityDefn;
 import org.fastorm.defns.IEntityDefn;
 import org.fastorm.memory.IMemoryManager;
-import org.fastorm.utilities.ISimpleMap;
-import org.fastorm.utilities.Maps;
-import org.fastorm.utilities.Optimised;
-import org.fastorm.utilities.WrappedException;
+import org.fastorm.utilities.annotations.TightLoop;
+import org.fastorm.utilities.exceptions.WrappedException;
+import org.fastorm.utilities.maps.ISimpleMap;
+import org.fastorm.utilities.maps.Maps;
 
 public class DrainedTableData implements IDrainedTableData {
 
@@ -89,12 +89,12 @@ public class DrainedTableData implements IDrainedTableData {
 	}
 
 	@Override
-	@Optimised
+	@TightLoop
 	public ISimpleMap<String, Object> getMap(final IGetDrainedTableForEntityDefn getter, final int index) {
 		return new ISimpleMap<String, Object>() {
 			@Override
 			public Object get(String key) {
-				@Optimised
+				@TightLoop
 				int indexOf = columnNames.indexOf(key);
 				if (indexOf == -1)
 					throw new IllegalArgumentException(MessageFormat.format(FastOrmMessages.noValueForKey, key, this));
@@ -131,7 +131,7 @@ public class DrainedTableData implements IDrainedTableData {
 	}
 
 	@Override
-	@Optimised
+	@TightLoop
 	public List<ISimpleMap<String, Object>> findWith(IGetDrainedTableForEntityDefn getter, int columnIndex, Object value) {
 		if (indices == null)
 			indices = Maps.newMap();

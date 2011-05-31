@@ -1,6 +1,6 @@
 package org.fastorm.dataSet;
 
-import org.fastorm.api.ICallback;
+import org.fastorm.utilities.callbacks.ICallback;
 
 public interface IDataSetCallback extends ICallback<IDataSet> {
 

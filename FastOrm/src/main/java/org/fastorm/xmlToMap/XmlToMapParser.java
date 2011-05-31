@@ -3,7 +3,7 @@ package org.fastorm.xmlToMap;
 import java.io.StringReader;
 import java.util.Map;
 
-import org.fastorm.utilities.WrappedException;
+import org.fastorm.utilities.exceptions.WrappedException;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.input.SAXBuilder;

@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.fastorm.defns.IEntityDefn;
 import org.fastorm.memory.IMemoryManager;
-import org.fastorm.utilities.IFunction1;
-import org.fastorm.utilities.ISimpleMap;
+import org.fastorm.utilities.functions.IFunction1;
+import org.fastorm.utilities.maps.ISimpleMap;
 
 public interface IDrainedTableData {
 

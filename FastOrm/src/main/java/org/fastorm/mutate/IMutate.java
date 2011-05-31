@@ -2,7 +2,7 @@ package org.fastorm.mutate;
 
 import java.util.Map;
 
-import org.fastorm.utilities.IFunction1;
+import org.fastorm.utilities.functions.IFunction1;
 
 public interface IMutate<T> {
 

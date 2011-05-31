@@ -7,8 +7,9 @@ import java.util.Map;
 import junit.framework.TestCase;
 
 import org.fastorm.constants.FastOrmMessages;
-import org.fastorm.utilities.Functions;
-import org.fastorm.utilities.Maps;
+import org.fastorm.utilities.constants.UtilityMessages;
+import org.fastorm.utilities.functions.Functions;
+import org.fastorm.utilities.maps.Maps;
 import org.fastorm.xmlItemStrategies.IItemStrategy;
 import org.fastorm.xmlItemStrategies.SimpleStringItemStrategy;
 
@@ -53,7 +54,7 @@ public class XmlToMapParserTest extends TestCase {
 			checkParser(hasA, "a", "1", "b", "2");
 			fail();
 		} catch (CannotParseException e) {
-			assertEquals(MessageFormat.format(FastOrmMessages.illegalKey, "b", Arrays.asList("a")), e.getMessage());
+			assertEquals(MessageFormat.format(UtilityMessages.illegalKey, "b", Arrays.asList("a")), e.getMessage());
 		}
 
 	}

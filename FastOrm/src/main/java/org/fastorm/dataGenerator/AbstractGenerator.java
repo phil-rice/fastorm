@@ -4,8 +4,8 @@ import java.text.MessageFormat;
 import java.util.List;
 import java.util.Map;
 
-import org.fastorm.constants.FastOrmMessages;
 import org.fastorm.defns.IEntityDefn;
+import org.fastorm.utilities.constants.UtilityMessages;
 
 public abstract class AbstractGenerator implements IGenerator {
 	protected String columnName;
@@ -21,7 +21,7 @@ public abstract class AbstractGenerator implements IGenerator {
 	protected void add(Map<IEntityDefn, List<Map<String, Object>>> data, IEntityDefn entityDefn, Object value) {
 		Map<String, Object> map = getLatest(data, entityDefn);
 		if (map.containsKey(columnName))
-			throw new IllegalStateException(MessageFormat.format(FastOrmMessages.duplicateKey, columnName, map.get(columnName), value));
+			throw new IllegalStateException(MessageFormat.format(UtilityMessages.duplicateKey, columnName, map.get(columnName), value));
 		map.put(columnName, value);
 	}
 

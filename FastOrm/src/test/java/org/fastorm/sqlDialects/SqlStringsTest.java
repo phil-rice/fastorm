@@ -6,10 +6,10 @@ import junit.framework.TestCase;
 
 import org.fastorm.api.FastOrmOptions;
 import org.fastorm.constants.FastOrmStringTemplates;
-import org.fastorm.utilities.Fields;
-import org.fastorm.utilities.Lists;
-import org.fastorm.utilities.Maps;
-import org.fastorm.utilities.Sets;
+import org.fastorm.utilities.collections.Lists;
+import org.fastorm.utilities.collections.Sets;
+import org.fastorm.utilities.maps.Maps;
+import org.fastorm.utilities.reflection.Fields;
 import org.springframework.core.io.ClassPathResource;
 
 public class SqlStringsTest extends TestCase {

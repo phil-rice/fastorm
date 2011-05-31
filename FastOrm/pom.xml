@@ -53,11 +53,7 @@
 			<artifactId>stringtemplate</artifactId>
 			<version>3.2</version>
 		</dependency>
-		<dependency>
-			<groupId>org.codehaus.cake.forkjoin</groupId>
-			<artifactId>cake-forkjoin</artifactId>
-			<version>0.1</version>
-		</dependency>
+
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
@@ -72,6 +68,11 @@
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-math</artifactId>
 			<version>2.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.fastorm</groupId>
+			<artifactId>utilities</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 	<organization>

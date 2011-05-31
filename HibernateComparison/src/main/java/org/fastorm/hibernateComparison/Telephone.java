@@ -16,6 +16,8 @@ public class Telephone {
 	private long Id;
 	private long person;
 	private Collection<Favourite> favourites;
+	private String number;
+	private String telephoneType;
 
 	@Id
 	@Column(name = "id")
@@ -48,6 +50,24 @@ public class Telephone {
 
 	public void setFavourites(Collection<Favourite> favourites) {
 		this.favourites = favourites;
+	}
+
+	@Column(name = "number")
+	public String getNumber() {
+		return number;
+	}
+
+	public void setNumber(String number) {
+		this.number = number;
+	}
+
+	@Column(name = "telephoneType")
+	public String getTelephoneType() {
+		return telephoneType;
+	}
+
+	public void setTelephoneType(String telephoneType) {
+		this.telephoneType = telephoneType;
 	}
 
 }

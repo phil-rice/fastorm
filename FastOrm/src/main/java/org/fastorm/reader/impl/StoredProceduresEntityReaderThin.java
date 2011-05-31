@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.fastorm.api.ICallback;
 import org.fastorm.api.IFastOrmContainer;
 import org.fastorm.dataSet.IDataSet;
 import org.fastorm.dataSet.IDrainedTableData;
@@ -15,11 +14,13 @@ import org.fastorm.defns.IMakerAndEntityDefnVisitor;
 import org.fastorm.reader.IEntityReaderThin;
 import org.fastorm.temp.IPrimaryTempTableMaker;
 import org.fastorm.temp.ISecondaryTempTableMaker;
-import org.fastorm.utilities.AbstractFindNextIterable;
+import org.fastorm.utilities.callbacks.ICallback;
+import org.fastorm.utilities.collections.AbstractFindNextIterable;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ConnectionCallback;
 
 public class StoredProceduresEntityReaderThin implements IEntityReaderThin {
+	private boolean createdOnce;
 
 	@Override
 	public <T> Iterable<IDataSet> dataSets(final IFastOrmContainer fastOrm) {
@@ -84,9 +85,11 @@ public class StoredProceduresEntityReaderThin implements IEntityReaderThin {
 							}
 						};
 						if (page == 0) {
-							IEntityDefn.Utils.walk(fastOrm, new CreateTempTables());
-							if (fastOrm.getOptions().createAnddropProceduresAtStartOfRun)
+							if (!createdOnce || fastOrm.getOptions().createAnddropProceduresAtStartOfRun) {
+								IEntityDefn.Utils.walk(fastOrm, new CreateTempTables());
 								IEntityDefn.Utils.walk(fastOrm, new DropAndCreateStoredProcedures());
+								createdOnce = true;
+							}
 						}
 						last = IEntityDefn.Utils.aggregateAndTime(fastOrm, new CallStoredProcs(), new DataSetBuilder(), total);
 						if (last.getPrimaryTable().size() == 0)

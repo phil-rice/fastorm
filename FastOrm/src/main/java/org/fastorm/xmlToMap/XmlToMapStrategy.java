@@ -8,10 +8,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.fastorm.constants.FastOrmMessages;
-import org.fastorm.utilities.Functions;
-import org.fastorm.utilities.IFunction1;
-import org.fastorm.utilities.Maps;
-import org.fastorm.utilities.WrappedException;
+import org.fastorm.utilities.exceptions.WrappedException;
+import org.fastorm.utilities.functions.Functions;
+import org.fastorm.utilities.functions.IFunction1;
+import org.fastorm.utilities.maps.Maps;
 import org.jdom.Attribute;
 import org.jdom.Element;
 

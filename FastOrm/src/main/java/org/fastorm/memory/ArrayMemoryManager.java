@@ -3,7 +3,7 @@ package org.fastorm.memory;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.fastorm.utilities.Maps;
+import org.fastorm.utilities.maps.Maps;
 
 public class ArrayMemoryManager implements IMemoryManager {
 

@@ -11,18 +11,18 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
 import org.fastorm.api.IFastOrm;
-import org.fastorm.api.MemoryCallback;
 import org.fastorm.dataSet.IDataSet;
 import org.fastorm.defns.impl.EntityDefn;
 import org.fastorm.reader.IEntityReader;
-import org.fastorm.utilities.IFunction1;
-import org.fastorm.utilities.ISimpleMap;
-import org.fastorm.utilities.Iterables;
-import org.fastorm.utilities.Maps;
-import org.fastorm.utilities.SimpleMaps;
 import org.fastorm.utilities.aggregators.IAggregator;
 import org.fastorm.utilities.aggregators.SimpleMapAggregator;
-import org.fastorm.utilities.foldFunctions.SimpleMapFoldFunction;
+import org.fastorm.utilities.callbacks.MemoryCallback;
+import org.fastorm.utilities.collections.Iterables;
+import org.fastorm.utilities.functions.IFunction1;
+import org.fastorm.utilities.functions.SimpleMapFoldFunction;
+import org.fastorm.utilities.maps.ISimpleMap;
+import org.fastorm.utilities.maps.Maps;
+import org.fastorm.utilities.maps.SimpleMaps;
 
 public class EntityReaderTest extends AbstractEntityReaderTest {
 
@@ -39,7 +39,7 @@ public class EntityReaderTest extends AbstractEntityReaderTest {
 	private void checkMerger(IDataSet... dataSets) throws Exception {
 		Map<String, Object> expected = SimpleMaps.merge(Iterables.split(Arrays.asList(dataSets), new IFunction1<IDataSet, Iterable<ISimpleMap<String, Object>>>() {
 			public List<ISimpleMap<String, Object>> apply(IDataSet from) throws Exception {
-				return from.getList();
+				return from.slowList();
 			}
 		}));
 
@@ -68,7 +68,7 @@ public class EntityReaderTest extends AbstractEntityReaderTest {
 	private void checkMaps(IDataSet... dataSets) throws InterruptedException, ExecutionException {
 		Iterable<ISimpleMap<String, Object>> maps = Iterables.split(Arrays.asList(dataSets), new IFunction1<IDataSet, Iterable<ISimpleMap<String, Object>>>() {
 			public Iterable<ISimpleMap<String, Object>> apply(IDataSet from) throws Exception {
-				return from.getList();
+				return from.slowList();
 			}
 		});
 		EntityReaderThinMock mock = new EntityReaderThinMock(dataSets);

@@ -1,7 +1,7 @@
 package org.fastorm.temp.impl;
 
-import static org.fastorm.utilities.Iterables.aggregate;
-import static org.fastorm.utilities.Iterables.map;
+import static org.fastorm.utilities.collections.Iterables.aggregate;
+import static org.fastorm.utilities.collections.Iterables.map;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -23,11 +23,11 @@ import org.fastorm.defns.IEntityDefn;
 import org.fastorm.defns.IMakerAndEntityDefnVisitor;
 import org.fastorm.temp.IPrimaryTempTableMaker;
 import org.fastorm.temp.ISecondaryTempTableMaker;
-import org.fastorm.utilities.IFunction1;
-import org.fastorm.utilities.Iterables;
-import org.fastorm.utilities.Maps;
-import org.fastorm.utilities.Strings;
-import org.fastorm.utilities.WrappedException;
+import org.fastorm.utilities.collections.Iterables;
+import org.fastorm.utilities.exceptions.WrappedException;
+import org.fastorm.utilities.functions.IFunction1;
+import org.fastorm.utilities.maps.Maps;
+import org.fastorm.utilities.strings.Strings;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;

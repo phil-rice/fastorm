@@ -10,7 +10,7 @@ import java.util.Map.Entry;
 import org.fastorm.defns.IEntityDefn;
 import org.fastorm.temp.ISecondaryTempTableMaker;
 import org.fastorm.temp.ITempTableMakerFactory;
-import org.fastorm.utilities.Maps;
+import org.fastorm.utilities.maps.Maps;
 
 public class MapToEntityDefn {
 

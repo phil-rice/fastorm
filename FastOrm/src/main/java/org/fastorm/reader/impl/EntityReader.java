@@ -5,20 +5,20 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 
-import org.fastorm.api.ICallback;
 import org.fastorm.api.IFastOrmContainer;
 import org.fastorm.api.impl.FastOrmServices;
 import org.fastorm.dataSet.IDataSet;
 import org.fastorm.reader.IEntityReader;
-import org.fastorm.utilities.Functions;
-import org.fastorm.utilities.IAggregateFunction;
-import org.fastorm.utilities.IFoldFunction;
-import org.fastorm.utilities.IFunction1;
-import org.fastorm.utilities.ISimpleMap;
-import org.fastorm.utilities.Iterables;
-import org.fastorm.utilities.SimpleLists;
-import org.fastorm.utilities.WrappedException;
 import org.fastorm.utilities.aggregators.IAggregator;
+import org.fastorm.utilities.callbacks.ICallback;
+import org.fastorm.utilities.collections.Iterables;
+import org.fastorm.utilities.collections.SimpleLists;
+import org.fastorm.utilities.exceptions.WrappedException;
+import org.fastorm.utilities.functions.Functions;
+import org.fastorm.utilities.functions.IAggregateFunction;
+import org.fastorm.utilities.functions.IFoldFunction;
+import org.fastorm.utilities.functions.IFunction1;
+import org.fastorm.utilities.maps.ISimpleMap;
 
 public class EntityReader<T> implements IEntityReader<T> {
 
@@ -47,7 +47,7 @@ public class EntityReader<T> implements IEntityReader<T> {
 			public Iterable<T> apply(IDataSet from) throws Exception {
 				if (from == null)
 					throw new NullPointerException();
-				List<ISimpleMap<String, Object>> list = from.getList();
+				List<ISimpleMap<String, Object>> list = from.slowList();
 				return Iterables.map(list, convertor);
 			}
 		});

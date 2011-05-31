@@ -4,8 +4,8 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
-import org.fastorm.utilities.Functions;
-import org.fastorm.utilities.Maps;
+import org.fastorm.utilities.functions.Functions;
+import org.fastorm.utilities.maps.Maps;
 import org.fastorm.xmlItemStrategies.IItemStrategy;
 import org.fastorm.xmlItemStrategies.SimpleStringItemStrategy;
 import org.fastorm.xmlItemStrategies.SimpleStringUseElementNameItemStrategy;

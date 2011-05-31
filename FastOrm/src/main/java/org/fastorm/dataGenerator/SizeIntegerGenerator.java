@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.fastorm.defns.IEntityDefn;
-import org.fastorm.utilities.Maps;
+import org.fastorm.utilities.maps.Maps;
 
 public class SizeIntegerGenerator extends AbstractGenerator {
 

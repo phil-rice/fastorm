@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.Random;
 
 import org.fastorm.defns.IEntityDefn;
-import org.fastorm.utilities.Maps;
+import org.fastorm.utilities.maps.Maps;
 
 public class StringGenerator extends AbstractGenerator {
 

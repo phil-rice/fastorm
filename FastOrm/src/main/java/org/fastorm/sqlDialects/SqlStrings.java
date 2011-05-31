@@ -11,8 +11,8 @@ import org.antlr.stringtemplate.StringTemplate;
 import org.antlr.stringtemplate.StringTemplateGroup;
 import org.fastorm.api.FastOrmOptions;
 import org.fastorm.constants.FastOrmKeys;
-import org.fastorm.utilities.Maps;
-import org.fastorm.utilities.WrappedException;
+import org.fastorm.utilities.exceptions.WrappedException;
+import org.fastorm.utilities.maps.Maps;
 import org.springframework.core.io.Resource;
 
 public class SqlStrings implements ISqlStrings {

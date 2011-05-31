@@ -1,7 +1,7 @@
 package org.fastorm.dataSet;
 
-import org.fastorm.utilities.ISimpleMap;
-import org.fastorm.utilities.SimpleMaps;
+import org.fastorm.utilities.maps.ISimpleMap;
+import org.fastorm.utilities.maps.SimpleMaps;
 
 @SuppressWarnings("unchecked")
 public class DataSetMother {

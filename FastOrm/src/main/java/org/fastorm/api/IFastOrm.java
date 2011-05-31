@@ -6,8 +6,8 @@ import org.fastorm.api.impl.FastOrm;
 import org.fastorm.defns.IEntityDefn;
 import org.fastorm.mutate.IMutate;
 import org.fastorm.reader.IEntityReader;
-import org.fastorm.utilities.IFunction1;
-import org.fastorm.utilities.ISimpleMap;
+import org.fastorm.utilities.functions.IFunction1;
+import org.fastorm.utilities.maps.ISimpleMap;
 
 public interface IFastOrm extends IFastOrmFactoryConfigurator {
 

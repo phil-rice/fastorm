@@ -4,7 +4,7 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
-import org.fastorm.utilities.Maps;
+import org.fastorm.utilities.maps.Maps;
 
 public class MapToXmlAttributePrinterTest extends TestCase {
 	public void testSimpleMapToXml() {

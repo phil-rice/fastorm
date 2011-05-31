@@ -4,7 +4,7 @@
           "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
 <hibernate-configuration>
 	<session-factory>
-		<property name="connection.url">jdbc:mysql://localhost/fastorm</property>
+		<property name="connection.url">jdbc:mysql://matt-desktop/fastorm</property>
 		<property name="connection.username">root</property>
 		<property name="connection.password">iwtbde</property>
 		<property name="connection.driver_class">com.mysql.jdbc.Driver</property>

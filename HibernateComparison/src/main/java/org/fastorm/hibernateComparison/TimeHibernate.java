@@ -13,7 +13,7 @@ import org.hibernate.classic.Session;
 import org.springframework.core.io.ClassPathResource;
 
 public class TimeHibernate {
-	private static int[] dbSizes = new int[] { 1, 10, 100, 1000, 10000, 1, 10, 100, 1000, 10000, 1, 10, 100, 1000, 10000 };
+	private static int[] dbSizes = new int[] { 100, 10, 1, 1, 10, 100, 1000, 10000, 1, 10, 100, 1000, 10000, 1, 10, 100, 1000, 10000 };
 
 	@SuppressWarnings({ "unchecked", "unused" })
 	public static void main(String[] args) throws ClassNotFoundException {
@@ -21,8 +21,8 @@ public class TimeHibernate {
 
 		for (int dbSize : dbSizes) {
 			MakeData.makeData(new ClassPathResource("MySqlDataSource.xml"), new ClassPathResource("sample.xml"), dbSize, ICallback.Utils.<Integer> noCallback());
-			SessionFactory factory = new AnnotationConfiguration().configure().buildSessionFactory();
 			for (int run = 0; run < 10; run++) {
+				SessionFactory factory = new AnnotationConfiguration().configure().buildSessionFactory();
 				long startTime = System.nanoTime();
 				Session session = factory.getCurrentSession();
 				Transaction tx = session.beginTransaction();

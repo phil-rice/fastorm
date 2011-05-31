@@ -14,8 +14,8 @@ import org.fastorm.dataSet.IGetDrainedTableForEntityDefn;
 import org.fastorm.defns.IEntityDefn;
 import org.fastorm.reader.impl.OrmReadContext;
 import org.fastorm.temp.ISecondaryTempTableMaker;
-import org.fastorm.utilities.ISimpleMap;
-import org.fastorm.utilities.Maps;
+import org.fastorm.utilities.maps.ISimpleMap;
+import org.fastorm.utilities.maps.Maps;
 
 public class OneToMany extends AbstractSqlExecutor implements ISecondaryTempTableMaker {
 

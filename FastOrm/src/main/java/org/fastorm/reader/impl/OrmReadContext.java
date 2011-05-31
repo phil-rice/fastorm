@@ -4,8 +4,8 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import org.fastorm.utilities.IFunction1;
-import org.fastorm.utilities.WrappedException;
+import org.fastorm.utilities.exceptions.WrappedException;
+import org.fastorm.utilities.functions.IFunction1;
 import org.springframework.jdbc.core.ResultSetExtractor;
 
 public class OrmReadContext {

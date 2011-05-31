@@ -11,14 +11,14 @@ import junit.framework.TestCase;
 
 import org.fastorm.api.IFastOrm;
 import org.fastorm.api.IFastOrmContainer;
-import org.fastorm.api.MemoryCallback;
 import org.fastorm.api.impl.FastOrm;
 import org.fastorm.dataSet.IDataSet;
 import org.fastorm.defns.IEntityDefn;
 import org.fastorm.defns.impl.EntityDefn;
 import org.fastorm.reader.IEntityReader;
-import org.fastorm.utilities.ISimpleMap;
-import org.fastorm.utilities.Iterables;
+import org.fastorm.utilities.callbacks.MemoryCallback;
+import org.fastorm.utilities.collections.Iterables;
+import org.fastorm.utilities.maps.ISimpleMap;
 
 public class AbstractEntityReaderTest extends TestCase {
 

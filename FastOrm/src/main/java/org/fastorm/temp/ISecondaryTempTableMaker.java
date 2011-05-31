@@ -9,7 +9,7 @@ import org.fastorm.dataSet.IDrainedTableData;
 import org.fastorm.dataSet.IGetDrainedTableForEntityDefn;
 import org.fastorm.defns.IEntityDefn;
 import org.fastorm.reader.impl.OrmReadContext;
-import org.fastorm.utilities.ISimpleMap;
+import org.fastorm.utilities.maps.ISimpleMap;
 
 public interface ISecondaryTempTableMaker {
 

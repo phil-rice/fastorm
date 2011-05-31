@@ -1,0 +1,25 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.fastorm</groupId>
+		<artifactId>Parent</artifactId>
+		<version>1</version>
+	</parent>
+	<artifactId>Pooling</artifactId>
+	<description>This is a very high speed object pooling module.
+
+The pattern assumed is &quot;we will do a job of work, then dispose of all memory associated with that job of work, then we will do a similar job of work...&quot;
+
+It should have good cpu cache properties: each worker thread has its own object pool. Soon the pool will be &quot;in&quot; the cache, and all access to objects in the pool will be via the cache.
+
+It minimises memory usage by creating objects that have as small a memory footprint as possible. 
+
+It minimises garbage collection, as objects in the pool will not be collected</description>
+	<dependencies>
+		<dependency>
+			<groupId>org.fastorm</groupId>
+			<artifactId>utilities</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+	</dependencies>
+</project>

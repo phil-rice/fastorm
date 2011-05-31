@@ -7,13 +7,13 @@ import static org.fastorm.constants.FastOrmTestValues.primaryTempTableName;
 
 import java.util.Arrays;
 
-import org.fastorm.api.ICallback;
 import org.fastorm.dataSet.IDrainedTableData;
 import org.fastorm.reader.impl.OrmReadContext;
 import org.fastorm.sql.SysOutSqlLogger;
-import org.fastorm.utilities.IFunction1;
-import org.fastorm.utilities.Maps;
-import org.fastorm.utilities.Sets;
+import org.fastorm.utilities.callbacks.ICallback;
+import org.fastorm.utilities.collections.Sets;
+import org.fastorm.utilities.functions.IFunction1;
+import org.fastorm.utilities.maps.Maps;
 
 public class AllEntitiesTempTableMakerTest extends AbstractTempTableMakerTest {
 	protected AllEntitiesTempTableMaker maker;

@@ -17,16 +17,16 @@ import static org.fastorm.constants.FastOrmTestValues.primaryTableName;
 import java.util.Arrays;
 import java.util.Collections;
 
-import org.fastorm.api.ICallback;
 import org.fastorm.api.IFastOrmContainer;
 import org.fastorm.dataSet.IDrainedTableData;
 import org.fastorm.defns.IEntityDefn;
 import org.fastorm.defns.impl.EntityDefn;
 import org.fastorm.reader.impl.OrmReadContext;
 import org.fastorm.sql.SysOutSqlLogger;
-import org.fastorm.utilities.IFunction1;
-import org.fastorm.utilities.Maps;
-import org.fastorm.utilities.Sets;
+import org.fastorm.utilities.callbacks.ICallback;
+import org.fastorm.utilities.collections.Sets;
+import org.fastorm.utilities.functions.IFunction1;
+import org.fastorm.utilities.maps.Maps;
 
 public class OneToManyTempTableMakerTest extends AbstractTempTableMakerTest {
 	private final IEntityDefn child = new EntityDefn(new OneToMany(), Maps.<String, String> makeMap(//

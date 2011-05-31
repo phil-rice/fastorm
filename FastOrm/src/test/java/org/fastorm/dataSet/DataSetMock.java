@@ -3,9 +3,9 @@ package org.fastorm.dataSet;
 import java.util.List;
 
 import org.fastorm.memory.IMemoryManager;
-import org.fastorm.utilities.ISimpleList;
-import org.fastorm.utilities.ISimpleMap;
-import org.fastorm.utilities.SimpleLists;
+import org.fastorm.utilities.collections.ISimpleList;
+import org.fastorm.utilities.collections.SimpleLists;
+import org.fastorm.utilities.maps.ISimpleMap;
 
 public class DataSetMock implements IDataSet {
 
@@ -23,8 +23,8 @@ public class DataSetMock implements IDataSet {
 		return simpleList.get(index);
 	}
 
-	public List<ISimpleMap<String, Object>> getList() {
-		return simpleList.getList();
+	public List<ISimpleMap<String, Object>> slowList() {
+		return simpleList.slowList();
 	}
 
 	public IDrainedTableData getPrimaryTable() {

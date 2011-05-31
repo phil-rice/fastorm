@@ -1,7 +1,7 @@
 package org.fastorm.sql;
 
 import org.fastorm.constants.FastOrmMessages;
-import org.fastorm.utilities.Strings;
+import org.fastorm.utilities.strings.Strings;
 
 public class SysOutSqlLogger implements ISqlLogger {
 

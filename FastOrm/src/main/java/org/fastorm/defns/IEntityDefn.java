@@ -3,18 +3,20 @@ package org.fastorm.defns;
 import java.util.List;
 import java.util.Map;
 
-import org.fastorm.api.ICallback;
 import org.fastorm.api.IFastOrmContainer;
+import org.fastorm.dataGenerator.IExtraDataGenerator;
+import org.fastorm.dataGenerator.NoExtraDataGenerator;
 import org.fastorm.defns.impl.MapToEntityDefn;
 import org.fastorm.temp.IPrimaryTempTableMaker;
 import org.fastorm.temp.ISecondaryTempTableMaker;
 import org.fastorm.temp.ITempTableMakerFactory;
 import org.fastorm.temp.impl.SqlHelper;
-import org.fastorm.utilities.Files;
-import org.fastorm.utilities.IFoldFunction;
-import org.fastorm.utilities.Maps;
-import org.fastorm.utilities.WrappedException;
 import org.fastorm.utilities.aggregators.IAggregator;
+import org.fastorm.utilities.callbacks.ICallback;
+import org.fastorm.utilities.collections.Files;
+import org.fastorm.utilities.exceptions.WrappedException;
+import org.fastorm.utilities.functions.IFoldFunction;
+import org.fastorm.utilities.maps.Maps;
 import org.fastorm.xmlToMap.XmlToMapParser;
 import org.springframework.beans.factory.xml.XmlBeanFactory;
 import org.springframework.core.io.ClassPathResource;
@@ -44,9 +46,25 @@ public interface IEntityDefn {
 		}
 
 		public static void dropAndMakeTables(IFastOrmContainer fastOrm, IEntityDefn entityDefn) {
+			dropAndMakeTables(fastOrm, entityDefn, new NoExtraDataGenerator());
+		}
+
+		public static void dropAndMakeTables(IFastOrmContainer fastOrm, IEntityDefn entityDefn, final IExtraDataGenerator extraDataGenerator) {
 			final Map<IEntityDefn, Map<String, String>> entityToColumnsAndTypes = findMinimumColumns(fastOrm);
 			final SqlHelper sqlHelper = new SqlHelper(fastOrm.getJdbcTemplate());
 			sqlHelper.dropAllTables();
+			walk(fastOrm.getEntityDefn(), new IEntityDefnVisitor() {
+				@Override
+				public void acceptPrimary(IEntityDefn primary) throws Exception {
+					extraDataGenerator.enrichColumnsForMakingTables(entityToColumnsAndTypes, primary);
+				}
+
+				@Override
+				public void acceptChild(IEntityDefn parent, IEntityDefn child) throws Exception {
+					extraDataGenerator.enrichColumnsForMakingTables(entityToColumnsAndTypes, child);
+				}
+
+			});
 			walk(fastOrm.getEntityDefn(), new IEntityDefnVisitor() {
 				@Override
 				public void acceptPrimary(IEntityDefn primary) {

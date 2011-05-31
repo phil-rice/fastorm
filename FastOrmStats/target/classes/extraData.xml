@@ -1,0 +1,22 @@
+<data>
+	<person tableName="person">
+		<name value="''name{0}''" type="varchar(40)" />
+		<age type="integer" />
+	</person>
+	<address tableName="address">
+		<line1 value="''line1{0}''" type="varchar(40)" />
+		<line2 value="''line2{0}''" type="varchar(40)" />
+		<line3 value="''line3{0}''" type="varchar(40)" />
+		<postcode value="''postcode{0}''" type="varchar(40)" />
+	</address>
+	<telephone tableName="telephone">
+		<number value="''telno{0}''" type="varchar(20)" />
+		<telephoneType value="''type{0}''" type="varchar(20)" />
+	</telephone>
+
+	<favourites tableName="favourites">
+		<name value="''name{0}''" type="varchar(40)" />
+		<number value="''telno{0}''" type="varchar(20)" />
+	</favourites>
+
+</data>

@@ -3,12 +3,12 @@ package org.fastorm.reader;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 
-import org.fastorm.api.ICallback;
 import org.fastorm.dataSet.IDataSet;
-import org.fastorm.utilities.IAggregateFunction;
-import org.fastorm.utilities.IFoldFunction;
-import org.fastorm.utilities.IFunction1;
 import org.fastorm.utilities.aggregators.IAggregator;
+import org.fastorm.utilities.callbacks.ICallback;
+import org.fastorm.utilities.functions.IAggregateFunction;
+import org.fastorm.utilities.functions.IFoldFunction;
+import org.fastorm.utilities.functions.IFunction1;
 
 public interface IEntityReader<T> extends Iterable<T> {
 

@@ -25,7 +25,7 @@ import org.fastorm.temp.ISecondaryTempTableMaker;
 import org.fastorm.temp.ITempTableMakerFactory;
 import org.fastorm.temp.impl.AllEntitiesTempTableMaker;
 import org.fastorm.temp.impl.TempTableMakerFactory;
-import org.fastorm.utilities.ISimpleMap;
+import org.fastorm.utilities.maps.ISimpleMap;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.core.JdbcTemplate;
 
@@ -299,4 +299,12 @@ public class FastOrm implements IFastOrmContainer {
 			return false;
 		return true;
 	}
+
+	@Override
+	public String toString() {
+		return "FastOrm [services=" + services + ", entityReaderThin=" + entityReaderThin + ", sqlStrings=" + sqlStrings + ", entityDefn=" + entityDefn + ", tempTableMakerFactory="
+				+ tempTableMakerFactory + ", jdbcTemplate=" + jdbcTemplate + ", primaryTempTableMaker=" + primaryTempTableMaker + ", memoryManager=" + memoryManager + ", options=" + options
+				+ ", sqlLogger=" + sqlLogger + "]";
+	}
+
 }

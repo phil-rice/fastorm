@@ -9,10 +9,10 @@ import org.fastorm.dataSet.IDrainedTableData;
 import org.fastorm.dataSet.IGetDrainedTableForEntityDefn;
 import org.fastorm.defns.IEntityDefn;
 import org.fastorm.memory.IMemoryManager;
-import org.fastorm.utilities.ISimpleMap;
-import org.fastorm.utilities.Iterables;
-import org.fastorm.utilities.Optimised;
-import org.fastorm.utilities.SimpleLists;
+import org.fastorm.utilities.annotations.TightLoop;
+import org.fastorm.utilities.collections.Iterables;
+import org.fastorm.utilities.collections.SimpleLists;
+import org.fastorm.utilities.maps.ISimpleMap;
 
 public class DataSet implements IDataSet, IGetDrainedTableForEntityDefn {
 
@@ -36,7 +36,7 @@ public class DataSet implements IDataSet, IGetDrainedTableForEntityDefn {
 	}
 
 	@Override
-	public List<ISimpleMap<String, Object>> getList() {
+	public List<ISimpleMap<String, Object>> slowList() {
 		return SimpleLists.asList(this);
 	}
 
@@ -46,7 +46,7 @@ public class DataSet implements IDataSet, IGetDrainedTableForEntityDefn {
 	}
 
 	@Override
-	@Optimised
+	@TightLoop
 	public IDrainedTableData get(IEntityDefn entityDefn) {
 		for (int i = 0; i < tableData.size(); i++) {
 			IDrainedTableData table = tableData.get(i);

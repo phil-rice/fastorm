@@ -12,7 +12,7 @@ import org.fastorm.dataSet.IDrainedTableData;
 import org.fastorm.defns.IEntityDefn;
 import org.fastorm.reader.impl.OrmReadContext;
 import org.fastorm.temp.IPrimaryTempTableMaker;
-import org.fastorm.utilities.Maps;
+import org.fastorm.utilities.maps.Maps;
 
 public class AllEntitiesTempTableMaker extends AbstractSqlExecutor implements IPrimaryTempTableMaker {
 
