@@ -4,8 +4,8 @@ import java.util.Arrays;
 
 import org.fastorm.api.IFastOrm;
 import org.fastorm.api.IFastOrmContainer;
-import org.fastorm.utilities.IFunction1;
-import org.fastorm.utilities.WrappedException;
+import org.fastorm.utilities.exceptions.WrappedException;
+import org.fastorm.utilities.functions.IFunction1;
 
 public interface ISpecStage {
 	public int size();

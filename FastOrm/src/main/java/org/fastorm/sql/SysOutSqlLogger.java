@@ -11,8 +11,8 @@ public class SysOutSqlLogger implements ISqlLogger {
 	}
 
 	@Override
-	public void queried(long duration, long sqlDurection, String sql, int columnsAffected) {
-		System.out.println(String.format(FastOrmMessages.sqlLoggerQueried, duration / 1000000.0, sqlDurection / 1000000.0, columnsAffected, Strings.oneLine(sql)));
+	public void queried(long duration, long sqlDuration, String sql, int columnsAffected) {
+		System.out.println(String.format(FastOrmMessages.sqlLoggerQueried, duration / 1000000.0, sqlDuration / 1000000.0, columnsAffected, Strings.oneLine(sql)));
 	}
 
 	@Override

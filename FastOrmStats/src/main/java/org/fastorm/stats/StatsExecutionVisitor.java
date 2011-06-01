@@ -4,9 +4,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
-import org.fastorm.api.ICallback;
 import org.fastorm.api.IFastOrm;
-import org.fastorm.utilities.Maps;
+import org.fastorm.utilities.callbacks.ICallback;
+import org.fastorm.utilities.maps.Maps;
 
 public class StatsExecutionVisitor implements IFastOrmExecutorVisitor {
 	private final Spec initialSpec;

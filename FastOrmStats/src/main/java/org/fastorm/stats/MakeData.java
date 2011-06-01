@@ -5,7 +5,6 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
-import org.fastorm.api.ICallback;
 import org.fastorm.api.IFastOrm;
 import org.fastorm.api.IFastOrmContainer;
 import org.fastorm.dataGenerator.DataGenerator;
@@ -16,6 +15,7 @@ import org.fastorm.dataGenerator.IRowGenerator;
 import org.fastorm.defns.IEntityDefn;
 import org.fastorm.temp.impl.SqlHelper;
 import org.fastorm.temp.impl.TempTableMakerFactory;
+import org.fastorm.utilities.callbacks.ICallback;
 import org.springframework.beans.factory.xml.XmlBeanFactory;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;

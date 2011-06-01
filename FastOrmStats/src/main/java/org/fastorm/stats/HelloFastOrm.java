@@ -8,7 +8,7 @@ import org.fastorm.reader.IEntityReader;
 import org.fastorm.reader.impl.StoredProceduresEntityReaderThin;
 import org.fastorm.sql.SysOutSqlLogger;
 import org.fastorm.temp.impl.TempTableMakerFactory;
-import org.fastorm.utilities.ISimpleMap;
+import org.fastorm.utilities.maps.ISimpleMap;
 import org.springframework.beans.factory.xml.XmlBeanFactory;
 import org.springframework.core.io.ClassPathResource;
 
@@ -23,7 +23,7 @@ public class HelloFastOrm {
 			int count = 0;
 			// IFastOrmContainer fastOrm = IFastOrm.Utils.mySqlSingleThreaded(defn, dataSource).withDataSize(100).getContainer();
 			IFastOrm fastOrm = IFastOrm.Utils.mySqlSingleThreaded(defn, dataSource).withBatchSize(100).//
-					withSqlLogger(new SysOutSqlLogger()).withThinInterface(new StoredProceduresEntityReaderThin());
+					withSqlLogger(new SysOutSqlLogger());//.withThinInterface(new StoredProceduresEntityReaderThin());
 			IEntityReader<ISimpleMap<String, Object>> reader = fastOrm.makeReader();
 			long forStartTime = System.currentTimeMillis();
 			for (@SuppressWarnings("unused")

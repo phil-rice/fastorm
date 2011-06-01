@@ -5,9 +5,9 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 
 import org.fastorm.api.IFastOrm;
-import org.fastorm.utilities.ISimpleMap;
-import org.fastorm.utilities.Iterables;
-import org.fastorm.utilities.Maps;
+import org.fastorm.utilities.collections.Iterables;
+import org.fastorm.utilities.maps.ISimpleMap;
+import org.fastorm.utilities.maps.Maps;
 
 public class StatsMap implements ISimpleMap<IFastOrm, Stats> {
 

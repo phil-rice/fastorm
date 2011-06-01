@@ -1,8 +1,8 @@
 package org.fastorm.stats;
 
-import org.fastorm.api.ICallback;
 import org.fastorm.api.IFastOrm;
-import org.fastorm.utilities.IFunction1;
+import org.fastorm.utilities.callbacks.ICallback;
+import org.fastorm.utilities.functions.IFunction1;
 
 public class ChampionChallengerStatsExecutionVisitor extends ChampionChallengerStatsExecutionVisitorRaw {
 

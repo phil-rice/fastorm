@@ -3,7 +3,7 @@ package org.fastorm.stats;
 import org.fastorm.api.FastOrmOptions;
 import org.fastorm.api.IFastOrm;
 import org.fastorm.sqlDialects.SqlStrings;
-import org.fastorm.utilities.IFunction1;
+import org.fastorm.utilities.functions.IFunction1;
 import org.springframework.core.io.ClassPathResource;
 
 public class CompareTwoMySqlStFiles {

@@ -4,7 +4,7 @@ import org.fastorm.api.FastOrmOptions;
 import org.fastorm.api.IFastOrm;
 import org.fastorm.reader.impl.EntityReaderThin;
 import org.fastorm.reader.impl.StoredProceduresEntityReaderThin;
-import org.fastorm.utilities.IFunction1;
+import org.fastorm.utilities.functions.IFunction1;
 
 public class CompareStoredProcedures {
 

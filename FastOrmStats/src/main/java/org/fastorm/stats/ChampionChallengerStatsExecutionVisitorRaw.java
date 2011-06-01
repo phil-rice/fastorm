@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.fastorm.api.IFastOrm;
-import org.fastorm.utilities.Maps;
-import org.fastorm.utilities.WrappedException;
+import org.fastorm.utilities.exceptions.WrappedException;
+import org.fastorm.utilities.maps.Maps;
 
 public class ChampionChallengerStatsExecutionVisitorRaw implements IFastOrmExecutorVisitor {
 

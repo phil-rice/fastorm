@@ -2,9 +2,9 @@ package org.fastorm.hibernateComparison;
 
 import java.util.List;
 
-import org.fastorm.api.ICallback;
 import org.fastorm.stats.MakeData;
-import org.fastorm.utilities.Sets;
+import org.fastorm.utilities.callbacks.ICallback;
+import org.fastorm.utilities.collections.Sets;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;

@@ -5,11 +5,11 @@ import java.util.List;
 
 import org.fastorm.api.IFastOrm;
 import org.fastorm.stats.Spec.SpecContext;
-import org.fastorm.utilities.AbstractFindNextIterable;
-import org.fastorm.utilities.IFunction1;
-import org.fastorm.utilities.Iterables;
-import org.fastorm.utilities.WrappedException;
 import org.fastorm.utilities.aggregators.IAggregator;
+import org.fastorm.utilities.collections.AbstractFindNextIterable;
+import org.fastorm.utilities.collections.Iterables;
+import org.fastorm.utilities.exceptions.WrappedException;
+import org.fastorm.utilities.functions.IFunction1;
 
 public class Spec extends AbstractFindNextIterable<IFastOrm, SpecContext> {
 
