@@ -10,7 +10,7 @@ import org.fastorm.api.IFastOrmContainer;
 import org.fastorm.constants.FastOrmMessages;
 import org.fastorm.defns.IEntityDefn;
 import org.fastorm.memory.IMemoryManager;
-import org.fastorm.memory.NoMemoryManager;
+import org.fastorm.memory.MemoryManager;
 import org.fastorm.mutate.IMutate;
 import org.fastorm.reader.IEntityReader;
 import org.fastorm.reader.IEntityReaderThin;
@@ -65,7 +65,7 @@ public class FastOrm implements IFastOrmContainer {
 		this(new FastOrmServices(), new EntityReaderThin(),//
 				new SqlStrings(new ClassPathResource("MySql.st")), entityDefn, new TempTableMakerFactory(), //
 				dataSource == null ? null : new JdbcTemplate(dataSource),//
-				new AllEntitiesTempTableMaker(), new NoMemoryManager(), new NoSqlLogger(), new FastOrmOptions());
+				new AllEntitiesTempTableMaker(), new MemoryManager(), new NoSqlLogger(), new FastOrmOptions());
 	}
 
 	@Override

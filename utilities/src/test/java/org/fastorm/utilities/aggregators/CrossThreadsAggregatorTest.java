@@ -3,11 +3,11 @@ package org.fastorm.utilities.aggregators;
 import java.util.Arrays;
 import java.util.List;
 
+import junit.framework.TestCase;
+
 import org.fastorm.utilities.collections.Iterables;
 import org.fastorm.utilities.collections.Sets;
 import org.fastorm.utilities.functions.IFunction1;
-
-import junit.framework.TestCase;
 
 public class CrossThreadsAggregatorTest extends TestCase {
 	private final List<Integer> x123 = Arrays.asList(1, 2, 3);

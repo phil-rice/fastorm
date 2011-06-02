@@ -12,7 +12,6 @@ import org.fastorm.stats.FastOrmExerciser;
 import org.fastorm.stats.IProfilable;
 import org.fastorm.stats.ISpecStage;
 import org.fastorm.stats.Spec;
-import org.fastorm.utilities.callbacks.ICallback;
 import org.fastorm.utilities.functions.Functions;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
@@ -39,6 +38,7 @@ public class CompareHibernate {
 								return factory;
 							}
 
+							@SuppressWarnings({ "unused", "unchecked" })
 							@Override
 							public void job(IFastOrm situation, SessionFactory factory) throws Exception {
 								Session session = factory.getCurrentSession();

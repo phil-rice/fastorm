@@ -23,7 +23,7 @@ public interface ISecondaryTempTableMaker {
 
 	int populate(IFastOrmContainer fastOrm, OrmReadContext ormReadContext, IEntityDefn parent, IEntityDefn child);
 
-	List<ISimpleMap<String, Object>> findDataIn(IGetDrainedTableForEntityDefn getter, IDrainedTableData parentData, IDrainedTableData childData, IEntityDefn childDefn, int primaryIndex);
+	Object findDataIn(IGetDrainedTableForEntityDefn getter, IEntityDefn parentDefn, IEntityDefn childDefn, int parentIndex);
 
 	IDrainedTableData drain(IFastOrmContainer fastOrm, OrmReadContext ormReadContext, IEntityDefn parent, IEntityDefn child);
 

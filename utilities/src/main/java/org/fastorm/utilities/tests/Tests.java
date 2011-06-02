@@ -1,6 +1,6 @@
 package org.fastorm.utilities.tests;
 
-import org.junit.Assert;
+import junit.framework.Assert;
 
 public class Tests {
 

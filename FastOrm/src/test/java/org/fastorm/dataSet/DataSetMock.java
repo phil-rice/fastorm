@@ -31,7 +31,4 @@ public class DataSetMock implements IDataSet {
 		throw new UnsupportedOperationException();
 	}
 
-	@Override
-	public void dispose(IMemoryManager memoryManager) {
-	}
 }

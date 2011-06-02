@@ -69,11 +69,11 @@ public class OneToMany extends AbstractSqlExecutor implements ISecondaryTempTabl
 	}
 
 	@Override
-	public List<ISimpleMap<String, Object>> findDataIn(IGetDrainedTableForEntityDefn getter, IDrainedTableData parentData, IDrainedTableData childData, IEntityDefn childDefn, int primaryIndex) {
+	public Object findDataIn(IGetDrainedTableForEntityDefn getter, IEntityDefn parentDefn, IEntityDefn childDefn, int parentIndex) {
+		IDrainedTableData childData = getter.get(childDefn);
 		String childLink = childDefn.parameters().get(FastOrmKeys.childLink);
-		Object primaryId = parentData.getLine(primaryIndex)[parentData.getIdColumnIndex()];
 		int columnIndex = childData.getColumnNames().indexOf(childLink);
-		List<ISimpleMap<String, Object>> result = childData.findWith(getter, columnIndex, primaryId);
+		List<ISimpleMap<String, Object>> result = childData.findWith(getter, columnIndex, parentIndex);
 		return result;
 	}
 

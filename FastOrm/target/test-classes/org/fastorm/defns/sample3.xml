@@ -1,7 +1,0 @@
-<!-- and the tableName defaults to the entityName -->
-<person idColumn="id" versionColumn="p_version">
-	<address idColumn="a_id" childLink="a_person" />
-	<telephone idColumn="id" childLink="t_person" />
-	<employer idColumn="id" parentLink="p_employer" />
-</person>
-

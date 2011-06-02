@@ -2,20 +2,12 @@ package org.fastorm.utilities.strings;
 
 import java.nio.ByteBuffer;
 
-
-public class ByteBufferSimpleString implements ISimpleString {
+public class ByteBufferSimpleString extends AbstractSimpleString {
 
 	private ByteBuffer byteBuffer;
-	private int start;
-	private int size;
 
-	public ByteBufferSimpleString() {
-	}
-
-	public ByteBufferSimpleString(ByteBuffer buffer, int start, int size) {
+	public ByteBufferSimpleString(ByteBuffer buffer) {
 		this.byteBuffer = buffer;
-		this.start = start;
-		this.size = size;
 	}
 
 	@Override
@@ -28,10 +20,15 @@ public class ByteBufferSimpleString implements ISimpleString {
 		return size;
 	}
 
-	public void set(ByteBuffer byteBuffer, int start, int size) {
-		this.byteBuffer = byteBuffer;
-		this.start = start;
-		this.size = size;
+	@Override
+	public void setFromByteArray(byte[] byteArray, int start, int size) {
+		for (int i = 0; i < start; i++)
+			byteBuffer.put(byteArray, start, size);
+	}
+
+	@Override
+	public String asString() {
+		return new String(byteBuffer.array(), start, size);
 	}
 
 }

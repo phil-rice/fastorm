@@ -1,8 +1,14 @@
 package org.fastorm.memory;
 
-public interface IMemoryManager {
-	void finishedWith(Object[] objects);
+import java.util.List;
 
-	Object[] array(int length);
+import org.fastorm.dataSet.impl.DrainedLine;
+import org.fastorm.defns.IEntityDefn;
+import org.fastorm.pooling.api.IPool;
+
+public interface IMemoryManager {
+	void dispose();
+
+	IPool<DrainedLine> mapPool(IEntityDefn defn, List<String> keys);
 
 }

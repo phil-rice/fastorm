@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>org.fastorm</groupId>
 		<artifactId>Parent</artifactId>
-		<version>1</version>
+		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 	<artifactId>Pooling</artifactId>
 	<description>This is a very high speed object pooling module.
@@ -18,7 +18,7 @@ It minimises garbage collection, as objects in the pool will not be collected</d
 	<dependencies>
 		<dependency>
 			<groupId>org.fastorm</groupId>
-			<artifactId>utilities</artifactId>
+			<artifactId>Utilities</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 	</dependencies>

@@ -8,6 +8,5 @@ public interface IDataSet extends ISimpleList<ISimpleMap<String, Object>> {
 
 	IDrainedTableData getPrimaryTable();
 
-	void dispose(IMemoryManager memoryManager);
 
 }

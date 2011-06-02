@@ -9,6 +9,7 @@ public class AllUtilitiesMapsTests {
 		TestSuite suite = new TestSuite(AllUtilitiesMapsTests.class.getName());
 		//$JUnit-BEGIN$
 		suite.addTestSuite(MapsTest.class);
+		suite.addTestSuite(ArraySimpleMapTest.class);
 		//$JUnit-END$
 		return suite;
 	}

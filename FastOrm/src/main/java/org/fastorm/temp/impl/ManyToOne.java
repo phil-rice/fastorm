@@ -65,10 +65,11 @@ public class ManyToOne extends AbstractSqlExecutor implements ISecondaryTempTabl
 	}
 
 	@Override
-	public List<ISimpleMap<String, Object>> findDataIn(IGetDrainedTableForEntityDefn getter, IDrainedTableData parentData, IDrainedTableData childData, IEntityDefn childDefn, int primaryIndex) {
+	public Object findDataIn(IGetDrainedTableForEntityDefn getter, IEntityDefn parentDefn, IEntityDefn childDefn, int parentIndex) {
+		IDrainedTableData parentData = getter.get(parentDefn);
+		IDrainedTableData childData = getter.get(childDefn);
 		String parentLink = childDefn.parameters().get(FastOrmKeys.parentLink);
-		int columnIndex = parentData.getColumnNames().indexOf(parentLink);
-		Object childId = parentData.getLine(primaryIndex)[columnIndex];
+		Object childId = parentData.getMap(getter, parentIndex).get(parentLink);
 		List<ISimpleMap<String, Object>> result = childData.findWith(getter, childData.getIdColumnIndex(), childId);
 		return result;
 	}

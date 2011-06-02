@@ -2,10 +2,9 @@ package org.fastorm.utilities.reflection;
 
 import java.util.Arrays;
 
-import org.fastorm.utilities.collections.Iterables;
-import org.fastorm.utilities.reflection.Fields;
-
 import junit.framework.TestCase;
+
+import org.fastorm.utilities.collections.Iterables;
 
 public class FieldsTest extends TestCase {
 

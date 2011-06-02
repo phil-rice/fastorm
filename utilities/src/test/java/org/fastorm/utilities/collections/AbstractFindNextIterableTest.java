@@ -3,9 +3,6 @@ package org.fastorm.utilities.collections;
 import java.util.Arrays;
 import java.util.Iterator;
 
-import org.fastorm.utilities.collections.AbstractFindNextIterable;
-import org.fastorm.utilities.collections.Iterables;
-
 import junit.framework.TestCase;
 
 public class AbstractFindNextIterableTest extends TestCase {

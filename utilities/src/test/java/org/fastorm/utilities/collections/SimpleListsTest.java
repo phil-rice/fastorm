@@ -8,8 +8,6 @@ import junit.framework.TestCase;
 
 import org.codehaus.cake.forkjoin.ForkJoinPool;
 import org.fastorm.utilities.aggregators.IAggregator;
-import org.fastorm.utilities.collections.ISimpleList;
-import org.fastorm.utilities.collections.SimpleLists;
 import org.fastorm.utilities.functions.Functions;
 import org.fastorm.utilities.functions.IFunction1;
 import org.fastorm.utilities.functions.ISymmetricFunction;

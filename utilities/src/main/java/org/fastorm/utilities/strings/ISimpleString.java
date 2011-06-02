@@ -1,7 +1,6 @@
 package org.fastorm.utilities.strings;
 
-import org.fastorm.utilities.strings.ISimpleString;
-
+import org.fastorm.utilities.annotations.Slow;
 
 /** This is a very simple string that uses UTF-8 character encoding. It is small and poolable */
 public interface ISimpleString {
@@ -9,6 +8,9 @@ public interface ISimpleString {
 	int length();
 
 	byte byteAt(int offset);
+
+	@Slow("This will make a new object")
+	String asString();
 
 	static class Utils {
 
@@ -35,9 +37,14 @@ public interface ISimpleString {
 			public byte byteAt(int offset) {
 				throw new IndexOutOfBoundsException(Integer.toString(offset));
 			}
+
+			@Override
+			public String asString() {
+				return "";
+			}
 		};
 
-		public static boolean equivalent(String string, SimpleString simpleString) {
+		public static boolean equivalent(String string, ISimpleString simpleString) {
 			if (string == null || simpleString == null)
 				return string == null && simpleString == null;
 			if (string.length() != simpleString.length())

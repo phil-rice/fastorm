@@ -1,11 +1,12 @@
 package org.fastorm.pooling.api;
 
+import java.util.List;
+
 import org.fastorm.pooling.impl.Pool;
-import org.fastorm.pooling.impl.StringPool;
 import org.fastorm.pooling.impl.ThreadSaferPool;
 import org.fastorm.pooling.impl.ThreadUnsafePool;
-import org.fastorm.utilities.strings.ISimpleString;
-import org.fastorm.utilities.strings.SimpleString;
+import org.fastorm.utilities.maps.ArraySimpleMap;
+import org.fastorm.utilities.strings.ISimpleStringWithSetters;
 
 /** Each pool manages objects of type T */
 public interface IPool<T> extends IPoolThin<T> {
@@ -26,24 +27,32 @@ public interface IPool<T> extends IPoolThin<T> {
 			return poolOptions.tryToBeThreadSafe ? new ThreadSaferPool<T>(poolOptions, defn) : new ThreadUnsafePool<T>(poolOptions, defn);
 		}
 
-		public static IStringPool makeStringPool(PoolOptions poolOptions, final int maxStringLength) {
-			IObjectDefinition<ISimpleString> defn = new IObjectDefinition<ISimpleString>() {
-				@Override
-				public Class<ISimpleString> objectClass() {
-					return ISimpleString.class;
-				}
+		public static IPool<ISimpleStringWithSetters> makeArrayStringPool(PoolOptions poolOptions, final int maxStringLength) {
+			IPool<ISimpleStringWithSetters> result = new Pool<ISimpleStringWithSetters>(findThinInterface(poolOptions, IObjectDefinition.Utils.arraySimpleStringDefn(maxStringLength)));
+			result.prepopulate();
+			return result;
+		}
 
-				@Override
-				public ISimpleString createBlank() {
-					return new SimpleString(maxStringLength);
-				}
+		public static IPool<ISimpleStringWithSetters> makeBufferStringPool(PoolOptions poolOptions, final int maxStringLength) {
+			IPool<ISimpleStringWithSetters> result = new Pool<ISimpleStringWithSetters>(findThinInterface(poolOptions, IObjectDefinition.Utils.bufferSimpleStringDefn(maxStringLength)));
+			result.prepopulate();
+			return result;
+		}
 
-				@Override
-				public void clean(ISimpleString oldObject) {
-					((SimpleString) oldObject).setLength(0);
-				}
-			};
-			IStringPool result = new StringPool(findThinInterface(poolOptions, defn));
+		public static <T> IPool<T[]> makeArrayPool(PoolOptions poolOptions, Class<T> clazz, int arrayLength) {
+			Pool<T[]> result = new Pool<T[]>(findThinInterface(poolOptions, IObjectDefinition.Utils.arrayDefn(clazz, arrayLength)));
+			result.prepopulate();
+			return result;
+		}
+
+		@SuppressWarnings("unchecked")
+		public static <K, V> IPool<ArraySimpleMap<K, V>> makeArraySimpleMapPool(PoolOptions poolOptions, final List<K> keys, final Class<V> valueClass) {
+			return makeArraySimpleMapPool(poolOptions, ArraySimpleMap.class, keys, valueClass);
+		}
+
+		public static <K, V, T extends ArraySimpleMap<K, V>> IPool<T> makeArraySimpleMapPool(PoolOptions poolOptions, final Class<T> resultClass, final List<K> keys, final Class<V> valueClass) {
+			IObjectDefinition<T> defn = IObjectDefinition.Utils.arraySimpleMapDefn(keys, resultClass, valueClass);
+			IPool<T> result = new Pool<T>(findThinInterface(poolOptions, defn));
 			result.prepopulate();
 			return result;
 		}

@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.junit.Assert;
+import junit.framework.Assert;
 
 public class Sets {
 

@@ -1,6 +1,0 @@
-<entity tableName="person" entityName="person" idColumn="id" versionColumn="p_version">
-	<address tableName="address" entityName="address" idColumn="a_id" childLink="a_person" />
-	<telephone tableName="telephone" entityName="telephone" idColumn="id" childLink="t_person">
-		<favourite tableName="favourites" entityName="favourites" idColumn="id" childLink="f_telephone" />
-	</telephone>
-</entity>

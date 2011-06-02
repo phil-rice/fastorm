@@ -5,7 +5,6 @@ import javax.sql.DataSource;
 import org.fastorm.api.IFastOrm;
 import org.fastorm.defns.IEntityDefn;
 import org.fastorm.reader.IEntityReader;
-import org.fastorm.reader.impl.StoredProceduresEntityReaderThin;
 import org.fastorm.sql.SysOutSqlLogger;
 import org.fastorm.temp.impl.TempTableMakerFactory;
 import org.fastorm.utilities.maps.ISimpleMap;

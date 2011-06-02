@@ -7,7 +7,6 @@ import org.fastorm.utilities.aggregators.AllUtilitiesAggregatorsTests;
 import org.fastorm.utilities.collections.AllUtilitiesCollectionsTests;
 import org.fastorm.utilities.maps.AllUtilitiesMapsTests;
 import org.fastorm.utilities.reflection.AllUtilitiesReflectionTests;
-import org.fastorm.utilities.strings.AllUtilitiesStringStringTests;
 
 public class AllUtilitiesTests {
 
@@ -17,7 +16,6 @@ public class AllUtilitiesTests {
 		suite.addTest(AllUtilitiesAggregatorsTests.suite());
 		suite.addTest(AllUtilitiesCollectionsTests.suite());
 		suite.addTest(AllUtilitiesReflectionTests.suite());
-		suite.addTest(AllUtilitiesStringStringTests.suite());
 		suite.addTest(AllUtilitiesMapsTests.suite());
 		// $JUnit-END$
 		return suite;

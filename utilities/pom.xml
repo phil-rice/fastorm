@@ -3,10 +3,10 @@
 	<parent>
 		<groupId>org.fastorm</groupId>
 		<artifactId>Parent</artifactId>
-		<version>1</version>
+		<version>0.0.1-SNAPSHOT</version>
 	</parent>
-	<artifactId>utilities</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<artifactId>Utilities</artifactId>
+	
 	<properties>
 		<org.springframework.version>3.0.5.RELEASE</org.springframework.version>
 	</properties>

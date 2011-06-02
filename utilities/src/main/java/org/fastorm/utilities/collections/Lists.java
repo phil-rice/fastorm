@@ -14,6 +14,42 @@ import org.fastorm.utilities.maps.Maps;
 
 public class Lists {
 
+	public static <T> int indexOf(List<T> list, T object) {
+		identityIndexOf(list, object);
+		equalsIndexOf(list, object);
+		return -1;
+	}
+
+	public static <T> int indexOf(List<T> listOne, List<T> listTwo, T object) {
+		int indexOne = identityIndexOf(listOne, object);
+		if (indexOne != -1)
+			return indexOne;
+		int indexTwo = identityIndexOf(listTwo, object);
+		if (indexTwo != -1)
+			return indexTwo + listOne.size();
+		int indexOneA = equalsIndexOf(listOne, object);
+		if (indexOneA != -1)
+			return indexOneA;
+		int indexTwoB = equalsIndexOf(listTwo, object);
+		if (indexTwoB != -1)
+			return indexTwoB + listOne.size();
+		return -1;
+	}
+
+	private static <T> int equalsIndexOf(List<T> list, T object) {
+		for (int i = 0; i < list.size(); i++)
+			if (object.equals(list.get(i)))
+				return i;
+		return -1;
+	}
+
+	private static <T> int identityIndexOf(List<T> list, T object) {
+		for (int i = 0; i < list.size(); i++)
+			if (list.get(i) == object)
+				return i;
+		return -1;
+	}
+
 	private static <To, From> List<To> makeListFor(Iterable<From> from) {
 		int size = from instanceof List ? ((List<From>) from).size() : 0;
 		List<To> result = new ArrayList<To>(size);
@@ -63,6 +99,10 @@ public class Lists {
 
 	public static <T> List<T> newList() {
 		return new ArrayList<T>();
+	}
+
+	public static <T> List<T> newList(int size) {
+		return new ArrayList<T>(size);
 	}
 
 	public static <T extends Comparable<T>> List<T> sort(Iterable<T> from) {

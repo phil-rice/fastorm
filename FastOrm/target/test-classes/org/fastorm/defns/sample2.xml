@@ -1,6 +1,0 @@
-<!-- but the entityName defaults to the root -->
-<person tableName="person" idColumn="id" versionColumn="p_version">
-	<address tableName="address" idColumn="a_id" childLink="a_person" />
-	<telephone tableName="telephone" idColumn="id" childLink="t_person" />
-	<employer tableName="employer"  idColumn="id" parentLink="p_employer" />
-</person>

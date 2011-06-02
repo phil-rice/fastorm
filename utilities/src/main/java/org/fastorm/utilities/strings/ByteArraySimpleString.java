@@ -1,15 +1,13 @@
 package org.fastorm.utilities.strings;
 
-
-public class ByteArraySimpleString implements ISimpleString {
+public class ByteArraySimpleString extends AbstractSimpleString {
 
 	private byte[] byteArray;
 	private int start;
 	private int size;
 
-	@Override
-	public int length() {
-		return size;
+	public ByteArraySimpleString(byte[] byteArray) {
+		this.byteArray = byteArray;
 	}
 
 	@Override
@@ -17,13 +15,17 @@ public class ByteArraySimpleString implements ISimpleString {
 		return byteArray[start + offset];
 	}
 
-	public void setSize(int size) {
+	@Override
+	public void setFromByteArray(byte[] byteArray, int start, int size) {
+		for (int i = 0; i < size; i++)
+			this.byteArray[i] = byteArray[start + i];
+		this.start = 0;
 		this.size = size;
 	}
 
-	public void set(byte[] byteArray, int start, int size) {
-		this.byteArray = byteArray;
-		this.start = start;
-		this.size = size;
+	@Override
+	public String asString() {
+		return new String(byteArray, start, size);
 	}
+
 }

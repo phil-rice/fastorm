@@ -15,14 +15,12 @@ public interface IDrainedTableData {
 
 	int size();
 
-	Object[] getLine(int i);
-
 	ISimpleMap<String, Object> getMap(IGetDrainedTableForEntityDefn getter, int i);
 
 	List<String> getColumnNames();
 
 	List<ISimpleMap<String, Object>> findWith(IGetDrainedTableForEntityDefn getter, int columnIndex, Object value);
-	void dispose(IMemoryManager memoryManager);
+
 
 	static class Utils {
 
@@ -34,6 +32,5 @@ public interface IDrainedTableData {
 		};
 
 	}
-
 
 }

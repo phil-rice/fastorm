@@ -4,7 +4,7 @@ import org.fastorm.pooling.api.IPool;
 import org.fastorm.pooling.api.PoolOptions;
 import org.fastorm.pooling.example.IExampleForPool;
 
-public class ThreadSafePoolTest extends AbstractPoolTest {
+public class ThreadSafePoolTest extends PoolTest {
 
 	@Override
 	protected IPool<IExampleForPool> makePool(boolean cleanWhenReuse) {

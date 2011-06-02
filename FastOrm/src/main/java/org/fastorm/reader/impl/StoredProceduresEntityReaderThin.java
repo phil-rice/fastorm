@@ -11,6 +11,7 @@ import org.fastorm.dataSet.impl.DataSetBuilder;
 import org.fastorm.defns.IEntityDefn;
 import org.fastorm.defns.IMakerAndEntityDefnFoldVisitor;
 import org.fastorm.defns.IMakerAndEntityDefnVisitor;
+import org.fastorm.memory.IMemoryManager;
 import org.fastorm.reader.IEntityReaderThin;
 import org.fastorm.temp.IPrimaryTempTableMaker;
 import org.fastorm.temp.ISecondaryTempTableMaker;
@@ -31,8 +32,8 @@ public class StoredProceduresEntityReaderThin implements IEntityReaderThin {
 			@Override
 			protected IDataSet findNext(AtomicInteger context) {
 				final int page = context.getAndIncrement();
-				if (last != null)
-					last.dispose(fastOrm.getContainer().getMemoryManager());
+				IMemoryManager memoryManager = fastOrm.getContainer().getMemoryManager();
+				memoryManager.dispose();
 
 				IDataSet result = fastOrm.getJdbcTemplate().execute(new ConnectionCallback<IDataSet>() {
 					@Override

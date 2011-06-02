@@ -8,8 +8,6 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
-import org.fastorm.utilities.collections.Iterables;
-import org.fastorm.utilities.collections.Lists;
 import org.fastorm.utilities.constants.UtilityMessages;
 import org.fastorm.utilities.functions.Functions;
 import org.fastorm.utilities.functions.IFunction1;

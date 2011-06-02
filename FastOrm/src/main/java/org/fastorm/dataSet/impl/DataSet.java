@@ -58,14 +58,6 @@ public class DataSet implements IDataSet, IGetDrainedTableForEntityDefn {
 		throw new NullPointerException(MessageFormat.format(FastOrmMessages.cannotFindTableForEntityDefn, entityDefn.getTableName(), legalNames));
 	}
 
-	@Override
-	public void dispose(IMemoryManager memoryManager) {
-		List<IDrainedTableData> oldData = tableData;
-		tableData = null;
-		for (IDrainedTableData data : oldData) {
-			data.dispose(memoryManager);
-		}
-	}
 
 	@Override
 	public String toString() {

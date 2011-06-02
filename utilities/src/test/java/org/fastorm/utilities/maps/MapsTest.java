@@ -9,7 +9,6 @@ import java.util.Map;
 import junit.framework.TestCase;
 
 import org.fastorm.utilities.constants.UtilityMessages;
-import org.fastorm.utilities.maps.Maps;
 
 public class MapsTest extends TestCase {
 

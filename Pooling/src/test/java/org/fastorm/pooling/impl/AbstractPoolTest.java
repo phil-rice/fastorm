@@ -2,104 +2,52 @@ package org.fastorm.pooling.impl;
 
 import junit.framework.TestCase;
 
-import org.fastorm.pooling.api.IObjectDefinition;
 import org.fastorm.pooling.api.IPool;
-import org.fastorm.pooling.example.ExampleForPool;
-import org.fastorm.pooling.example.IExampleForPool;
+import org.fastorm.pooling.api.PoolOptions;
 
-public abstract class AbstractPoolTest extends TestCase {
-	protected IObjectDefinition<IExampleForPool> defn = new IObjectDefinition<IExampleForPool>() {
-		@Override
-		public Class<IExampleForPool> objectClass() {
-			return IExampleForPool.class;
-		}
+public abstract class AbstractPoolTest<T> extends TestCase {
 
-		@Override
-		public IExampleForPool createBlank() {
-			return new ExampleForPool();
-		}
+	abstract protected IPool<T> makePool(PoolOptions poolOptions);
 
-		@Override
-		public void clean(IExampleForPool oldObject) {
-			oldObject.setValue(0);
-		}
-	};
+	abstract protected IPoolCleanTestCallback<T> makeCleanTestCallback();
 
-	public void testSizeIsZeroWhenPoolCreated() {
-		IPool<IExampleForPool> mainPool = makePool();
-		assertEquals(0, mainPool.size());
+	abstract protected Class<? extends T> classBeingTested();
+
+	public void testMakesObjects() {
+		IPool<T> pool = makePool();
+		T item1 = pool.newObject();
+		assertTrue(classBeingTested().isAssignableFrom(item1.getClass()));
 	}
 
-	public void testSizeDoesntChangeWhenRead() {
-		IPool<IExampleForPool> mainPool = makePool();
-		assertEquals(0, mainPool.size());
-		assertEquals(0, mainPool.size());
-		assertEquals(0, mainPool.size());
-		assertEquals(0, mainPool.size());
-	}
-
-	public void testMakesSeparateInstances() {
-		IPool<IExampleForPool> pool = makePool();
-		makeWithValues(pool, 1, 2, 3, 4, 5);
-		checkValues(pool, 1, 2, 3, 4, 5);
-	}
-
-	public void testReusesObjectsAfterDispose() {
-		IPool<IExampleForPool> pool = makePool();
-		IExampleForPool[] firstValues = makeWithValues(pool, 1, 2, 3, 4, 5);
-		checkValues(pool, 1, 2, 3, 4, 5);
+	public void testReusesObjects() {
+		IPool<T> pool = makePool();
+		T item1 = pool.newObject();
 		pool.dispose();
-		IExampleForPool[] secondValues = makeWithoutValues(pool, 5);
-		assert firstValues.length == secondValues.length;
-		for (int i = 0; i < firstValues.length; i++)
-			assertSame(firstValues[i], secondValues[i]);
+		T item2 = pool.newObject();
+		assertSame(item1, item2);
 	}
 
-	public void testCleansObjectWhenAskedTo() {
-		IPool<IExampleForPool> pool = makePool(true);
-		makeWithValues(pool, 1, 2, 3, 4, 5);
+	public void testObeysClean() {
+		checkObeysClean(false);
+		checkObeysClean(true);
+	}
+
+	private void checkObeysClean(boolean clean) {
+		IPoolCleanTestCallback<T> callback = makeCleanTestCallback();
+		IPool<T> pool = makePool(new PoolOptions().withCleanWhenReuse(clean));
+		T item0 = pool.newObject();
+		callback.setData(item0);
+		callback.checkDataHasBeenSet(item0);
 		pool.dispose();
-		makeWithoutValues(pool, 5);
-		checkValues(pool, 0, 0, 0, 0, 0);
+		T item1 = pool.newObject();
+		if (clean)
+			callback.checkDataBlank(item1);
+		else
+			callback.checkDataHasBeenSet(item1);
 	}
 
-	public void testDoesntCleansObjectWhenAskedNotTo() {
-		IPool<IExampleForPool> pool = makePool(false);
-		makeWithValues(pool, 1, 2, 3, 4, 5);
-		pool.dispose();
-		makeWithoutValues(pool, 5);
-		checkValues(pool, 1, 2, 3, 4, 5);
+	protected IPool<T> makePool() {
+		return makePool(new PoolOptions());
 	}
 
-	private void checkValues(IPool<IExampleForPool> pool, int... values) {
-		for (int i = 0; i < values.length; i++) {
-			IExampleForPool instance = pool.getObject(i);
-			assertEquals(values[i], instance.getValue());
-		}
-	}
-
-	private IExampleForPool[] makeWithValues(IPool<IExampleForPool> pool, int... values) {
-		IExampleForPool[] result = new IExampleForPool[values.length];
-		for (int i = 0; i < result.length; i++) {
-			IExampleForPool instance = pool.newObject();
-			instance.setValue(values[i]);
-			result[i] = instance;
-		}
-		return result;
-	}
-
-	private IExampleForPool[] makeWithoutValues(IPool<IExampleForPool> pool, int size) {
-		IExampleForPool[] result = new IExampleForPool[size];
-		for (int i = 0; i < result.length; i++) {
-			IExampleForPool instance = pool.newObject();
-			result[i] = instance;
-		}
-		return result;
-	}
-
-	abstract protected IPool<IExampleForPool> makePool(boolean cleanWhenReuse);
-
-	protected IPool<IExampleForPool> makePool() {
-		return makePool(true);
-	}
 }

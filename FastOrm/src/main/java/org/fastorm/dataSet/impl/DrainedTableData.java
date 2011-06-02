@@ -15,17 +15,20 @@ import org.fastorm.dataSet.IDrainedTableData;
 import org.fastorm.dataSet.IGetDrainedTableForEntityDefn;
 import org.fastorm.defns.IEntityDefn;
 import org.fastorm.memory.IMemoryManager;
+import org.fastorm.pooling.api.IPool;
 import org.fastorm.utilities.annotations.TightLoop;
+import org.fastorm.utilities.collections.Lists;
 import org.fastorm.utilities.exceptions.WrappedException;
+import org.fastorm.utilities.maps.ArraySimpleMap;
 import org.fastorm.utilities.maps.ISimpleMap;
 import org.fastorm.utilities.maps.Maps;
 
 public class DrainedTableData implements IDrainedTableData {
 
-	private final IEntityDefn entityDefn;
+	private  IEntityDefn entityDefn;
 	private List<String> columnNames;
 	private int idColumnIndex = -1;
-	private ArrayList<Object[]> data;
+	private List<ISimpleMap<String, Object>> data;
 	private int columnCount;
 	private Map<Integer, Map<Object, List<ISimpleMap<String, Object>>>> indices;
 
@@ -34,10 +37,13 @@ public class DrainedTableData implements IDrainedTableData {
 		return "DrainedTableData [entityDefn=" + entityDefn.getEntityName() + ", data=" + data.size() + "]";
 	}
 
-	public DrainedTableData(IMemoryManager memoryManager, IEntityDefn entityDefn, ResultSet rs) {
-		data = new ArrayList<Object[]>();
+	public DrainedTableData(){
+	}
+	public void setData( IMemoryManager memoryManager,IEntityDefn entityDefn, IGetDrainedTableForEntityDefn getter, ResultSet rs ) {
+		this.entityDefn = entityDefn;
+		DrainedLineCommonData commonData = new DrainedLineCommonData();commonData.setData(memoryManager, getter, entityDefn);
+		data = Lists.newList();
 		try {
-			this.entityDefn = entityDefn;
 			String idColumn = entityDefn.getIdColumn();
 			assert idColumn != null;
 			ResultSetMetaData metaData = rs.getMetaData();
@@ -51,10 +57,11 @@ public class DrainedTableData implements IDrainedTableData {
 			}
 			for (IEntityDefn child : entityDefn.getChildren())
 				columnNames.add(child.getEntityName());
+			IPool<DrainedLine> pool = memoryManager.mapPool(entityDefn, columnNames);
+			int index = 0;
 			while (rs.next()) {
-				Object[] line = memoryManager.array(columnCount);
-				for (int i = 0; i < columnCount; i++)
-					line[i] = rs.getObject(i + 1);
+				DrainedLine line = pool.newObject();
+				line.setValuesFrom(commonData, rs, index);
 				data.add(line);
 			}
 			return;
@@ -79,55 +86,8 @@ public class DrainedTableData implements IDrainedTableData {
 	}
 
 	@Override
-	public Object[] getLine(int i) {
-		return data.get(i);
-	}
-
-	@Override
 	public List<String> getColumnNames() {
 		return columnNames;
-	}
-
-	@Override
-	@TightLoop
-	public ISimpleMap<String, Object> getMap(final IGetDrainedTableForEntityDefn getter, final int index) {
-		return new ISimpleMap<String, Object>() {
-			@Override
-			public Object get(String key) {
-				@TightLoop
-				int indexOf = columnNames.indexOf(key);
-				if (indexOf == -1)
-					throw new IllegalArgumentException(MessageFormat.format(FastOrmMessages.noValueForKey, key, this));
-				if (indexOf >= columnCount) {
-					IEntityDefn child = findChildWithName(key);
-					IDrainedTableData childTableData = getter.get(child);
-					List<ISimpleMap<String, Object>> childData = child.getMaker().findDataIn(getter, DrainedTableData.this, childTableData, child, index);
-					return childData;
-				}
-				return getLine(index)[indexOf];
-			}
-
-			private IEntityDefn findChildWithName(String childName) {
-				int childCount = entityDefn.getChildren().size();
-				for (int i = 0; i < childCount; i++) {
-					IEntityDefn child = entityDefn.getChildren().get(i);
-					if (childName.equals(child.getEntityName())) {
-						return child;
-					}
-				}
-				throw new IllegalStateException(MessageFormat.format(FastOrmMessages.cannotFindChildTableWithName, entityDefn.getEntityName(), childName, entityDefn));
-			}
-
-			@Override
-			public List<String> keys() {
-				return columnNames;
-			}
-
-			@Override
-			public String toString() {
-				return Maps.fromSimpleMap(this).toString();
-			}
-		};
 	}
 
 	@Override
@@ -148,11 +108,4 @@ public class DrainedTableData implements IDrainedTableData {
 		return result == null ? Collections.<ISimpleMap<String, Object>> emptyList() : result;
 	}
 
-	@Override
-	public void dispose(IMemoryManager memoryManager) {
-		ArrayList<Object[]> oldData = data;
-		data = null;
-		for (int i = 0; i < oldData.size(); i++)
-			memoryManager.finishedWith(oldData.get(i));
-	}
 }

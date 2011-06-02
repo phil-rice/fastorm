@@ -30,7 +30,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.fastorm</groupId>
-			<artifactId>utilities</artifactId>
+			<artifactId>Utilities</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
