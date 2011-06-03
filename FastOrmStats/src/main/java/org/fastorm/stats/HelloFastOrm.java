@@ -13,6 +13,7 @@ import org.springframework.core.io.ClassPathResource;
 
 public class HelloFastOrm {
 
+	@SuppressWarnings("unused")
 	public static void main(String[] args) throws Exception {
 		Class.forName(MakeData.class.getName());
 		DataSource dataSource = new XmlBeanFactory(new ClassPathResource("MySqlDataSource.xml")).getBean(DataSource.class);
@@ -22,12 +23,13 @@ public class HelloFastOrm {
 			int count = 0;
 			// IFastOrmContainer fastOrm = IFastOrm.Utils.mySqlSingleThreaded(defn, dataSource).withDataSize(100).getContainer();
 			IFastOrm fastOrm = IFastOrm.Utils.mySqlSingleThreaded(defn, dataSource).withBatchSize(100).//
-					withSqlLogger(new SysOutSqlLogger());//.withThinInterface(new StoredProceduresEntityReaderThin());
+					withSqlLogger(new SysOutSqlLogger());// .withThinInterface(new StoredProceduresEntityReaderThin());
 			IEntityReader<ISimpleMap<String, Object>> reader = fastOrm.makeReader();
 			long forStartTime = System.currentTimeMillis();
-			for (@SuppressWarnings("unused")
-			ISimpleMap<String, Object> item : reader)
+			for (ISimpleMap<String, Object> item : reader) {
 				count++;
+				// System.out.println(item);
+			}
 			System.out.println(count + " Took " + (System.currentTimeMillis() - forStartTime));
 
 			fastOrm.getContainer().shutdown();

@@ -90,7 +90,8 @@ public class DrainedTableData implements IDrainedTableData {
 	}
 
 	public void clean() {
-		indices.clear();
+		if (indices != null)
+			indices.clear();
 		index = 0;
 	}
 
