@@ -15,9 +15,11 @@ import org.fastorm.utilities.maps.Maps;
 public class Lists {
 
 	public static <T> int indexOf(List<T> list, T object) {
-		identityIndexOf(list, object);
-		equalsIndexOf(list, object);
-		return -1;
+		int indexOne = identityIndexOf(list, object);
+		if (indexOne != -1)
+			return indexOne;
+		int indexTwo = equalsIndexOf(list, object);
+		return indexTwo;
 	}
 
 	public static <T> int indexOf(List<T> listOne, List<T> listTwo, T object) {

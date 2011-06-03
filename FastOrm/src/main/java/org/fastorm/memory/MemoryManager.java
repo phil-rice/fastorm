@@ -1,39 +1,110 @@
 package org.fastorm.memory;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
+import org.fastorm.api.FastOrmOptions;
+import org.fastorm.constants.FastOrmKeys;
+import org.fastorm.dataSet.IGetDrainedTableForEntityDefn;
 import org.fastorm.dataSet.impl.DrainedLine;
+import org.fastorm.dataSet.impl.DrainedLineCommonData;
+import org.fastorm.dataSet.impl.DrainedTableData;
 import org.fastorm.defns.IEntityDefn;
 import org.fastorm.pooling.api.IPool;
 import org.fastorm.pooling.api.PoolOptions;
 import org.fastorm.utilities.collections.Lists;
-import org.fastorm.utilities.maps.ArraySimpleMap;
 import org.fastorm.utilities.maps.Maps;
 
 public class MemoryManager implements IMemoryManager {
 
-	public final static int maxMapSize = 1000000;
-	private Map<IEntityDefn, IPool<DrainedLine>> map = Maps.newMap();
-	private List<IPool<DrainedLine>> pools = Lists.newList();
+	private final Map<IEntityDefn, IPool<DrainedLine>> lineMap = Maps.newMap();
+	private final Map<IEntityDefn, IPool<DrainedTableData>> tableMap = Maps.newMap();
+	private final List<IPool<?>> allPools = Lists.newList();
+	private final FastOrmOptions fastOrmOptions;
+	private final PoolOptions poolOptions;
 
-	@Override
-	public void dispose() {
-		for (int i = 0; i < pools.size(); i++)
-			pools.get(i).dispose();
+	public MemoryManager() {
+		this.fastOrmOptions = new FastOrmOptions();
+		this.poolOptions = new PoolOptions();
+	}
+
+	public MemoryManager(FastOrmOptions fastOrmOptions, PoolOptions poolOptions) {
+		this.fastOrmOptions = fastOrmOptions;
+		this.poolOptions = poolOptions;
 	}
 
 	@Override
-	public IPool<DrainedLine> mapPool(IEntityDefn defn, final List<String> keys) {
-		return Maps.findOrCreate(map, defn, new Callable<IPool<DrainedLine>>() {
+	public void dispose() {
+		for (int i = 0; i < allPools.size(); i++)
+			allPools.get(i).dispose();
+	}
+
+	@Override
+	public DrainedLine makeDrainedLine(DrainedLineCommonData commonData, ResultSet rs, int index) throws SQLException {
+		DrainedLine line = linePool(commonData.getEntityDefn()).newObject();
+		line.setValuesFrom(commonData, rs, index);
+		return line;
+	}
+
+	@Override
+	public DrainedTableData makeDrainedTableData(IMemoryManager memoryManager, IEntityDefn entityDefn, IGetDrainedTableForEntityDefn getter, ResultSet rs) {
+		DrainedTableData data = tablePool(entityDefn).newObject();
+		data.setData(memoryManager, entityDefn, getter, rs);
+		return data;
+	}
+
+	private IPool<DrainedLine> linePool(final IEntityDefn defn) {
+		return findOrCreatePool(defn, lineMap, new Callable<IPool<DrainedLine>>() {
 			@Override
 			public IPool<DrainedLine> call() throws Exception {
-				PoolOptions poolOptions = new PoolOptions(false, maxMapSize, false);
-				IPool<DrainedLine> result = IPool.Utils.makeArraySimpleMapPool(poolOptions, DrainedLine.class, keys, Object.class);
-				pools.add(result);
+				int linesSize = getLinesSize(defn);
+				return IMemoryManager.Utils.makeDrainedLinePool(poolOptions.withMaxObjects(linesSize));
+			}
+		});
+	}
+
+	private IPool<DrainedTableData> tablePool(final IEntityDefn defn) {
+		return findOrCreatePool(defn, tableMap, new Callable<IPool<DrainedTableData>>() {
+			@Override
+			public IPool<DrainedTableData> call() throws Exception {
+				int poolSize = IEntityDefn.Utils.countOfSelfAndDescendents(defn);
+				int linesSize = getLinesSize(defn);
+				return IMemoryManager.Utils.makeDrainedTableDataPool(poolOptions.withMaxObjects(poolSize), linesSize);
+			}
+
+		});
+	}
+
+	private int getLinesSize(final IEntityDefn defn) {
+		Map<String, String> parameters = defn.parameters();
+		String string = parameters.get(FastOrmKeys.maxLinesPerBatch);
+		Integer maxLinesPerBatch = Integer.parseInt(string);
+		int linesSize = fastOrmOptions.batchSize * maxLinesPerBatch;
+		return linesSize;
+	}
+
+	private <T> IPool<T> findOrCreatePool(IEntityDefn defn, Map<IEntityDefn, IPool<T>> map, final Callable<IPool<T>> createPool) {
+		return Maps.findOrCreate(map, defn, new Callable<IPool<T>>() {
+			@Override
+			public IPool<T> call() throws Exception {
+				IPool<T> result = createPool.call();
+				allPools.add(result);
 				return result;
 			}
 		});
 	}
+
+	@Override
+	public IMemoryManager withFastOrmOptions(FastOrmOptions fastOrmOptions) {
+		return new MemoryManager(fastOrmOptions, poolOptions);
+	}
+
+	@Override
+	public IMemoryManager withPoolOptions(PoolOptions poolOptions) {
+		return new MemoryManager(fastOrmOptions, poolOptions);
+	}
+
 }

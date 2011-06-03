@@ -18,10 +18,12 @@ public class ListAggregator<T> implements IAggregator<T, List<T>> {
 			result = new ArrayList<T>();
 	}
 
+	@Override
 	public void add(T t) {
 		result.add(t);
 	}
 
+	@Override
 	public List<T> result() {
 		return result;
 	}

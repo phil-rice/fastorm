@@ -12,6 +12,7 @@ public class Pool<T> implements IPool<T> {
 		poolthin = poolThin;
 	}
 
+	@Override
 	public IObjectDefinition<T> getDefinition() {
 		return poolthin.getDefinition();
 	}

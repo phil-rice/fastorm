@@ -77,16 +77,16 @@ public class EntityReaderThin implements IEntityReaderThin {
 							}
 						}
 
-						class DrainTables implements IMakerAndEntityDefnFoldVisitor<IDrainedTableData, IDataSet> {
+						class DrainTables implements IMakerAndEntityDefnVisitor {
 
 							@Override
-							public IDrainedTableData acceptPrimary(IPrimaryTempTableMaker maker, IEntityDefn primary) {
-								return maker.drain(fastOrm, ormReadContext);
+							public void acceptPrimary(IPrimaryTempTableMaker maker, IEntityDefn primary) {
+								maker.drain(fastOrm, ormReadContext);
 							}
 
 							@Override
-							public IDrainedTableData acceptChild(ISecondaryTempTableMaker maker, IEntityDefn parent, IEntityDefn child) {
-								return maker.drain(fastOrm, ormReadContext, parent, child);
+							public void acceptChild(ISecondaryTempTableMaker maker, IEntityDefn parent, IEntityDefn child) {
+								maker.drain(fastOrm, ormReadContext, parent, child);
 							}
 						}
 						ICallback<Long> total = new ICallback<Long>() {
@@ -99,7 +99,18 @@ public class EntityReaderThin implements IEntityReaderThin {
 							IEntityDefn.Utils.walk(fastOrm, new CreateTempTables());
 						IEntityDefn.Utils.walkAndTime(fastOrm, new TruncateTempTables(), total);
 						IEntityDefn.Utils.walkAndTime(fastOrm, new PopulateTempTables(), total);
-						last = IEntityDefn.Utils.aggregateAndTime(fastOrm, new DrainTables(), new DataSetBuilder(), total);
+						IEntityDefn.Utils.walkAndTime(fastOrm, new DrainTables(), total);
+						last = IEntityDefn.Utils.aggregateAndTime(fastOrm, new IMakerAndEntityDefnFoldVisitor<IDrainedTableData, IDataSet>() {
+							@Override
+							public IDrainedTableData acceptPrimary(IPrimaryTempTableMaker maker, IEntityDefn primary) {
+								return ormReadContext.get(primary);
+							}
+
+							@Override
+							public IDrainedTableData acceptChild(ISecondaryTempTableMaker maker, IEntityDefn parent, IEntityDefn child) {
+								return ormReadContext.get(child);
+							}
+						}, new DataSetBuilder(), total);
 						if (last.getPrimaryTable().size() == 0)
 							return null;
 						else

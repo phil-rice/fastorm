@@ -38,6 +38,7 @@ public class EntityReaderTest extends AbstractEntityReaderTest {
 
 	private void checkMerger(IDataSet... dataSets) throws Exception {
 		Map<String, Object> expected = SimpleMaps.merge(Iterables.split(Arrays.asList(dataSets), new IFunction1<IDataSet, Iterable<ISimpleMap<String, Object>>>() {
+			@Override
 			public List<ISimpleMap<String, Object>> apply(IDataSet from) throws Exception {
 				return from.slowList();
 			}
@@ -58,6 +59,7 @@ public class EntityReaderTest extends AbstractEntityReaderTest {
 
 		SimpleMapAggregator<String, Object> mainMerger = new SimpleMapAggregator<String, Object>();
 		reader.<ISimpleMap<String, Object>> twoStageMerge(mainMerger, new Callable<IAggregator<ISimpleMap<String, Object>, ISimpleMap<String, Object>>>() {
+			@Override
 			public IAggregator<ISimpleMap<String, Object>, ISimpleMap<String, Object>> call() throws Exception {
 				return new SimpleMapAggregator<String, Object>();
 			}
@@ -67,6 +69,7 @@ public class EntityReaderTest extends AbstractEntityReaderTest {
 
 	private void checkMaps(IDataSet... dataSets) throws InterruptedException, ExecutionException {
 		Iterable<ISimpleMap<String, Object>> maps = Iterables.split(Arrays.asList(dataSets), new IFunction1<IDataSet, Iterable<ISimpleMap<String, Object>>>() {
+			@Override
 			public Iterable<ISimpleMap<String, Object>> apply(IDataSet from) throws Exception {
 				return from.slowList();
 			}

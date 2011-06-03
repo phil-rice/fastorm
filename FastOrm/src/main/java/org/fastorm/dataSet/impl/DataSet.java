@@ -8,7 +8,6 @@ import org.fastorm.dataSet.IDataSet;
 import org.fastorm.dataSet.IDrainedTableData;
 import org.fastorm.dataSet.IGetDrainedTableForEntityDefn;
 import org.fastorm.defns.IEntityDefn;
-import org.fastorm.memory.IMemoryManager;
 import org.fastorm.utilities.annotations.TightLoop;
 import org.fastorm.utilities.collections.Iterables;
 import org.fastorm.utilities.collections.SimpleLists;
@@ -16,7 +15,7 @@ import org.fastorm.utilities.maps.ISimpleMap;
 
 public class DataSet implements IDataSet, IGetDrainedTableForEntityDefn {
 
-	private List<IDrainedTableData> tableData;
+	private final List<IDrainedTableData> tableData;
 
 	private final IDrainedTableData primaryTable;
 
@@ -32,7 +31,7 @@ public class DataSet implements IDataSet, IGetDrainedTableForEntityDefn {
 
 	@Override
 	public ISimpleMap<String, Object> get(final int index) {
-		return primaryTable.getMap(this, index);
+		return primaryTable.getMap(index);
 	}
 
 	@Override
@@ -57,7 +56,6 @@ public class DataSet implements IDataSet, IGetDrainedTableForEntityDefn {
 		Iterable<String> legalNames = Iterables.<IDrainedTableData, String> map(tableData, IDrainedTableData.Utils.getEntityDefnName);
 		throw new NullPointerException(MessageFormat.format(FastOrmMessages.cannotFindTableForEntityDefn, entityDefn.getTableName(), legalNames));
 	}
-
 
 	@Override
 	public String toString() {

@@ -80,11 +80,11 @@ public interface IObjectDefinition<T> {
 			};
 		}
 
+		@SuppressWarnings("unchecked")
 		public static <K, V> IObjectDefinition<ArraySimpleMap<K, V>> arraySimpleMapDefn(final List<K> keys, final Class<V> valueClass) {
 			return arraySimpleMapDefn(keys, ArraySimpleMap.class, valueClass);
 		}
 
-		@SuppressWarnings({ "unchecked", "rawtypes" })
 		public static <K, V, T extends ArraySimpleMap<K, V>> IObjectDefinition<T> arraySimpleMapDefn(final List<K> keys, final Class<T> resultClass, final Class<V> valueClass) {
 			return new IObjectDefinition<T>() {
 				@Override
@@ -95,7 +95,7 @@ public interface IObjectDefinition<T> {
 				@Override
 				public T createBlank() {
 					try {
-						Constructor<T> constructor = resultClass.getConstructor(new Class[]{List.class, Class.class});
+						Constructor<T> constructor = resultClass.getConstructor(new Class[] { List.class, Class.class });
 						T map = constructor.newInstance(keys, valueClass);
 						return map;
 					} catch (Exception e) {

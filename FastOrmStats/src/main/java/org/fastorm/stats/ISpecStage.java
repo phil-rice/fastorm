@@ -27,14 +27,17 @@ public interface ISpecStage {
 					return t.apply(container);
 				}
 
+				@Override
 				public String titleFor() {
 					return String.format(formatFor(null), "Specific");
 				}
 
+				@Override
 				public String formatFor(IFastOrm fastOrm) {
 					return "%-" + width + "s";
 				}
 
+				@Override
 				public Object valueFor(IFastOrm fastOrm) {
 					try {
 						return nameFunction.apply(fastOrm);
@@ -58,14 +61,17 @@ public interface ISpecStage {
 					return container.withOptions(container.getOptions().withBatchSize(t));
 				}
 
+				@Override
 				public String titleFor() {
 					return "BatchSize";
 				}
 
+				@Override
 				public String formatFor(IFastOrm fastOrm) {
 					return "%9d";
 				}
 
+				@Override
 				public Object valueFor(IFastOrm fastOrm) {
 					return fastOrm.getBatchSize();
 				}
@@ -90,14 +96,17 @@ public interface ISpecStage {
 					return "[tempTables: " + Arrays.asList(use) + "]";
 				}
 
+				@Override
 				public String titleFor() {
 					return "UseTemp";
 				}
 
+				@Override
 				public String formatFor(IFastOrm fastOrm) {
 					return "%7s";
 				}
 
+				@Override
 				public Object valueFor(IFastOrm fastOrm) {
 					return fastOrm.getContainer().getOptions().useTemporaryTables ? "temp" : "";
 				}
@@ -117,14 +126,17 @@ public interface ISpecStage {
 					return "[indexSecondary: " + Arrays.asList(use) + "]";
 				}
 
+				@Override
 				public Object valueFor(IFastOrm fastOrm) {
 					return fastOrm.getContainer().getOptions().indexSecondaryTables ? "index" : "";
 				}
 
+				@Override
 				public String titleFor() {
 					return "IndexSec";
 				}
 
+				@Override
 				public String formatFor(IFastOrm fastOrm) {
 					return "%7s";
 				}

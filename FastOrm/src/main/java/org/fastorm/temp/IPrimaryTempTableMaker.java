@@ -4,7 +4,6 @@ import java.util.Map;
 
 import org.fastorm.api.IFastOrmContainer;
 import org.fastorm.dataGenerator.IGenerator;
-import org.fastorm.dataSet.IDrainedTableData;
 import org.fastorm.defns.IEntityDefn;
 import org.fastorm.reader.impl.OrmReadContext;
 
@@ -18,7 +17,7 @@ public interface IPrimaryTempTableMaker {
 
 	int populate(IFastOrmContainer fastOrm, OrmReadContext ormReadContext, int page);
 
-	IDrainedTableData drain(IFastOrmContainer fastOrm, OrmReadContext ormReadContext);
+	void drain(IFastOrmContainer fastOrm, OrmReadContext ormReadContext);
 
 	void enrichColumnsForMakingTables(Map<IEntityDefn, Map<String, String>> entityToColumnsAndTypes, IEntityDefn primary);
 
@@ -26,7 +25,7 @@ public interface IPrimaryTempTableMaker {
 
 	void createStoredProcedure(IFastOrmContainer fastOrm, OrmReadContext ormReadContext);
 
-	IDrainedTableData drainFromStoredProcedure(IFastOrmContainer fastOrm, OrmReadContext ormReadContext, int page);
+	void drainFromStoredProcedure(IFastOrmContainer fastOrm, OrmReadContext ormReadContext, int page);
 
 	void dropStoredProcedure(IFastOrmContainer fastOrm, OrmReadContext ormReadContext);
 }

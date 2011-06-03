@@ -1,8 +1,6 @@
 package org.fastorm.utilities.maps;
 
 import java.lang.reflect.Array;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 
 import org.fastorm.utilities.annotations.TightLoop;
@@ -24,7 +22,7 @@ public class ArraySimpleMap<K, V> implements ISimpleMap<K, V> {
 	@TightLoop
 	public V get(K key) {
 		for (int i = 0; i < keys.size(); i++)
-			if (key == keys.get(i))//object equality is very fast compared to equals. So check all the equalities before starting on the equals
+			if (key == keys.get(i))// object equality is very fast compared to equals. So check all the equalities before starting on the equals
 				return values[i];
 		for (int i = 0; i < keys.size(); i++)
 			if (key.equals(keys.get(i)))

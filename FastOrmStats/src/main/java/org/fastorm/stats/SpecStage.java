@@ -14,10 +14,12 @@ public abstract class SpecStage<T> implements ISpecStage {
 
 	abstract protected IFastOrm transform(IFastOrm container, T t) throws Exception;
 
+	@Override
 	public int size() {
 		return values.size();
 	}
 
+	@Override
 	public IFastOrm makeFastOrm(final IFastOrm initial, int index) throws Exception {
 		if (index >= values.size())
 			return null;

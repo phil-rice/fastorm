@@ -2,6 +2,7 @@ package org.fastorm.defns;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.fastorm.api.IFastOrmContainer;
 import org.fastorm.dataGenerator.IExtraDataGenerator;
@@ -47,6 +48,22 @@ public interface IEntityDefn {
 
 		public static void dropAndMakeTables(IFastOrmContainer fastOrm, IEntityDefn entityDefn) {
 			dropAndMakeTables(fastOrm, entityDefn, new NoExtraDataGenerator());
+		}
+
+		public static int countOfSelfAndDescendents(IEntityDefn defn) {
+			final AtomicInteger result = new AtomicInteger();
+			walk(defn, new IEntityDefnVisitor() {
+				@Override
+				public void acceptPrimary(IEntityDefn primary) throws Exception {
+					result.incrementAndGet();
+				}
+
+				@Override
+				public void acceptChild(IEntityDefn parent, IEntityDefn child) throws Exception {
+					result.incrementAndGet();
+				}
+			});
+			return result.get();
 		}
 
 		public static void dropAndMakeTables(IFastOrmContainer fastOrm, IEntityDefn entityDefn, final IExtraDataGenerator extraDataGenerator) {

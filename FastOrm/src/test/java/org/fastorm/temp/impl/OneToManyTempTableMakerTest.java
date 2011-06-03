@@ -1,13 +1,17 @@
 package org.fastorm.temp.impl;
 
 import static org.fastorm.constants.FastOrmKeys.childLink;
+import static org.fastorm.constants.FastOrmKeys.entityName;
 import static org.fastorm.constants.FastOrmKeys.idColumn;
 import static org.fastorm.constants.FastOrmKeys.idType;
+import static org.fastorm.constants.FastOrmKeys.maxLinesPerBatch;
 import static org.fastorm.constants.FastOrmKeys.tableName;
 import static org.fastorm.constants.FastOrmKeys.tempTableName;
+import static org.fastorm.constants.FastOrmTestValues.childEntityName;
 import static org.fastorm.constants.FastOrmTestValues.childIdColumn;
 import static org.fastorm.constants.FastOrmTestValues.childIdType;
 import static org.fastorm.constants.FastOrmTestValues.childLinkColumn;
+import static org.fastorm.constants.FastOrmTestValues.childMaxLinesPerBatch;
 import static org.fastorm.constants.FastOrmTestValues.childTableName;
 import static org.fastorm.constants.FastOrmTestValues.childTempTableName;
 import static org.fastorm.constants.FastOrmTestValues.primaryIdColumn;
@@ -16,27 +20,33 @@ import static org.fastorm.constants.FastOrmTestValues.primaryTableName;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import org.fastorm.api.IFastOrmContainer;
+import org.fastorm.constants.FastOrmTestValues;
 import org.fastorm.dataSet.IDrainedTableData;
+import org.fastorm.dataSet.IGetDrainedTableForEntityDefn;
 import org.fastorm.defns.IEntityDefn;
 import org.fastorm.defns.impl.EntityDefn;
 import org.fastorm.reader.impl.OrmReadContext;
 import org.fastorm.sql.SysOutSqlLogger;
 import org.fastorm.utilities.callbacks.ICallback;
-import org.fastorm.utilities.collections.Sets;
-import org.fastorm.utilities.functions.IFunction1;
+import org.fastorm.utilities.collections.Lists;
+import org.fastorm.utilities.maps.ISimpleMapWithIndex;
 import org.fastorm.utilities.maps.Maps;
+import org.fastorm.utilities.maps.SimpleMaps;
 
 public class OneToManyTempTableMakerTest extends AbstractTempTableMakerTest {
-	private final IEntityDefn child = new EntityDefn(new OneToMany(), Maps.<String, String> makeMap(//
+	final IEntityDefn child = new EntityDefn(new OneToMany(), Maps.<String, String> makeMap(//
+			entityName, childEntityName,//
 			tableName, childTableName,//
 			tempTableName, childTempTableName,//
 			idColumn, childIdColumn,//
 			idType, childIdType,//
+			maxLinesPerBatch, childMaxLinesPerBatch,//
 			childLink, childLinkColumn), Collections.<IEntityDefn> emptyList());
-	private OneToMany maker;
-	private IEntityDefn primary;
+	OneToMany maker;
+	IEntityDefn primary;
 	private AllEntitiesTempTableMaker primaryMaker;
 
 	public void testCreateTempTable() {
@@ -101,8 +111,47 @@ public class OneToManyTempTableMakerTest extends AbstractTempTableMakerTest {
 		sqlHelper.create(childTableName, childIdColumn, childIdType, childLinkColumn, "integer", "childData", "varchar(20)");
 	}
 
-	@SuppressWarnings("unchecked")
 	public void testDrain() {
+		populateDataBase();
+		final IFastOrmContainer fastOrm5 = fastOrm.withBatchSize(5).getContainer();
+		IGetDrainedTableForEntityDefn getter = getTheTables(fastOrm5, maker, child, 1);
+
+		IDrainedTableData table = getter.get(child);
+		assertEquals(6, table.size());
+		assertEquals(child, table.getEntityDefn());
+		SimpleMaps.assertEquals(table.getMap(0), "childidcolumn", 0, "childData", "childData_0", "childLinkValue", 5);
+		SimpleMaps.assertEquals(table.getMap(1), "childidcolumn", 1, "childData", "childData_1", "childLinkValue", 5);
+		SimpleMaps.assertEquals(table.getMap(2), "childidcolumn", 2, "childData", "childData_2", "childLinkValue", 5);
+		SimpleMaps.assertEquals(table.getMap(3), "childidcolumn", 3, "childData", "childData_3", "childLinkValue", 6);
+		SimpleMaps.assertEquals(table.getMap(4), "childidcolumn", 4, "childData", "childData_4", "childLinkValue", 8);
+		SimpleMaps.assertEquals(table.getMap(5), "childidcolumn", 5, "childData", "childData_5", "childLinkValue", 8);
+		assertEquals(0, table.getIdColumnIndex());
+	}
+
+	public void testGetFromPrimaryIncludesChild() {
+		final IFastOrmContainer fastOrm5 = fastOrm.withBatchSize(5).getContainer();
+		IGetDrainedTableForEntityDefn getter = getTheTables(fastOrm5, maker, child, 1);
+		IDrainedTableData table = getter.get(primary);
+		IDrainedTableData childTable = getter.get(child);
+		assertEquals(5, table.size());
+		assertEquals(6, childTable.size());
+		assertTrue(table.getIdColumnIndex() != -1);
+		assertEquals(fastOrm5.getEntityDefn(), table.getEntityDefn());
+		SimpleMaps.assertEquals(table.getMap(0), FastOrmTestValues.primaryIdColumn, 5, "data", "data_5", childEntityName, expectedChildren(childTable, 0, 1, 2));
+		SimpleMaps.assertEquals(table.getMap(1), FastOrmTestValues.primaryIdColumn, 6, "data", "data_6", childEntityName, expectedChildren(childTable, 3));
+		SimpleMaps.assertEquals(table.getMap(2), FastOrmTestValues.primaryIdColumn, 7, "data", "data_7", childEntityName, expectedChildren(childTable));
+		SimpleMaps.assertEquals(table.getMap(3), FastOrmTestValues.primaryIdColumn, 8, "data", "data_8", childEntityName, expectedChildren(childTable, 4, 5));
+		SimpleMaps.assertEquals(table.getMap(4), FastOrmTestValues.primaryIdColumn, 9, "data", "data_9", childEntityName, expectedChildren(childTable));
+	}
+
+	private List<ISimpleMapWithIndex<String, Object>> expectedChildren(IDrainedTableData childTable, int... indices) {
+		List<ISimpleMapWithIndex<String, Object>> result = Lists.newList();
+		for (int i : indices)
+			result.add(childTable.getMap(i));
+		return result;
+	}
+
+	private void populateDataBase() {
 		emptyDatabase();
 		sqlHelper.create(primaryTableName, primaryIdColumn, primaryIdType, "data", "varchar(20)");
 		sqlHelper.insert(primaryTableName, 20, primaryIdColumn, "{1}", "data", "''{0}_{1}''");
@@ -110,29 +159,6 @@ public class OneToManyTempTableMakerTest extends AbstractTempTableMakerTest {
 		sqlHelper.insertWithOffset(childTableName, 3, 0, childIdColumn, "{1}", childLinkColumn, 5, "childData", "''{0}_{1}''");
 		sqlHelper.insertWithOffset(childTableName, 1, 3, childIdColumn, "{1}", childLinkColumn, 6, "childData", "''{0}_{1}''");
 		sqlHelper.insertWithOffset(childTableName, 2, 4, childIdColumn, "{1}", childLinkColumn, 8, "childData", "''{0}_{1}''");
-		final IFastOrmContainer fastOrm5 = fastOrm.withBatchSize(5).getContainer();
-		final AllEntitiesTempTableMaker primaryMaker = new AllEntitiesTempTableMaker();
-		IDrainedTableData table = query(new IFunction1<OrmReadContext, IDrainedTableData>() {
-			@Override
-			public IDrainedTableData apply(OrmReadContext context) throws Exception {
-				primaryMaker.create(fastOrm5, context);
-				primaryMaker.populate(fastOrm5, context, 1);
-				maker.create(fastOrm5, context, primary, child);
-				maker.populate(fastOrm5, context, primary, child);
-				IDrainedTableData table = maker.drain(fastOrm5, context, primary, child);
-				return table;
-			}
-		});
-		assertEquals(6, table.size());
-		assertEquals(child, table.getEntityDefn());
-		Sets.assertMatches(Arrays.asList(childIdColumn, childLinkColumn, "childData", childIdColumn, childLinkColumn), table.getColumnNames());
-		Sets.assertMatches(Arrays.asList(0, 5, "childData_0", 0, 5), Arrays.asList(table.getLine(0)));
-		Sets.assertMatches(Arrays.asList(1, 5, "childData_1", 1, 5), Arrays.asList(table.getLine(1)));
-		Sets.assertMatches(Arrays.asList(2, 5, "childData_2", 2, 5), Arrays.asList(table.getLine(2)));
-		Sets.assertMatches(Arrays.asList(3, 6, "childData_3", 3, 6), Arrays.asList(table.getLine(3)));
-		Sets.assertMatches(Arrays.asList(4, 8, "childData_4", 4, 8), Arrays.asList(table.getLine(4)));
-		Sets.assertMatches(Arrays.asList(5, 8, "childData_5", 5, 8), Arrays.asList(table.getLine(5)));
-		assertEquals(2, table.getIdColumnIndex());
 	}
 
 	@Override
@@ -141,5 +167,10 @@ public class OneToManyTempTableMakerTest extends AbstractTempTableMakerTest {
 		primaryMaker = new AllEntitiesTempTableMaker();
 		maker = new OneToMany();
 		primary = fastOrm.getEntityDefn();
+	}
+
+	@Override
+	protected List<IEntityDefn> makeChildEntities() {
+		return Arrays.asList(child);
 	}
 }

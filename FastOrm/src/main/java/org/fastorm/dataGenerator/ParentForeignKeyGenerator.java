@@ -11,6 +11,7 @@ public class ParentForeignKeyGenerator extends AbstractGenerator {
 		super(childLinkColumn);
 	}
 
+	@Override
 	public void contribute(Map<IEntityDefn, List<Map<String, Object>>> data, Map<IEntityDefn, Integer> sizeMap, IEntityDefn primary) {
 		throw new UnsupportedOperationException();
 	}

@@ -86,6 +86,7 @@ public class Spec extends AbstractFindNextIterable<IFastOrm, SpecContext> {
 				builder.append(initialValue);
 		}
 
+		@Override
 		public void add(ISpecStage t) {
 			if (builder.length() > 0)
 				builder.append(" ");
@@ -93,6 +94,7 @@ public class Spec extends AbstractFindNextIterable<IFastOrm, SpecContext> {
 
 		}
 
+		@Override
 		public String result() {
 			return builder.toString();
 		}
@@ -118,6 +120,7 @@ public class Spec extends AbstractFindNextIterable<IFastOrm, SpecContext> {
 
 		public SpecContext() {
 			stageAndIndicies = Iterables.list(Iterables.map(stages, new IFunction1<ISpecStage, SpecStageAndIndex>() {
+				@Override
 				public SpecStageAndIndex apply(ISpecStage from) throws Exception {
 					return new SpecStageAndIndex(from);
 				}

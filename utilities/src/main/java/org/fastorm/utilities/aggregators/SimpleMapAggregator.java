@@ -11,6 +11,7 @@ public class SimpleMapAggregator<K, V> implements IAggregator<ISimpleMap<K, V>, 
 
 	private final Map<K, V> result = Collections.synchronizedMap(new HashMap<K, V>());
 
+	@Override
 	public ISimpleMap<K, V> result() {
 		return SimpleMaps.fromMap(result);
 	}

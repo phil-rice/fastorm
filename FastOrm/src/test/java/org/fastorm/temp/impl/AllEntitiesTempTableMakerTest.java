@@ -7,13 +7,14 @@ import static org.fastorm.constants.FastOrmTestValues.primaryTempTableName;
 
 import java.util.Arrays;
 
+import org.fastorm.constants.FastOrmTestValues;
 import org.fastorm.dataSet.IDrainedTableData;
 import org.fastorm.reader.impl.OrmReadContext;
 import org.fastorm.sql.SysOutSqlLogger;
 import org.fastorm.utilities.callbacks.ICallback;
-import org.fastorm.utilities.collections.Sets;
 import org.fastorm.utilities.functions.IFunction1;
 import org.fastorm.utilities.maps.Maps;
+import org.fastorm.utilities.maps.SimpleMaps;
 
 public class AllEntitiesTempTableMakerTest extends AbstractTempTableMakerTest {
 	protected AllEntitiesTempTableMaker maker;
@@ -52,30 +53,29 @@ public class AllEntitiesTempTableMakerTest extends AbstractTempTableMakerTest {
 		});
 	}
 
-	@SuppressWarnings("unchecked")
 	public void testDrain() {
-
 		emptyDatabase();
 		sqlHelper.create(primaryTableName, primaryIdColumn, primaryIdType, "data", "varchar(20)");
 		sqlHelper.insert(primaryTableName, 10, primaryIdColumn, "{1}", "data", "''{0}_{1}''");
 		IDrainedTableData table = query(new IFunction1<OrmReadContext, IDrainedTableData>() {
 			@Override
 			public IDrainedTableData apply(OrmReadContext from) throws Exception {
+				maker.drop(fastOrm5, from);// this is for debugging so that you can drop to stack frame here
 				maker.create(fastOrm5, from);
 				maker.populate(fastOrm5, from, 0);
-				IDrainedTableData table = maker.drain(fastOrm5, from);
-				return table;
+				maker.drain(fastOrm5, from);
+				IDrainedTableData iDrainedTableData = from.get(fastOrm5.getEntityDefn());
+				return iDrainedTableData;
 			}
 		});
 		assertEquals(5, table.size());
 		assertTrue(table.getIdColumnIndex() != -1);
 		assertEquals(fastOrm5.getEntityDefn(), table.getEntityDefn());
-		assertEquals(Sets.makeSet(primaryIdColumn, "data"), Sets.set(table.getColumnNames()));
-		Sets.assertMatches(Arrays.asList(0, "data_0", 0), Arrays.asList(table.getLine(0)));
-		Sets.assertMatches(Arrays.asList(1, "data_1", 1), Arrays.asList(table.getLine(1)));
-		Sets.assertMatches(Arrays.asList(2, "data_2", 2), Arrays.asList(table.getLine(2)));
-		Sets.assertMatches(Arrays.asList(3, "data_3", 3), Arrays.asList(table.getLine(3)));
-		Sets.assertMatches(Arrays.asList(4, "data_4", 4), Arrays.asList(table.getLine(4)));
+		SimpleMaps.assertEquals(table.getMap(0), FastOrmTestValues.primaryIdColumn, 0, "data", "data_0");
+		SimpleMaps.assertEquals(table.getMap(1), FastOrmTestValues.primaryIdColumn, 1, "data", "data_1");
+		SimpleMaps.assertEquals(table.getMap(2), FastOrmTestValues.primaryIdColumn, 2, "data", "data_2");
+		SimpleMaps.assertEquals(table.getMap(3), FastOrmTestValues.primaryIdColumn, 3, "data", "data_3");
+		SimpleMaps.assertEquals(table.getMap(4), FastOrmTestValues.primaryIdColumn, 4, "data", "data_4");
 	}
 
 	@Override

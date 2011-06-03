@@ -56,7 +56,7 @@ public class FastOrm implements IFastOrmContainer {
 		this.tempTableMakerFactory = tempTableMakerFactory;
 		this.jdbcTemplate = jdbcTemplate;
 		this.primaryTempTableMaker = primaryTempTableMaker;
-		this.memoryManager = memoryManager;
+		this.memoryManager = memoryManager.withFastOrmOptions(options);
 		this.sqlLogger = sqlLogger;
 		this.options = options;
 	}
@@ -110,8 +110,7 @@ public class FastOrm implements IFastOrmContainer {
 
 	@Override
 	public IFastOrm withMaxForOneThread(int maxForOneThread) {
-		return new FastOrm(services, entityReaderThin, sqlStrings, entityDefn, tempTableMakerFactory, jdbcTemplate, primaryTempTableMaker, memoryManager, sqlLogger,
-				options.withMaxInOneThread(maxForOneThread));
+		return new FastOrm(services, entityReaderThin, sqlStrings, entityDefn, tempTableMakerFactory, jdbcTemplate, primaryTempTableMaker, memoryManager, sqlLogger, options.withMaxInOneThread(maxForOneThread));
 	}
 
 	@Override
@@ -302,9 +301,7 @@ public class FastOrm implements IFastOrmContainer {
 
 	@Override
 	public String toString() {
-		return "FastOrm [services=" + services + ", entityReaderThin=" + entityReaderThin + ", sqlStrings=" + sqlStrings + ", entityDefn=" + entityDefn + ", tempTableMakerFactory="
-				+ tempTableMakerFactory + ", jdbcTemplate=" + jdbcTemplate + ", primaryTempTableMaker=" + primaryTempTableMaker + ", memoryManager=" + memoryManager + ", options=" + options
-				+ ", sqlLogger=" + sqlLogger + "]";
+		return "FastOrm [services=" + services + ", entityReaderThin=" + entityReaderThin + ", sqlStrings=" + sqlStrings + ", entityDefn=" + entityDefn + ", tempTableMakerFactory=" + tempTableMakerFactory + ", jdbcTemplate=" + jdbcTemplate + ", primaryTempTableMaker=" + primaryTempTableMaker + ", memoryManager=" + memoryManager + ", options=" + options + ", sqlLogger=" + sqlLogger + "]";
 	}
 
 }

@@ -33,10 +33,12 @@ public class EntityDefn implements IEntityDefn {
 		this.maker = null;
 	}
 
+	@Override
 	public List<IEntityDefn> getChildren() {
 		return children;
 	}
 
+	@Override
 	public Map<String, String> parameters() {
 		return parameters;
 	}

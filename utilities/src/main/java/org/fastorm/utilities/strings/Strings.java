@@ -27,6 +27,7 @@ public class Strings {
 			private final StringBuilder builder = new StringBuilder();
 			private boolean addSeparator;
 
+			@Override
 			public void add(T t) {
 				if (addSeparator)
 					builder.append(separator);
@@ -34,6 +35,7 @@ public class Strings {
 				builder.append(t);
 			}
 
+			@Override
 			public String result() {
 				return builder.toString();
 			}

@@ -8,7 +8,6 @@ import org.fastorm.constants.FastOrmKeys;
 import org.fastorm.constants.FastOrmStringTemplates;
 import org.fastorm.dataGenerator.IGenerator;
 import org.fastorm.dataGenerator.SizeIntegerGenerator;
-import org.fastorm.dataSet.IDrainedTableData;
 import org.fastorm.defns.IEntityDefn;
 import org.fastorm.reader.impl.OrmReadContext;
 import org.fastorm.temp.IPrimaryTempTableMaker;
@@ -41,8 +40,8 @@ public class AllEntitiesTempTableMaker extends AbstractSqlExecutor implements IP
 	}
 
 	@Override
-	public IDrainedTableData drain(final IFastOrmContainer fastOrm, OrmReadContext context) {
-		return drainPrimary(fastOrm, context, FastOrmStringTemplates.drainPrimaryTable);
+	public void drain(final IFastOrmContainer fastOrm, OrmReadContext context) {
+		drainPrimary(fastOrm, context, FastOrmStringTemplates.drainPrimaryTable);
 	}
 
 	@Override
@@ -62,10 +61,10 @@ public class AllEntitiesTempTableMaker extends AbstractSqlExecutor implements IP
 	}
 
 	@Override
-	public IDrainedTableData drainFromStoredProcedure(IFastOrmContainer fastOrm, OrmReadContext ormReadContext, int page) {
+	public void drainFromStoredProcedure(IFastOrmContainer fastOrm, OrmReadContext ormReadContext, int page) {
 		int size = fastOrm.getBatchSize();
 		int start = size * page;
-		return drainPrimary(fastOrm, ormReadContext, FastOrmStringTemplates.drainFromStoredProcedureWithStartAndSize,//
+		drainPrimary(fastOrm, ormReadContext, FastOrmStringTemplates.drainFromStoredProcedureWithStartAndSize,//
 				FastOrmKeys.procName, myProcName(fastOrm), FastOrmKeys.start, start, FastOrmKeys.size, size);
 	}
 

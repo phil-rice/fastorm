@@ -28,11 +28,13 @@ public class CrossThreadAggregator<T> implements Iterable<T> {
 		return lists.get();
 	}
 
+	@Override
 	public Iterator<T> iterator() {
 		return new Iterator<T>() {
 			private Iterator<T> iterator = index.get() == 0 ? null : results[0].iterator();
 			private int listIndex = 1;
 
+			@Override
 			public boolean hasNext() {
 				if (iterator == null)
 					return false;
@@ -53,12 +55,14 @@ public class CrossThreadAggregator<T> implements Iterable<T> {
 				return false;
 			}
 
+			@Override
 			public T next() {
 				if (iterator == null)
 					throw new NoSuchElementException();
 				return iterator.next();
 			}
 
+			@Override
 			public void remove() {
 				throw new UnsupportedOperationException();
 			}

@@ -23,6 +23,7 @@ public class EntityReaderThinMock implements IEntityReaderThin {
 		this.fastOrm = fastOrm;
 	}
 
+	@Override
 	public <T> Iterable<IDataSet> dataSets(IFastOrmContainer fastOrm) {
 		Assert.assertSame(this.fastOrm, fastOrm);
 		return result;

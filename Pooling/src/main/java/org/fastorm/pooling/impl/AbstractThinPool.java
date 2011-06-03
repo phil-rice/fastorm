@@ -40,6 +40,7 @@ public abstract class AbstractThinPool<T> implements IPoolThin<T> {
 		return poolOptions;
 	}
 
+	@Override
 	public int size() {
 		return 0;
 	}

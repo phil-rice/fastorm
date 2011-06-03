@@ -7,7 +7,6 @@ import org.fastorm.defns.AllDefnsTests;
 import org.fastorm.reader.impl.AllReaderImplTests;
 import org.fastorm.sqlDialects.AllSqlDialectTests;
 import org.fastorm.temp.impl.AllTempImplTests;
-import org.fastorm.utilities.AllUtilitiesTests;
 import org.fastorm.xmlToMap.AllXmlToMapTests;
 
 public class AllTests {
@@ -15,7 +14,6 @@ public class AllTests {
 	public static Test suite() {
 		TestSuite suite = new TestSuite(AllTests.class.getName());
 		// $JUnit-BEGIN$
-		suite.addTest(AllUtilitiesTests.suite());
 		suite.addTest(AllXmlToMapTests.suite());
 		suite.addTest(AllDefnsTests.suite());
 		suite.addTest(AllReaderImplTests.suite());

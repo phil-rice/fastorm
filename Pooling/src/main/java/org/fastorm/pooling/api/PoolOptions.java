@@ -19,4 +19,8 @@ public class PoolOptions {
 	public PoolOptions withCleanWhenReuse(boolean cleanWhenReuse) {
 		return new PoolOptions(tryToBeThreadSafe, maxObjects, cleanWhenReuse);
 	}
+
+	public PoolOptions withMaxObjects(int maxObjects) {
+		return new PoolOptions(tryToBeThreadSafe, maxObjects, cleanWhenReuse);
+	}
 }

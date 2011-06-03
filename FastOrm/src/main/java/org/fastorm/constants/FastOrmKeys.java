@@ -10,6 +10,7 @@ public class FastOrmKeys {
 	public final static String versionColumn = "versionColumn";
 	public final static String childLink = "childLink";
 	public final static String parentLink = "parentLink";
+	public final static String maxLinesPerBatch = "maxLinesPerBatch";
 
 	public static final String start = "start";
 	public static final String size = "size";

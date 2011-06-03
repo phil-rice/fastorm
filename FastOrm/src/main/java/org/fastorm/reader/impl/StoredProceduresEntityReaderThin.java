@@ -67,16 +67,16 @@ public class StoredProceduresEntityReaderThin implements IEntityReaderThin {
 							}
 						}
 
-						class CallStoredProcs implements IMakerAndEntityDefnFoldVisitor<IDrainedTableData, IDataSet> {
+						class CallStoredProcs implements IMakerAndEntityDefnVisitor {
 
 							@Override
-							public IDrainedTableData acceptPrimary(IPrimaryTempTableMaker maker, IEntityDefn primary) {
-								return maker.drainFromStoredProcedure(fastOrm, ormReadContext, page);
+							public void acceptPrimary(IPrimaryTempTableMaker maker, IEntityDefn primary) {
+								maker.drainFromStoredProcedure(fastOrm, ormReadContext, page);
 							}
 
 							@Override
-							public IDrainedTableData acceptChild(ISecondaryTempTableMaker maker, IEntityDefn parent, IEntityDefn child) {
-								return maker.drainFromStoredProcedure(fastOrm, ormReadContext, parent, child);
+							public void acceptChild(ISecondaryTempTableMaker maker, IEntityDefn parent, IEntityDefn child) {
+								maker.drainFromStoredProcedure(fastOrm, ormReadContext, parent, child);
 							}
 						}
 						ICallback<Long> total = new ICallback<Long>() {
@@ -92,7 +92,18 @@ public class StoredProceduresEntityReaderThin implements IEntityReaderThin {
 								createdOnce = true;
 							}
 						}
-						last = IEntityDefn.Utils.aggregateAndTime(fastOrm, new CallStoredProcs(), new DataSetBuilder(), total);
+						IEntityDefn.Utils.walk(fastOrm, new CallStoredProcs());
+						last = IEntityDefn.Utils.aggregateAndTime(fastOrm, new IMakerAndEntityDefnFoldVisitor<IDrainedTableData, IDataSet>() {
+							@Override
+							public IDrainedTableData acceptPrimary(IPrimaryTempTableMaker maker, IEntityDefn primary) {
+								return ormReadContext.get(primary);
+							}
+
+							@Override
+							public IDrainedTableData acceptChild(ISecondaryTempTableMaker maker, IEntityDefn parent, IEntityDefn child) {
+								return ormReadContext.get(child);
+							}
+						}, new DataSetBuilder(), total);
 						if (last.getPrimaryTable().size() == 0)
 							return null;
 						else

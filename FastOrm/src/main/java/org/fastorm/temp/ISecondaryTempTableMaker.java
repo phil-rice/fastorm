@@ -5,11 +5,9 @@ import java.util.Map;
 
 import org.fastorm.api.IFastOrmContainer;
 import org.fastorm.dataGenerator.IGenerator;
-import org.fastorm.dataSet.IDrainedTableData;
 import org.fastorm.dataSet.IGetDrainedTableForEntityDefn;
 import org.fastorm.defns.IEntityDefn;
 import org.fastorm.reader.impl.OrmReadContext;
-import org.fastorm.utilities.maps.ISimpleMap;
 
 public interface ISecondaryTempTableMaker {
 
@@ -23,9 +21,9 @@ public interface ISecondaryTempTableMaker {
 
 	int populate(IFastOrmContainer fastOrm, OrmReadContext ormReadContext, IEntityDefn parent, IEntityDefn child);
 
-	Object findDataIn(IGetDrainedTableForEntityDefn getter, IEntityDefn parentDefn, IEntityDefn childDefn, int parentIndex);
+	Object findDataIn(IGetDrainedTableForEntityDefn getter, IEntityDefn parentDefn, int parentIndex, IEntityDefn childDefn, int childIndex);
 
-	IDrainedTableData drain(IFastOrmContainer fastOrm, OrmReadContext ormReadContext, IEntityDefn parent, IEntityDefn child);
+	void drain(IFastOrmContainer fastOrm, OrmReadContext ormReadContext, IEntityDefn parent, IEntityDefn child);
 
 	void enrichColumnsForMakingTables(Map<IEntityDefn, Map<String, String>> entityToColumnsAndTypes, IEntityDefn parent, IEntityDefn child);
 
@@ -37,6 +35,6 @@ public interface ISecondaryTempTableMaker {
 
 	void createStoredProcedure(IFastOrmContainer fastOrm, OrmReadContext ormReadContext, IEntityDefn parent, IEntityDefn child);
 
-	IDrainedTableData drainFromStoredProcedure(IFastOrmContainer fastOrm, OrmReadContext ormReadContext, IEntityDefn parent, IEntityDefn child);
+	void drainFromStoredProcedure(IFastOrmContainer fastOrm, OrmReadContext ormReadContext, IEntityDefn parent, IEntityDefn child);
 
 }

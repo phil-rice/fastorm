@@ -9,6 +9,7 @@ import org.fastorm.constants.FastOrmConstants;
 import org.fastorm.dataSet.IDrainedTableData;
 import org.fastorm.dataSet.impl.DrainedTableData;
 import org.fastorm.defns.IEntityDefn;
+import org.fastorm.memory.IMemoryManager;
 import org.fastorm.reader.impl.OrmReadContext;
 import org.fastorm.sqlDialects.ISqlStrings;
 import org.springframework.dao.DataAccessException;
@@ -27,27 +28,32 @@ public class AbstractSqlExecutor {
 		return updateSql(fastOrm, context, sql);
 	}
 
-	protected IDrainedTableData drainPrimary(final IFastOrmContainer fastOrm, OrmReadContext context, String template, Object... parameters) {
-		String sql = fastOrm.getSqlStrings().getFromTemplate(fastOrm.getOptions(), template, fastOrm.getEntityDefn().parameters(), parameters);
+	protected void drainPrimary(final IFastOrmContainer fastOrm, final OrmReadContext context, String template, Object... parameters) {
+		final IEntityDefn entityDefn = fastOrm.getEntityDefn();
+		String sql = fastOrm.getSqlStrings().getFromTemplate(fastOrm.getOptions(), template, entityDefn.parameters(), parameters);
 		IDrainedTableData result = querySql(fastOrm, context, sql, new ResultSetExtractor<IDrainedTableData>() {
 			@Override
 			public IDrainedTableData extractData(ResultSet rs) throws SQLException, DataAccessException {
-				return new DrainedTableData(fastOrm.getMemoryManager(), fastOrm.getEntityDefn(), rs);
+				IMemoryManager memoryManager = fastOrm.getMemoryManager();
+				DrainedTableData tableData = memoryManager.makeDrainedTableData(memoryManager, entityDefn, context, rs);
+				return tableData;
 			}
 		});
-		return result;
+		context.add(result);
 	}
 
-	protected IDrainedTableData drainSecondary(final IFastOrmContainer fastOrm, OrmReadContext context, final IEntityDefn childDefn, String template, Object... parameters) {
+	protected void drainSecondary(final IFastOrmContainer fastOrm, final OrmReadContext context, final IEntityDefn childDefn, String template, Object... parameters) {
 		ISqlStrings sqlStrings = fastOrm.getSqlStrings();
 		String sql = sqlStrings.getFromTemplate(fastOrm.getOptions(), template, childDefn.parameters(), parameters);
 		IDrainedTableData result = querySql(fastOrm, context, sql, new ResultSetExtractor<IDrainedTableData>() {
 			@Override
 			public IDrainedTableData extractData(ResultSet rs) throws SQLException, DataAccessException {
-				return new DrainedTableData(fastOrm.getMemoryManager(), childDefn, rs);
+				IMemoryManager memoryManager = fastOrm.getMemoryManager();
+				DrainedTableData tableData = memoryManager.makeDrainedTableData(memoryManager, childDefn, context, rs);
+				return tableData;
 			}
 		});
-		return result;
+		context.add(result);
 	}
 
 	private IDrainedTableData querySql(final IFastOrmContainer fastOrm, OrmReadContext context, String sql, final ResultSetExtractor<IDrainedTableData> rse) {

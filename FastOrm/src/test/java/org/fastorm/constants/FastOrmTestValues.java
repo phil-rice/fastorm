@@ -7,11 +7,14 @@ public class FastOrmTestValues {
 	public final static String primaryTempTableName = "actualtemptablename";
 	public final static String primaryIdColumn = "actualidcolumn";
 	public final static String primaryIdType = "integer";
+	public static final String primaryMaxLinesPerBatch = "1";
 
+	public final static String childEntityName = "child";
 	public final static String childTableName = "childtablename";
 	public final static String childTempTableName = "childtemptablename";
 	public final static String childIdColumn = "childidcolumn";
 	public final static String childIdType = "integer";
 	public final static String childLinkColumn = "childLinkValue";
+	public static final String childMaxLinesPerBatch = "100";
 
 }

@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import junit.framework.Assert;
+
 import org.fastorm.utilities.collections.Iterables;
 import org.fastorm.utilities.exceptions.WrappedException;
 import org.fastorm.utilities.functions.IFunction1;
@@ -12,11 +14,13 @@ import org.fastorm.utilities.functions.IFunction1;
 public class SimpleMaps {
 
 	public static <K, V> ISimpleMap<K, V> makeMap(Object... kvs) {
-		return fromMap(Maps.<K, V> makeMap(kvs));
+		return fromMap(Maps.<K, V> makeLinkedMap(kvs));
 	}
 
 	public static <K, V> ISimpleMap<K, V> fromMap(final Map<K, V> map) {
 		return new ISimpleMap<K, V>() {
+			private final List<K> keyList = Iterables.list(map.keySet());
+
 			@Override
 			public V get(K key) {
 				return map.get(key);
@@ -24,8 +28,9 @@ public class SimpleMaps {
 
 			@Override
 			public List<K> keys() {
-				return Iterables.list(map.keySet());
+				return keyList;
 			}
+
 		};
 	}
 
@@ -56,6 +61,7 @@ public class SimpleMaps {
 			public List<K> keys() {
 				return Collections.emptyList();
 			}
+
 		};
 	}
 
@@ -87,4 +93,11 @@ public class SimpleMaps {
 		}
 	}
 
+	public static <K, V> void assertEquals(ISimpleMap<K, V> map, Object... expectedKeysAndValues) {
+		ISimpleMap<K, V> expected = SimpleMaps.makeMap(expectedKeysAndValues);
+		Assert.assertEquals(expected.keys(), map.keys());
+		for (K key : expected.keys())
+			Assert.assertEquals("Key: " + key, expected.get(key), map.get(key));
+
+	}
 }

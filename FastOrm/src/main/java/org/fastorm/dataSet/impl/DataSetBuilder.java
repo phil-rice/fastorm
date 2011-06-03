@@ -11,10 +11,12 @@ public class DataSetBuilder implements IAggregator<IDrainedTableData, IDataSet> 
 
 	private final List<IDrainedTableData> tableData = new ArrayList<IDrainedTableData>();
 
+	@Override
 	public void add(IDrainedTableData t) {
 		tableData.add(t);
 	}
 
+	@Override
 	public IDataSet result() {
 		return new DataSet(tableData);
 	}

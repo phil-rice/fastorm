@@ -15,6 +15,7 @@ public class MapToXmlAttributePrinter<K, V> implements IMapPrinter<K, V> {
 
 	}
 
+	@Override
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public String print(Map<K, V> map) {
 		StringBuilder builder = new StringBuilder();

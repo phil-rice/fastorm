@@ -9,15 +9,15 @@ import org.fastorm.dataSet.IGetDrainedTableForEntityDefn;
 import org.fastorm.defns.IEntityDefn;
 import org.fastorm.memory.IMemoryManager;
 import org.fastorm.utilities.collections.Lists;
-import org.fastorm.utilities.maps.ISimpleMap;
 
 public class DrainedLineCommonData {
-	private IMemoryManager memoryManager;
+	private final IMemoryManager memoryManager;
 	private IGetDrainedTableForEntityDefn getter;
-	private IEntityDefn entityDefn;
-	private int childCount;
+	private final IEntityDefn entityDefn;
+	private final int childCount;
 	private List<String> keys;
 	private int columnCount;
+	private int idColumnIndex;
 
 	public DrainedLineCommonData(IMemoryManager memoryManager, IEntityDefn entityDefn) {
 		this.memoryManager = memoryManager;
@@ -34,10 +34,12 @@ public class DrainedLineCommonData {
 			keys = Lists.newList(columnCount + childCount);
 			for (int i = 1; i <= columnCount; i++)
 				keys.add(metaData.getColumnLabel(i));
-			for (int i = 1; i <= childCount; i++) {
+			for (int i = 0; i < childCount; i++) {
 				List<IEntityDefn> children = entityDefn.getChildren();
 				keys.add(children.get(i).getEntityName());
 			}
+			this.idColumnIndex = Lists.indexOf(keys, entityDefn.getIdColumn());
+
 		}
 		assert sizesMatch(resultSet);
 	}
@@ -69,5 +71,9 @@ public class DrainedLineCommonData {
 
 	public List<String> getKeys() {
 		return keys;
+	}
+
+	public int getIdColumnIndex() {
+		return idColumnIndex;
 	}
 }

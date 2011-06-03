@@ -18,14 +18,17 @@ public class SimpleLists {
 
 	public static <T> ISimpleList<T> simpleList(final T... ts) {
 		return new ISimpleList<T>() {
+			@Override
 			public int size() {
 				return ts.length;
 			}
 
+			@Override
 			public T get(int index) {
 				return ts[index];
 			}
 
+			@Override
 			public List<T> slowList() {
 				return Arrays.asList(ts);
 			}
@@ -35,14 +38,17 @@ public class SimpleLists {
 
 	public static <T> ISimpleList<T> fromList(final List<T> list) {
 		return new ISimpleList<T>() {
+			@Override
 			public int size() {
 				return list.size();
 			}
 
+			@Override
 			public T get(int index) {
 				return list.get(index);
 			}
 
+			@Override
 			public List<T> slowList() {
 				return list;
 			}

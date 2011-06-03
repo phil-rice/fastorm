@@ -7,6 +7,7 @@ import java.util.List;
 public class MemoryCallback<T> implements ICallback<T> {
 	private final List<T> result = new ArrayList<T>();
 
+	@Override
 	public void process(T t) throws Exception {
 		result.add(t);
 	}

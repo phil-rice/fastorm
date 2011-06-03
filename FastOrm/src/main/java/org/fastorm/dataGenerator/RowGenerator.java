@@ -18,10 +18,12 @@ public class RowGenerator implements IRowGenerator {
 		this.fanout = fanout;
 	}
 
+	@Override
 	public Iterator<IGenerator> iterator() {
 		return generators.iterator();
 	}
 
+	@Override
 	public int fanout() {
 		return fanout;
 	}

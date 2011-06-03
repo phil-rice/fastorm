@@ -12,6 +12,7 @@ public class MapToXmlElementPrinter<K, V> implements IMapPrinter<K, V> {
 
 	}
 
+	@Override
 	@SuppressWarnings({ "unchecked" })
 	public String print(Map<K, V> map) {
 		StringBuilder builder = new StringBuilder();

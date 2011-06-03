@@ -24,7 +24,7 @@ insert into <tempTableName> (<idColumn>) select <idColumn> from <tableName> limi
 
 populateOneToManyTempTable (parentTemp, tableName, tempTableName,idColumn,parentIdColumn,childLink)::= <<
 insert into <tempTableName> (<idColumn>, <childLink>) 
-     select r.<idColumn>, r.<childLink> from  <parentTemp> pt left outer join <tableName> r on  pt.<parentIdColumn> = r.<childLink>
+     select r.<idColumn>, r.<childLink> from  <parentTemp> pt join <tableName> r on  pt.<parentIdColumn> = r.<childLink>
 >>
    
 populateManyToOneTempTable(parentTempTableName, tableName, tempTableName,idColumn,parentIdColumn,childLink)::= <<
@@ -33,7 +33,7 @@ insert into <tempTableName> (<idColumn>, <parentIdColumn>)
             where parentTemp.<parentIdColumn> = <tableName>.<childLink>
 >> 
 
-drainPrimaryTable(tableName, tempTableName,idColumn) ::="select r.* from <tempTableName> r left outer join <tableName> t on r.<idColumn>=t.<idColumn>" 
+drainPrimaryTable(tableName, tempTableName,idColumn) ::="select r.* from <tempTableName> t left outer join <tableName> r on r.<idColumn>=t.<idColumn>" 
 
 drainSecondaryTable(tableName,tempTableName,idColumn) ::= "select r.* from <tempTableName> t left outer join <tableName> r on r.<idColumn>=t.<idColumn>"
 

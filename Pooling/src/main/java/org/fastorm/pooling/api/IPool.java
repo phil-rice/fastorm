@@ -23,7 +23,7 @@ public interface IPool<T> extends IPoolThin<T> {
 			return result;
 		}
 
-		private static <T> IPoolThin<T> findThinInterface(PoolOptions poolOptions, IObjectDefinition<T> defn) {
+		public static <T> IPoolThin<T> findThinInterface(PoolOptions poolOptions, IObjectDefinition<T> defn) {
 			return poolOptions.tryToBeThreadSafe ? new ThreadSaferPool<T>(poolOptions, defn) : new ThreadUnsafePool<T>(poolOptions, defn);
 		}
 

@@ -14,6 +14,7 @@ public class Fields {
 
 	public static Iterable<Field> constants(Class<?> clazz) {
 		return Iterables.filter(publicFields(clazz), new IFunction1<Field, Boolean>() {
+			@Override
 			public Boolean apply(Field from) throws Exception {
 				int mod = from.getModifiers();
 				return Modifier.isFinal(mod) && Modifier.isStatic(mod);
@@ -22,6 +23,7 @@ public class Fields {
 	}
 
 	public final static IFunction1<Field, String> fieldToName = new IFunction1<Field, String>() {
+		@Override
 		public String apply(Field from) throws Exception {
 			return from.getName();
 		}

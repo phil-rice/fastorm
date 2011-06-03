@@ -7,11 +7,11 @@ import junit.framework.TestCase;
 
 public class ArraySimpleMapTest extends TestCase {
 
-	private String key1 = "k1";
-	private String key1a = new String("k1");
-	private String key2 = "k2";
-	private String key3 = "k3";
-	private List<String> keys = Arrays.asList(key1, key2, key3);
+	private final String key1 = "k1";
+	private final String key1a = new String("k1");
+	private final String key2 = "k2";
+	private final String key3 = "k3";
+	private final List<String> keys = Arrays.asList(key1, key2, key3);
 
 	public void testGet() {
 		ArraySimpleMap<String, String> arraySimpleMap = makeMap();
@@ -19,21 +19,15 @@ public class ArraySimpleMapTest extends TestCase {
 		assertEquals("v2", arraySimpleMap.get(key2));
 		assertEquals("v3", arraySimpleMap.get(key3));
 		assertEquals(null, arraySimpleMap.get("not a key"));
-		assertEquals(null, arraySimpleMap.get(key1a));
+		assertEquals("v1", arraySimpleMap.get(key1a));
 	}
 
-	public void testSetValuesFrom(){
+	public void testSetValuesFrom() {
 		ArraySimpleMap<String, String> arraySimpleMap = makeMap();
 		arraySimpleMap.setValuesFrom(Arrays.asList("v1a", "v2a", "v3a"));
 		assertEquals("v1a", arraySimpleMap.get(key1));
 		assertEquals("v2a", arraySimpleMap.get(key2));
 		assertEquals("v3a", arraySimpleMap.get(key3));
-	}
-	
-	public void testGetUsesObjectIdentityNotEquals() {
-		ArraySimpleMap<String, String> arraySimpleMap = makeMap();
-		assertEquals("v1", arraySimpleMap.get(key1));
-		assertEquals(null, arraySimpleMap.get(key1a));
 	}
 
 	private ArraySimpleMap<String, String> makeMap() {

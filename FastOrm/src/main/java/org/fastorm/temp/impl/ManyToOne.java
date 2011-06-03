@@ -45,8 +45,8 @@ public class ManyToOne extends AbstractSqlExecutor implements ISecondaryTempTabl
 	}
 
 	@Override
-	public IDrainedTableData drain(IFastOrmContainer fastOrm, OrmReadContext context, IEntityDefn parent, IEntityDefn child) {
-		return drainSecondary(fastOrm, context, child, FastOrmStringTemplates.drainSecondaryTable);
+	public void drain(IFastOrmContainer fastOrm, OrmReadContext context, IEntityDefn parent, IEntityDefn child) {
+		drainSecondary(fastOrm, context, child, FastOrmStringTemplates.drainSecondaryTable);
 	}
 
 	@Override
@@ -65,12 +65,12 @@ public class ManyToOne extends AbstractSqlExecutor implements ISecondaryTempTabl
 	}
 
 	@Override
-	public Object findDataIn(IGetDrainedTableForEntityDefn getter, IEntityDefn parentDefn, IEntityDefn childDefn, int parentIndex) {
+	public Object findDataIn(IGetDrainedTableForEntityDefn getter, IEntityDefn parentDefn, int parentIndex, IEntityDefn childDefn, int childIndex) {
 		IDrainedTableData parentData = getter.get(parentDefn);
 		IDrainedTableData childData = getter.get(childDefn);
 		String parentLink = childDefn.parameters().get(FastOrmKeys.parentLink);
-		Object childId = parentData.getMap(getter, parentIndex).get(parentLink);
-		List<ISimpleMap<String, Object>> result = childData.findWith(getter, childData.getIdColumnIndex(), childId);
+		Object childId = parentData.getMap(parentIndex).get(parentLink);
+		List<ISimpleMap<String, Object>> result = childData.findWith(childData.getIdColumnIndex(), childId);
 		return result;
 	}
 
@@ -86,8 +86,8 @@ public class ManyToOne extends AbstractSqlExecutor implements ISecondaryTempTabl
 	}
 
 	@Override
-	public IDrainedTableData drainFromStoredProcedure(IFastOrmContainer fastOrm, OrmReadContext ormReadContext, IEntityDefn parent, IEntityDefn child) {
-		return drainSecondary(fastOrm, ormReadContext, child, FastOrmStringTemplates.drainFromStoredProcedure, FastOrmKeys.procName, makeProcName(child));
+	public void drainFromStoredProcedure(IFastOrmContainer fastOrm, OrmReadContext ormReadContext, IEntityDefn parent, IEntityDefn child) {
+		drainSecondary(fastOrm, ormReadContext, child, FastOrmStringTemplates.drainFromStoredProcedure, FastOrmKeys.procName, makeProcName(child));
 	}
 
 	@Override

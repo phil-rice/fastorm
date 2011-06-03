@@ -3,9 +3,9 @@ package org.fastorm.dataSet;
 import java.util.List;
 
 import org.fastorm.defns.IEntityDefn;
-import org.fastorm.memory.IMemoryManager;
 import org.fastorm.utilities.functions.IFunction1;
 import org.fastorm.utilities.maps.ISimpleMap;
+import org.fastorm.utilities.maps.ISimpleMapWithIndex;
 
 public interface IDrainedTableData {
 
@@ -15,12 +15,11 @@ public interface IDrainedTableData {
 
 	int size();
 
-	ISimpleMap<String, Object> getMap(IGetDrainedTableForEntityDefn getter, int i);
+	int indexOf(String key);
 
-	List<String> getColumnNames();
+	ISimpleMapWithIndex<String, Object> getMap(int i);
 
-	List<ISimpleMap<String, Object>> findWith(IGetDrainedTableForEntityDefn getter, int columnIndex, Object value);
-
+	List<ISimpleMap<String, Object>> findWith(int columnIndex, Object value);
 
 	static class Utils {
 

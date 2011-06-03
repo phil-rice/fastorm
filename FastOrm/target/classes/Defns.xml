@@ -35,6 +35,9 @@
 				<entry key="useTemporaryTable">
 					<bean p:defaultValue="true" class=" org.fastorm.xmlItemStrategies.SimpleBooleanItemStrategy" />
 				</entry>
+				<entry key="maxLinesPerBatch">
+					<bean p:defaultValue="100" class=" org.fastorm.xmlItemStrategies.SimpleStringItemStrategy" />
+				</entry>
 			</map>
 		</constructor-arg>
 		<constructor-arg>

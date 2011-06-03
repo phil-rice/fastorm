@@ -36,14 +36,17 @@ public class EntityReader<T> implements IEntityReader<T> {
 		this.fastOrm = fastOrm;
 	}
 
+	@Override
 	public <To> IEntityReader<To> readerFor(IFunction1<T, To> convertor) {
 		IFunction1<ISimpleMap<String, Object>, To> newConvertor = Functions.compose(this.convertor, convertor);
 		return new EntityReader<To>(fastOrm, newConvertor);
 	}
 
+	@Override
 	public Iterable<T> getIterator() {
 		Iterable<IDataSet> dataSets = getDataSets();
 		Iterable<T> result = Iterables.split(dataSets, new IFunction1<IDataSet, Iterable<T>>() {
+			@Override
 			public Iterable<T> apply(IDataSet from) throws Exception {
 				if (from == null)
 					throw new NullPointerException();
@@ -54,14 +57,17 @@ public class EntityReader<T> implements IEntityReader<T> {
 		return result;
 	}
 
+	@Override
 	public Future<Void> processAll(ICallback<T> callback) {
 		FastOrmServices optimisation = fastOrm.getServices();
 		return Iterables.processCallbacks(optimisation.service, getIterator(), callback);
 	}
 
+	@Override
 	public <Result> Future<IAggregator<T, Result>> merge(final IAggregator<T, Result> aggregator) {
 		final FastOrmServices optimisation = fastOrm.getServices();
 		return optimisation.service.submit(new Callable<IAggregator<T, Result>>() {
+			@Override
 			public IAggregator<T, Result> call() throws Exception {
 				for (IDataSet dataSet : getDataSets())
 					SimpleLists.mapAggregate(fastOrm.getMaxForOneThread(), optimisation.pool, dataSet, aggregator, convertor).get();
@@ -70,9 +76,11 @@ public class EntityReader<T> implements IEntityReader<T> {
 		});
 	}
 
+	@Override
 	public <Result> Future<IAggregator<Result, Result>> twoStageMerge(final IAggregator<Result, Result> middleAggregator, final Callable<IAggregator<T, Result>> leafAggregator) {
 		final FastOrmServices optimisation = fastOrm.getServices();
 		return optimisation.service.submit(new Callable<IAggregator<Result, Result>>() {
+			@Override
 			public IAggregator<Result, Result> call() throws Exception {
 				for (IDataSet dataSet : getDataSets())
 					SimpleLists.mapTwoAggregators(fastOrm.getMaxForOneThread(), optimisation.pool, dataSet, middleAggregator, leafAggregator, convertor).get();
@@ -81,9 +89,11 @@ public class EntityReader<T> implements IEntityReader<T> {
 		});
 	}
 
+	@Override
 	public <Result> Future<Result> reduce(final IAggregateFunction<Result> aggregateFunction, final IFoldFunction<T, Result> foldFunction, Result initial) {
 		final FastOrmServices optimisation = fastOrm.getServices();
 		return Iterables.fold(optimisation.service, getDataSets(), new IFoldFunction<IDataSet, Result>() {
+			@Override
 			public Result apply(IDataSet value, Result initial) {
 				try {
 					Future<Result> fromDataSet = SimpleLists.mapReduce(fastOrm.getMaxForOneThread(), optimisation.pool, value, aggregateFunction, foldFunction, convertor, initial);
@@ -96,15 +106,18 @@ public class EntityReader<T> implements IEntityReader<T> {
 		}, initial);
 	}
 
+	@Override
 	public void processDataSets(ICallback<IDataSet> dataSetCallback) {
 		Iterables.processCallbacks(getDataSets(), dataSetCallback);
 	}
 
+	@Override
 	public Iterable<IDataSet> getDataSets() {
 		Iterable<IDataSet> dataSets = fastOrm.getEntityReaderThin().dataSets(fastOrm);
 		return dataSets;
 	}
 
+	@Override
 	public Iterator<T> iterator() {
 		return getIterator().iterator();
 	}
