@@ -45,6 +45,7 @@ public class EntityDefnParserTest extends TestCase implements IIntegrationTest {
 				FastOrmKeys.idType, "integer",//
 				FastOrmKeys.versionColumn, "p_version",//
 				FastOrmKeys.useTemporaryTable, true,//
+				FastOrmKeys.maxLinesPerBatch, "100",//
 				"address", Maps.makeMap(//
 						FastOrmKeys.entityName, "address",//
 						FastOrmKeys.tableName, "address",//
@@ -53,6 +54,7 @@ public class EntityDefnParserTest extends TestCase implements IIntegrationTest {
 						FastOrmKeys.idType, "integer",//
 						FastOrmKeys.versionColumn, "version", //
 						FastOrmKeys.useTemporaryTable, true,//
+						FastOrmKeys.maxLinesPerBatch, "100",//
 						FastOrmKeys.childLink, "a_person"),//
 				"telephone", Maps.makeMap(//
 						FastOrmKeys.entityName, "telephone",//
@@ -62,6 +64,7 @@ public class EntityDefnParserTest extends TestCase implements IIntegrationTest {
 						FastOrmKeys.idType, "integer",//
 						FastOrmKeys.versionColumn, "version", //
 						FastOrmKeys.useTemporaryTable, true,//
+						FastOrmKeys.maxLinesPerBatch, "100",//
 						FastOrmKeys.childLink, "t_person"),//
 				"employer", Maps.makeMap(//
 						FastOrmKeys.entityName, "employer",//
@@ -71,6 +74,7 @@ public class EntityDefnParserTest extends TestCase implements IIntegrationTest {
 						FastOrmKeys.idType, "integer",//
 						FastOrmKeys.versionColumn, "version", //
 						FastOrmKeys.useTemporaryTable, true,//
+						FastOrmKeys.maxLinesPerBatch, "100",//
 						FastOrmKeys.parentLink, "p_employer"));//
 		assertEquals(expected, actual);
 	}
@@ -107,6 +111,7 @@ public class EntityDefnParserTest extends TestCase implements IIntegrationTest {
 				FastOrmKeys.versionColumn, "",//
 				FastOrmKeys.idColumn, "",//
 				FastOrmKeys.useTemporaryTable, true,//
+				FastOrmKeys.maxLinesPerBatch, "100",//
 				FastOrmKeys.idType, "integer");
 		checkXml(parser, expected, new MapToXmlElementPrinter<String, Object>("Entity"));
 		checkXml(parser, expected, new MapToXmlAttributePrinter<String, Object>("Entity"));
