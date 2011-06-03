@@ -63,6 +63,7 @@ public class SqlStrings implements ISqlStrings {
 		for (Object key : formalArguments.keySet())
 			if (!attributes.containsKey(key))
 				missing.add(key);
+		missing.remove(FastOrmKeys.useTemporaryTable);
 		boolean result = missing.size() == 0;
 		assert result : missing;
 		return result;

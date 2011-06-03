@@ -39,7 +39,7 @@ drainSecondaryTable(tableName,tempTableName,idColumn) ::= "select r.* from <temp
 
 dropStoredProcedure(procName) ::= "drop procedure if exists <procName>"
 
-createAllEntitiesStoredProcedure(procName, tableName, tempTableName,idColumn,start,size) ::= <<
+createAllEntitiesStoredProcedure(procName, tableName, tempTableName,idColumn) ::= <<
    create procedure <procName>(theStart INT, theSize INT)
      begin
        <truncateTempTable(...)>;
