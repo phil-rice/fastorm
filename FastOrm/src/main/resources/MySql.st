@@ -37,6 +37,8 @@ drainPrimaryTable(tableName, tempTableName,idColumn) ::="select r.* from <tempTa
 
 drainSecondaryTable(tableName,tempTableName,idColumn) ::= "select r.* from <tempTableName> t left outer join <tableName> r on r.<idColumn>=t.<idColumn>"
 
+drainLeafOneToManyTable(tableName,parentTemp,parentIdColumn,childLink) ::= "select r.* from  <parentTemp> pt join <tableName> r on  pt.<parentIdColumn> = r.<childLink>"
+
 dropStoredProcedure(procName) ::= "drop procedure if exists <procName>"
 
 createAllEntitiesStoredProcedure(procName, tableName, tempTableName,idColumn) ::= <<
@@ -60,6 +62,12 @@ createOneToManyStoredProcedure(procName, parentTemp, tableName, tempTableName,id
        <populateOneToManyTempTable(...)>;
        alter table <tempTableName> enable keys;
        <drainSecondaryTable(...)>;
+     end
+>>
+createOneToManyLeafStoredProcedure(procName, parentTemp, tableName, tempTableName,idColumn,parentIdColumn,childLink) ::=<<
+   create procedure <procName>()
+     begin
+       <drainLeafOneToManyTable(...)>;
      end
 >>
 createManyToOneStoredProcedure(procName, parentTemp, tableName, tempTableName,idColumn,parentIdColumn,childLink) ::=<<

@@ -43,14 +43,22 @@ public class OneToMany extends AbstractSqlExecutor implements ISecondaryTempTabl
 
 	@Override
 	public int populate(IFastOrmContainer fastOrm, OrmReadContext context, IEntityDefn parent, IEntityDefn child) {
-		return update(fastOrm, context, FastOrmStringTemplates.populateOneToManyTempTable, child,//
-				FastOrmKeys.parentTemp, parent.getTempTableName(),//
-				FastOrmKeys.parentIdColumn, parent.getIdColumn());
+		if (!fastOrm.getOptions().optimiseLeafAccess || child.getChildren().size() > 0)
+			return update(fastOrm, context, FastOrmStringTemplates.populateOneToManyTempTable, child,//
+					FastOrmKeys.parentTemp, parent.getTempTableName(),//
+					FastOrmKeys.parentIdColumn, parent.getIdColumn());
+		else
+			return 0;
 	}
 
 	@Override
 	public void drain(IFastOrmContainer fastOrm, OrmReadContext context, IEntityDefn parent, IEntityDefn child) {
-		drainSecondary(fastOrm, context, child, FastOrmStringTemplates.drainSecondaryTable);
+		if (!fastOrm.getOptions().optimiseLeafAccess || child.getChildren().size() > 0)
+			drainSecondary(fastOrm, context, child, FastOrmStringTemplates.drainSecondaryTable);
+		else
+			drainSecondary(fastOrm, context, child, FastOrmStringTemplates.drainLeafOneToManyTable,//
+					FastOrmKeys.parentTemp, parent.getTempTableName(),//
+					FastOrmKeys.parentIdColumn, parent.getIdColumn());
 	}
 
 	@Override
@@ -88,9 +96,14 @@ public class OneToMany extends AbstractSqlExecutor implements ISecondaryTempTabl
 
 	@Override
 	public void createStoredProcedure(IFastOrmContainer fastOrm, OrmReadContext context, IEntityDefn parent, IEntityDefn child) {
-		update(fastOrm, context, FastOrmStringTemplates.createOneToManyStoredProcedure, child, "procName", makeProcName(child),//
-				FastOrmKeys.parentTemp, parent.getTempTableName(),//
-				FastOrmKeys.parentIdColumn, parent.getIdColumn());
+		if (!fastOrm.getOptions().optimiseLeafAccess || child.getChildren().size() > 0)
+			update(fastOrm, context, FastOrmStringTemplates.createOneToManyStoredProcedure, child, "procName", makeProcName(child),//
+					FastOrmKeys.parentTemp, parent.getTempTableName(),//
+					FastOrmKeys.parentIdColumn, parent.getIdColumn());
+		else
+			update(fastOrm, context, FastOrmStringTemplates.createOneToManyLeafStoredProcedure, child, "procName", makeProcName(child),//
+					FastOrmKeys.parentTemp, parent.getTempTableName(),//
+					FastOrmKeys.parentIdColumn, parent.getIdColumn());
 	}
 
 	@Override

@@ -6,21 +6,23 @@ public class FastOrmOptions {
 	public final boolean indexSecondaryTables;
 	public final boolean useTemporaryTables;
 	public final boolean createAnddropProceduresAtStartOfRun;
+	public final boolean optimiseLeafAccess;
 	public final int batchSize;
 	public final int maxForOneThread;
 
 	public FastOrmOptions() {
-		this(true, 1000, 100, true, true, true);
+		this(true, 1000, 100, true, true, true, true);
 
 	}
 
-	public FastOrmOptions(boolean indexPrimaryTables, int batchSize, int maxForOneThread, boolean indexSecondaryTables, boolean useTemporaryTables, boolean dropProceduresAtStartOfRun) {
+	public FastOrmOptions(boolean indexPrimaryTables, int batchSize, int maxForOneThread, boolean indexSecondaryTables, boolean useTemporaryTables, boolean dropProceduresAtStartOfRun, boolean optimiseLeafAccess) {
 		this.indexPrimaryTables = indexPrimaryTables;
 		this.batchSize = batchSize;
 		this.maxForOneThread = maxForOneThread;
 		this.indexSecondaryTables = indexSecondaryTables;
 		this.useTemporaryTables = useTemporaryTables;
 		this.createAnddropProceduresAtStartOfRun = dropProceduresAtStartOfRun;
+		this.optimiseLeafAccess = optimiseLeafAccess;
 	}
 
 	public static FastOrmOptions usualBest() {
@@ -32,24 +34,28 @@ public class FastOrmOptions {
 	}
 
 	public FastOrmOptions withTempTables(boolean useTemporaryTables) {
-		return new FastOrmOptions(indexPrimaryTables, batchSize, maxForOneThread, indexSecondaryTables, useTemporaryTables, createAnddropProceduresAtStartOfRun);
+		return new FastOrmOptions(indexPrimaryTables, batchSize, maxForOneThread, indexSecondaryTables, useTemporaryTables, createAnddropProceduresAtStartOfRun, optimiseLeafAccess);
 	}
 
 	public FastOrmOptions withBatchSize(int batchSize) {
-		return new FastOrmOptions(indexPrimaryTables, batchSize, maxForOneThread, indexSecondaryTables, useTemporaryTables, createAnddropProceduresAtStartOfRun);
+		return new FastOrmOptions(indexPrimaryTables, batchSize, maxForOneThread, indexSecondaryTables, useTemporaryTables, createAnddropProceduresAtStartOfRun, optimiseLeafAccess);
 	}
 
 	public FastOrmOptions withIndexSecondaryTables(boolean indexSecondaryTables) {
-		return new FastOrmOptions(indexPrimaryTables, batchSize, maxForOneThread, indexSecondaryTables, useTemporaryTables, createAnddropProceduresAtStartOfRun);
+		return new FastOrmOptions(indexPrimaryTables, batchSize, maxForOneThread, indexSecondaryTables, useTemporaryTables, createAnddropProceduresAtStartOfRun, optimiseLeafAccess);
 
 	}
 
 	public FastOrmOptions withMaxInOneThread(int maxForOneThread) {
-		return new FastOrmOptions(indexPrimaryTables, batchSize, maxForOneThread, indexSecondaryTables, useTemporaryTables, createAnddropProceduresAtStartOfRun);
+		return new FastOrmOptions(indexPrimaryTables, batchSize, maxForOneThread, indexSecondaryTables, useTemporaryTables, createAnddropProceduresAtStartOfRun, optimiseLeafAccess);
 	}
 
 	public FastOrmOptions withCreateAndDropProceduresAtStart(boolean createAnddropProceduresAtStartOfRun) {
-		return new FastOrmOptions(indexPrimaryTables, batchSize, maxForOneThread, indexSecondaryTables, useTemporaryTables, createAnddropProceduresAtStartOfRun);
+		return new FastOrmOptions(indexPrimaryTables, batchSize, maxForOneThread, indexSecondaryTables, useTemporaryTables, createAnddropProceduresAtStartOfRun, optimiseLeafAccess);
+	}
+
+	public FastOrmOptions withOptimiseLeafAccess(boolean optimiseLeafAccess) {
+		return new FastOrmOptions(indexPrimaryTables, batchSize, maxForOneThread, indexSecondaryTables, useTemporaryTables, createAnddropProceduresAtStartOfRun, optimiseLeafAccess);
 	}
 
 	@Override
@@ -91,8 +97,7 @@ public class FastOrmOptions {
 
 	@Override
 	public String toString() {
-		return "FastOrmOptions [indexPrimaryTables=" + indexPrimaryTables + ", indexSecondaryTables=" + indexSecondaryTables + ", useTemporaryTables=" + useTemporaryTables
-				+ ", dropProceduresAtStartOfRun=" + createAnddropProceduresAtStartOfRun + ", batchSize=" + batchSize + ", maxForOneThread=" + maxForOneThread + "]";
+		return "FastOrmOptions [indexPrimaryTables=" + indexPrimaryTables + ", indexSecondaryTables=" + indexSecondaryTables + ", useTemporaryTables=" + useTemporaryTables + ", dropProceduresAtStartOfRun=" + createAnddropProceduresAtStartOfRun + ", batchSize=" + batchSize + ", maxForOneThread=" + maxForOneThread + "]";
 	}
 
 }

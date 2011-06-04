@@ -10,7 +10,10 @@ public class FastOrmStringTemplates {
 	public static final String drainPrimaryTable = "drainPrimaryTable";
 	public static final String createOneToManyTempTable = "createOneToManyTempTable";
 	public static final String populateOneToManyTempTable = "populateOneToManyTempTable";
+	public static final String drainLeafOneToManyTable = "drainLeafOneToManyTable";
+
 	public static final String drainSecondaryTable = "drainSecondaryTable";
+
 	public static final String createManyToOneTempTable = "createManyToOneTempTable";
 	public static final String populateManyToOneTempTable = "populateManyToOneTempTable";
 	public static final String truncateTempTable = "truncateTempTable";
@@ -19,6 +22,7 @@ public class FastOrmStringTemplates {
 	public static final String dropStoredProcedure = "dropStoredProcedure";
 	public static final String createAllEntitiesStoredProcedure = "createAllEntitiesStoredProcedure";
 	public static final String createOneToManyStoredProcedure = "createOneToManyStoredProcedure";
+	public static final String createOneToManyLeafStoredProcedure = "createOneToManyLeafStoredProcedure";
 	public static final String createManyToOneStoredProcedure = "createManyToOneStoredProcedure";
 	public static final String drainFromStoredProcedureWithStartAndSize = "drainFromStoredProcedureWithStartAndSize";
 	public static final String drainFromStoredProcedure = "drainFromStoredProcedure";
