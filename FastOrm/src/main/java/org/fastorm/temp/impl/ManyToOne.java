@@ -6,13 +6,13 @@ import java.util.Map;
 import org.fastorm.api.IFastOrmContainer;
 import org.fastorm.constants.FastOrmKeys;
 import org.fastorm.constants.FastOrmStringTemplates;
+import org.fastorm.context.OrmReadContext;
 import org.fastorm.dataGenerator.IGenerator;
 import org.fastorm.dataGenerator.ParentForeignKeyGenerator;
 import org.fastorm.dataGenerator.SizeIntegerGenerator;
 import org.fastorm.dataSet.IDrainedTableData;
 import org.fastorm.dataSet.IGetDrainedTableForEntityDefn;
 import org.fastorm.defns.IEntityDefn;
-import org.fastorm.reader.impl.OrmReadContext;
 import org.fastorm.temp.ISecondaryTempTableMaker;
 import org.fastorm.utilities.maps.ISimpleMap;
 import org.fastorm.utilities.maps.Maps;
@@ -69,7 +69,7 @@ public class ManyToOne extends AbstractSqlExecutor implements ISecondaryTempTabl
 		IDrainedTableData parentData = getter.get(parentDefn);
 		IDrainedTableData childData = getter.get(childDefn);
 		String parentLink = childDefn.parameters().get(FastOrmKeys.parentLink);
-		Object childId = parentData.getMap(parentIndex).get(parentLink);
+		Object childId = parentData.get(parentIndex).get(parentLink);
 		List<ISimpleMap<String, Object>> result = childData.findWith(childData.getIdColumnIndex(), childId);
 		return result;
 	}

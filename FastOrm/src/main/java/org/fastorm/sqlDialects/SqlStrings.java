@@ -12,7 +12,10 @@ import org.antlr.stringtemplate.StringTemplateGroup;
 import org.fastorm.api.FastOrmOptions;
 import org.fastorm.constants.FastOrmKeys;
 import org.fastorm.utilities.exceptions.WrappedException;
+import org.fastorm.utilities.maps.IListOfSimpleMapWithIndex;
+import org.fastorm.utilities.maps.ISimpleMapWithIndex;
 import org.fastorm.utilities.maps.Maps;
+import org.fastorm.utilities.strings.Strings;
 import org.springframework.core.io.Resource;
 
 public class SqlStrings implements ISqlStrings {
@@ -69,4 +72,54 @@ public class SqlStrings implements ISqlStrings {
 		return result;
 	}
 
+	@Override
+	public String buildInsert(String tableName, IListOfSimpleMapWithIndex<String, Object> data) {
+		List<String> keys = data.keys();
+		StringBuilder builder = new StringBuilder();
+		builder.append("insert into ");
+		builder.append(tableName);
+		builder.append("(");
+		builder.append(Strings.join(keys, ","));
+		builder.append(") values ");
+		for (int i = 0; i < data.size(); i++) {
+			if (i != 0)
+				builder.append(',');
+			builder.append('(');
+			ISimpleMapWithIndex<String, Object> map = data.get(i);
+			for (int j = 0; j < keys.size(); j++) {
+				if (j != 0)
+					builder.append(',');
+				builder.append('\'');
+				builder.append(map.getByIndex(j));
+				builder.append('\'');
+			}
+			builder.append(')');
+		}
+		return builder.toString();
+	}
+
+	@Override
+	public String buildInsert(String tableName, IListOfSimpleMapWithIndex<String, Object> data, List<Integer> changedColumns) {
+		StringBuilder builder = new StringBuilder();
+		builder.append("insert into ");
+		builder.append(tableName);
+		builder.append("(");
+		builder.append(Strings.join(data.keys(), changedColumns, ","));
+		builder.append(") values ");
+		for (int i = 0; i < data.size(); i++) {
+			if (i != 0)
+				builder.append(',');
+			builder.append('(');
+			ISimpleMapWithIndex<String, Object> map = data.get(i);
+			for (int j = 0; j < changedColumns.size(); j++) {
+				if (j != 0)
+					builder.append(',');
+				builder.append('\'');
+				builder.append(map.getByIndex(changedColumns.get(j)));
+				builder.append('\'');
+			}
+			builder.append(')');
+		}
+		return builder.toString();
+	}
 }

@@ -4,7 +4,7 @@ import java.util.Map;
 
 import org.fastorm.api.IFastOrmContainer;
 import org.fastorm.defns.IEntityDefn;
-import org.fastorm.defns.IEntityDefnVisitor;
+import org.fastorm.defns.IEntityDefnParentChildVisitor;
 import org.fastorm.defns.IMakerAndEntityDefnVisitor;
 import org.fastorm.temp.IPrimaryTempTableMaker;
 import org.fastorm.temp.ISecondaryTempTableMaker;
@@ -22,7 +22,7 @@ public interface IDataGenerator {
 
 		public static Map<IEntityDefn, IRowGenerator> findDefaultRowGeneratorsWithExtra(IFastOrmContainer fastOrm, final int defaultFanOut, final IExtraDataGenerator extraDataGenerator) {
 			final Map<IEntityDefn, Map<String, IGenerator>> entityToColumnsToRowGenerator = Maps.newMap();
-			IEntityDefn.Utils.walk(fastOrm.getEntityDefn(), new IEntityDefnVisitor() {
+			IEntityDefn.Utils.walk(fastOrm.getEntityDefn(), new IEntityDefnParentChildVisitor() {
 
 				@Override
 				public void acceptPrimary(IEntityDefn primary) throws Exception {

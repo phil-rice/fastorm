@@ -1,7 +1,6 @@
 package org.fastorm.reader.impl;
 
 import java.util.Iterator;
-import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 
@@ -18,12 +17,12 @@ import org.fastorm.utilities.functions.Functions;
 import org.fastorm.utilities.functions.IAggregateFunction;
 import org.fastorm.utilities.functions.IFoldFunction;
 import org.fastorm.utilities.functions.IFunction1;
-import org.fastorm.utilities.maps.ISimpleMap;
+import org.fastorm.utilities.maps.ISimpleMapWithIndex;
 
 public class EntityReader<T> implements IEntityReader<T> {
 
 	private final IFastOrmContainer fastOrm;
-	private final IFunction1<ISimpleMap<String, Object>, T> convertor;
+	private final IFunction1<ISimpleMapWithIndex<String, Object>, T> convertor;
 
 	/** When this is called...T is a Map<String,Object> */
 	@SuppressWarnings("unchecked")
@@ -31,14 +30,14 @@ public class EntityReader<T> implements IEntityReader<T> {
 		this(fastOrm, Functions.identity);
 	}
 
-	public EntityReader(IFastOrmContainer fastOrm, IFunction1<ISimpleMap<String, Object>, T> convertor) {
+	public EntityReader(IFastOrmContainer fastOrm, IFunction1<ISimpleMapWithIndex<String, Object>, T> convertor) {
 		this.convertor = convertor;
 		this.fastOrm = fastOrm;
 	}
 
 	@Override
 	public <To> IEntityReader<To> readerFor(IFunction1<T, To> convertor) {
-		IFunction1<ISimpleMap<String, Object>, To> newConvertor = Functions.compose(this.convertor, convertor);
+		IFunction1<ISimpleMapWithIndex<String, Object>, To> newConvertor = Functions.compose(this.convertor, convertor);
 		return new EntityReader<To>(fastOrm, newConvertor);
 	}
 
@@ -50,8 +49,7 @@ public class EntityReader<T> implements IEntityReader<T> {
 			public Iterable<T> apply(IDataSet from) throws Exception {
 				if (from == null)
 					throw new NullPointerException();
-				List<ISimpleMap<String, Object>> list = from.slowList();
-				return Iterables.map(list, convertor);
+				return Iterables.map(from, convertor);
 			}
 		});
 		return result;

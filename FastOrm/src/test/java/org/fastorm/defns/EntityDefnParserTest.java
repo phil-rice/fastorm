@@ -83,7 +83,7 @@ public class EntityDefnParserTest extends TestCase implements IIntegrationTest {
 		final TempTableMakerFactory factory = new TempTableMakerFactory();
 		ClassPathResource resource = new ClassPathResource("sample1.xml", getClass());
 		IEntityDefn entityDefn = IEntityDefn.Utils.parse(factory, resource);
-		IEntityDefn.Utils.walk(entityDefn, new IEntityDefnVisitor() {
+		IEntityDefn.Utils.walk(entityDefn, new IEntityDefnParentChildVisitor() {
 			@Override
 			public void acceptPrimary(IEntityDefn primary) throws Exception {
 				assertNull(primary.getMaker());
@@ -93,7 +93,7 @@ public class EntityDefnParserTest extends TestCase implements IIntegrationTest {
 			public void acceptChild(IEntityDefn parent, IEntityDefn child) throws Exception {
 				Map<String, String> parentParameters = parent.parameters();
 				Map<String, String> childParameters = child.parameters();
-				ISecondaryTempTableMaker maker = factory.findMakerFor(parentParameters, childParameters);
+				ISecondaryTempTableMaker maker = factory.findReaderMakerFor(parentParameters, childParameters);
 				assertNotNull(child.getEntityName(), maker);
 				ISecondaryTempTableMaker childMaker = child.getMaker();
 				assertNotNull(child.getEntityName(), childMaker);

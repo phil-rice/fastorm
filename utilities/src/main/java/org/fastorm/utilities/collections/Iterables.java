@@ -136,7 +136,38 @@ public class Iterables {
 				};
 			}
 		};
+	}
 
+	public static <From, To> Iterable<To> map(final ISimpleList<From> from, final IFunction1<From, To> convertor) {
+		if (from == null)
+			throw new NullPointerException();
+		return new Iterable<To>() {
+			@Override
+			public Iterator<To> iterator() {
+				return new Iterator<To>() {
+					private int i = 0;
+
+					@Override
+					public boolean hasNext() {
+						return i < from.size();
+					}
+
+					@Override
+					public To next() {
+						try {
+							return convertor.apply(from.get(i++));
+						} catch (Exception e) {
+							throw WrappedException.wrap(e);
+						}
+					}
+
+					@Override
+					public void remove() {
+						throw new UnsupportedOperationException();
+					}
+				};
+			}
+		};
 	}
 
 	public static <T> Iterable<T> iterable(final Iterator<T> iterator) {

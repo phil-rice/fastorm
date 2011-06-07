@@ -8,8 +8,8 @@ import static org.fastorm.constants.FastOrmTestValues.primaryTempTableName;
 import java.util.Arrays;
 
 import org.fastorm.constants.FastOrmTestValues;
+import org.fastorm.context.OrmReadContext;
 import org.fastorm.dataSet.IDrainedTableData;
-import org.fastorm.reader.impl.OrmReadContext;
 import org.fastorm.sql.SysOutSqlLogger;
 import org.fastorm.utilities.callbacks.ICallback;
 import org.fastorm.utilities.functions.IFunction1;
@@ -71,11 +71,11 @@ public class AllEntitiesTempTableMakerTest extends AbstractTempTableMakerTest {
 		assertEquals(5, table.size());
 		assertTrue(table.getIdColumnIndex() != -1);
 		assertEquals(fastOrm5.getEntityDefn(), table.getEntityDefn());
-		SimpleMaps.assertEquals(table.getMap(0), FastOrmTestValues.primaryIdColumn, 0, "data", "data_0");
-		SimpleMaps.assertEquals(table.getMap(1), FastOrmTestValues.primaryIdColumn, 1, "data", "data_1");
-		SimpleMaps.assertEquals(table.getMap(2), FastOrmTestValues.primaryIdColumn, 2, "data", "data_2");
-		SimpleMaps.assertEquals(table.getMap(3), FastOrmTestValues.primaryIdColumn, 3, "data", "data_3");
-		SimpleMaps.assertEquals(table.getMap(4), FastOrmTestValues.primaryIdColumn, 4, "data", "data_4");
+		SimpleMaps.assertEquals(table.get(0), FastOrmTestValues.primaryIdColumn, 0, "data", "data_0");
+		SimpleMaps.assertEquals(table.get(1), FastOrmTestValues.primaryIdColumn, 1, "data", "data_1");
+		SimpleMaps.assertEquals(table.get(2), FastOrmTestValues.primaryIdColumn, 2, "data", "data_2");
+		SimpleMaps.assertEquals(table.get(3), FastOrmTestValues.primaryIdColumn, 3, "data", "data_3");
+		SimpleMaps.assertEquals(table.get(4), FastOrmTestValues.primaryIdColumn, 4, "data", "data_4");
 	}
 
 	@Override

@@ -18,9 +18,11 @@ import org.fastorm.utilities.aggregators.IAggregator;
 import org.fastorm.utilities.aggregators.SimpleMapAggregator;
 import org.fastorm.utilities.callbacks.MemoryCallback;
 import org.fastorm.utilities.collections.Iterables;
+import org.fastorm.utilities.collections.SimpleLists;
 import org.fastorm.utilities.functions.IFunction1;
 import org.fastorm.utilities.functions.SimpleMapFoldFunction;
 import org.fastorm.utilities.maps.ISimpleMap;
+import org.fastorm.utilities.maps.ISimpleMapWithIndex;
 import org.fastorm.utilities.maps.Maps;
 import org.fastorm.utilities.maps.SimpleMaps;
 
@@ -37,10 +39,10 @@ public class EntityReaderTest extends AbstractEntityReaderTest {
 	}
 
 	private void checkMerger(IDataSet... dataSets) throws Exception {
-		Map<String, Object> expected = SimpleMaps.merge(Iterables.split(Arrays.asList(dataSets), new IFunction1<IDataSet, Iterable<ISimpleMap<String, Object>>>() {
+		Map<String, Object> expected = SimpleMaps.merge(Iterables.split(Arrays.asList(dataSets), new IFunction1<IDataSet, Iterable<ISimpleMapWithIndex<String, Object>>>() {
 			@Override
-			public List<ISimpleMap<String, Object>> apply(IDataSet from) throws Exception {
-				return from.slowList();
+			public List<ISimpleMapWithIndex<String, Object>> apply(IDataSet from) throws Exception {
+				return SimpleLists.asList(from);
 			}
 		}));
 
@@ -68,10 +70,10 @@ public class EntityReaderTest extends AbstractEntityReaderTest {
 	}
 
 	private void checkMaps(IDataSet... dataSets) throws InterruptedException, ExecutionException {
-		Iterable<ISimpleMap<String, Object>> maps = Iterables.split(Arrays.asList(dataSets), new IFunction1<IDataSet, Iterable<ISimpleMap<String, Object>>>() {
+		Iterable<ISimpleMapWithIndex<String, Object>> maps = Iterables.split(Arrays.asList(dataSets), new IFunction1<IDataSet, Iterable<ISimpleMapWithIndex<String, Object>>>() {
 			@Override
-			public Iterable<ISimpleMap<String, Object>> apply(IDataSet from) throws Exception {
-				return from.slowList();
+			public Iterable<ISimpleMapWithIndex<String, Object>> apply(IDataSet from) throws Exception {
+				return SimpleLists.asList(from);
 			}
 		});
 		EntityReaderThinMock mock = new EntityReaderThinMock(dataSets);
@@ -84,10 +86,10 @@ public class EntityReaderTest extends AbstractEntityReaderTest {
 
 	}
 
-	private void checkMapsInReader(IEntityReader<ISimpleMap<String, Object>> reader, Iterable<ISimpleMap<String, Object>> maps) throws InterruptedException, ExecutionException {
+	private void checkMapsInReader(IEntityReader<ISimpleMap<String, Object>> reader, Iterable<ISimpleMapWithIndex<String, Object>> maps) throws InterruptedException, ExecutionException {
 		MemoryCallback<ISimpleMap<String, Object>> memoryCallback = new MemoryCallback<ISimpleMap<String, Object>>();
 		reader.processAll(memoryCallback).get();
-		List<ISimpleMap<String, Object>> expected = Iterables.list(maps);
+		List<ISimpleMapWithIndex<String, Object>> expected = Iterables.list(maps);
 		assertEquals(expected, memoryCallback.getResult());
 
 		assertEquals(expected, Iterables.list(reader.getIterator()));

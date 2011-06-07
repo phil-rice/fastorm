@@ -6,7 +6,7 @@ import org.fastorm.api.FastOrmOptions;
 import org.fastorm.api.IFastOrm;
 import org.fastorm.api.IFastOrmContainer;
 import org.fastorm.defns.IEntityDefn;
-import org.fastorm.defns.IEntityDefnVisitor;
+import org.fastorm.defns.IEntityDefnParentChildVisitor;
 import org.fastorm.reader.IEntityReader;
 import org.fastorm.reader.impl.StoredProceduresEntityReaderThin;
 import org.fastorm.temp.impl.SqlHelper;
@@ -73,7 +73,7 @@ public class FastOrmExerciser {
 				Spec spec = initialSpec.withDatabaseSize(databaseSize);
 				visitor.startDatabase(outerRun, databaseSize, spec);
 				for (final IFastOrm fastOrm : spec) {
-					IEntityDefn.Utils.walk(fastOrm.getEntityDefn(), new IEntityDefnVisitor() {
+					IEntityDefn.Utils.walk(fastOrm.getEntityDefn(), new IEntityDefnParentChildVisitor() {
 						SqlHelper helper = new SqlHelper(fastOrm.getContainer().getJdbcTemplate());
 
 						@Override

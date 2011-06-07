@@ -2,16 +2,19 @@ package org.fastorm.temp.impl;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.fastorm.api.IFastOrmContainer;
 import org.fastorm.constants.FastOrmConstants;
+import org.fastorm.context.IContext;
+import org.fastorm.context.OrmReadContext;
 import org.fastorm.dataSet.IDrainedTableData;
 import org.fastorm.dataSet.impl.DrainedTableData;
 import org.fastorm.defns.IEntityDefn;
 import org.fastorm.memory.IMemoryManager;
-import org.fastorm.reader.impl.OrmReadContext;
 import org.fastorm.sqlDialects.ISqlStrings;
+import org.fastorm.utilities.maps.IListOfSimpleMapWithIndex;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ResultSetExtractor;
 
@@ -56,6 +59,13 @@ public class AbstractSqlExecutor {
 		context.add(result);
 	}
 
+	protected int bulkInsert(IContext context, String tableName, List<Integer> changedColumns, IListOfSimpleMapWithIndex<String, Object> table) throws SQLException {
+		IFastOrmContainer fastOrm = context.getFastOrm();
+		ISqlStrings sqlStrings = fastOrm.getSqlStrings();
+		String sql = sqlStrings.buildInsert(tableName, table, changedColumns);
+		return updateSql(fastOrm, context, sql);
+	}
+
 	private IDrainedTableData querySql(final IFastOrmContainer fastOrm, OrmReadContext context, String sql, final ResultSetExtractor<IDrainedTableData> rse) {
 		final AtomicLong queryTime = new AtomicLong();
 		long startTime = System.nanoTime();
@@ -70,7 +80,7 @@ public class AbstractSqlExecutor {
 		return result;
 	}
 
-	private int updateSql(IFastOrmContainer fastOrm, OrmReadContext context, String sql) {
+	private int updateSql(IFastOrmContainer fastOrm, IContext context, String sql) {
 		long startTime = System.nanoTime();
 		int result = fastOrm.getJdbcTemplate().update(sql);
 		fastOrm.getSqlLogger().updated(System.nanoTime() - startTime, sql, result);

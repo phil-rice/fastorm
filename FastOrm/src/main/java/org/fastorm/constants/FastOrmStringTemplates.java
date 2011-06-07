@@ -26,6 +26,8 @@ public class FastOrmStringTemplates {
 	public static final String createManyToOneStoredProcedure = "createManyToOneStoredProcedure";
 	public static final String drainFromStoredProcedureWithStartAndSize = "drainFromStoredProcedureWithStartAndSize";
 	public static final String drainFromStoredProcedure = "drainFromStoredProcedure";
+	public static final String createUpdateTempTable = "createUpdateTempTable";
+	public static final String update = "update";
 
 	public static Collection<? extends String> internalTemplateNames() {
 		return Arrays.asList("makeTemp");

@@ -1,7 +1,6 @@
 package org.fastorm.utilities.collections;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
@@ -28,10 +27,6 @@ public class SimpleLists {
 				return ts[index];
 			}
 
-			@Override
-			public List<T> slowList() {
-				return Arrays.asList(ts);
-			}
 		};
 
 	}
@@ -48,10 +43,6 @@ public class SimpleLists {
 				return list.get(index);
 			}
 
-			@Override
-			public List<T> slowList() {
-				return list;
-			}
 		};
 	}
 

@@ -11,6 +11,7 @@ public class AllTempImplTests {
 		suite.addTestSuite(TestAbstractTempTableMakerTest.class);
 		suite.addTestSuite(AllEntitiesTempTableMakerTest.class);
 		suite.addTestSuite(OneToManyTempTableMakerTest.class);
+		suite.addTestSuite(MutatingTempTableMakerTest.class);
 		//$JUnit-END$
 		return suite;
 	}

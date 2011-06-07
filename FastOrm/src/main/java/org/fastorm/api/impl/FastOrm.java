@@ -1,6 +1,7 @@
 package org.fastorm.api.impl;
 
 import java.text.MessageFormat;
+import java.util.Map;
 
 import javax.sql.DataSource;
 
@@ -8,6 +9,7 @@ import org.fastorm.api.FastOrmOptions;
 import org.fastorm.api.IFastOrm;
 import org.fastorm.api.IFastOrmContainer;
 import org.fastorm.constants.FastOrmMessages;
+import org.fastorm.dataSet.IMutableDataSet;
 import org.fastorm.defns.IEntityDefn;
 import org.fastorm.memory.IMemoryManager;
 import org.fastorm.memory.MemoryManager;
@@ -24,7 +26,10 @@ import org.fastorm.temp.IPrimaryTempTableMaker;
 import org.fastorm.temp.ISecondaryTempTableMaker;
 import org.fastorm.temp.ITempTableMakerFactory;
 import org.fastorm.temp.impl.AllEntitiesTempTableMaker;
+import org.fastorm.temp.impl.IMutableItem;
 import org.fastorm.temp.impl.TempTableMakerFactory;
+import org.fastorm.utilities.callbacks.ICallback;
+import org.fastorm.utilities.functions.IFunction1;
 import org.fastorm.utilities.maps.ISimpleMap;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -132,7 +137,28 @@ public class FastOrm implements IFastOrmContainer {
 	@Override
 	public <T> IMutate<T> makeMutator() {
 		checkSetup();
-		return null;
+		return new IMutate<T>() {
+
+			@Override
+			public void mutate(IFunction1<T, T> mutateFunction) {
+
+			}
+
+			@Override
+			public void mutateMap(IFunction1<Map<String, Object>, Map<String, Object>> mutateFunction) {
+
+			}
+
+			@Override
+			public void readModifyWrite(IPrimaryTempTableMaker maker, ICallback<IMutableDataSet> callback) {
+
+			}
+
+			@Override
+			public void readModifyWrite(AllEntitiesTempTableMaker maker, ICallback<IMutableItem> iCallback) {
+
+			}
+		};
 	}
 
 	private void checkSetup() {

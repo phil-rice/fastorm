@@ -6,10 +6,10 @@ import org.fastorm.api.IFastOrmContainer;
 import org.fastorm.constants.FastOrmConstants;
 import org.fastorm.constants.FastOrmKeys;
 import org.fastorm.constants.FastOrmStringTemplates;
+import org.fastorm.context.OrmReadContext;
 import org.fastorm.dataGenerator.IGenerator;
 import org.fastorm.dataGenerator.SizeIntegerGenerator;
 import org.fastorm.defns.IEntityDefn;
-import org.fastorm.reader.impl.OrmReadContext;
 import org.fastorm.temp.IPrimaryTempTableMaker;
 import org.fastorm.utilities.maps.Maps;
 

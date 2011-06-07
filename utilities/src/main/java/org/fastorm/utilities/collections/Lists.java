@@ -22,6 +22,12 @@ public class Lists {
 		return indexTwo;
 	}
 
+	public static <T> void addAllUnique(List<T> target, Iterable<T> toBeAdded) {
+		for (T t : toBeAdded)
+			if (!target.contains(t))
+				target.add(t);
+	}
+
 	public static <T> int indexOf(List<T> listOne, List<T> listTwo, T object) {
 		int indexOne = identityIndexOf(listOne, object);
 		if (indexOne != -1)

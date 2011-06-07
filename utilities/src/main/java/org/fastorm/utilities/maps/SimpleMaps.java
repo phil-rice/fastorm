@@ -8,6 +8,7 @@ import java.util.Map;
 import junit.framework.Assert;
 
 import org.fastorm.utilities.collections.Iterables;
+import org.fastorm.utilities.collections.Lists;
 import org.fastorm.utilities.exceptions.WrappedException;
 import org.fastorm.utilities.functions.IFunction1;
 
@@ -15,6 +16,21 @@ public class SimpleMaps {
 
 	public static <K, V> ISimpleMap<K, V> makeMap(Object... kvs) {
 		return fromMap(Maps.<K, V> makeLinkedMap(kvs));
+	}
+
+	public static <K, V> ISimpleMapWithIndex<K, V> makeMapWithIndex(Object... kvs) {
+		return withIndexfromMap(Maps.<K, V> makeLinkedMap(kvs));
+	}
+
+	public static <K, V> IListOfSimpleMapWithIndex<K, V> makeList(ISimpleMapWithIndex<K, V>... maps) {
+		List<K> keys = Lists.newList();
+		for (ISimpleMapWithIndex<K, V> map : maps)
+			Lists.addAllUnique(keys, map.keys());
+		ListOfSimpleMapWithIndex<K, V> result = new ListOfSimpleMapWithIndex<K, V>(keys);
+		for (ISimpleMapWithIndex<K, V> map : maps)
+			result.add(map);
+		return result;
+
 	}
 
 	public static <K, V> ISimpleMap<K, V> fromMap(final Map<K, V> map) {
@@ -34,7 +50,29 @@ public class SimpleMaps {
 		};
 	}
 
-	public static <K, V> Map<K, V> merge(Iterable<ISimpleMap<K, V>> maps) {
+	public static <K, V> ISimpleMapWithIndex<K, V> withIndexfromMap(final Map<K, V> map) {
+		return new ISimpleMapWithIndex<K, V>() {
+			private final List<K> keyList = Iterables.list(map.keySet());
+
+			@Override
+			public V get(K key) {
+				return map.get(key);
+			}
+
+			@Override
+			public List<K> keys() {
+				return keyList;
+			}
+
+			@Override
+			public V getByIndex(int keyIndex) {
+				return get(keyList.get(keyIndex));
+			}
+
+		};
+	}
+
+	public static <K, V> Map<K, V> merge(Iterable<? extends ISimpleMap<K, V>> maps) {
 		Map<K, V> result = new HashMap<K, V>();
 		for (ISimpleMap<K, V> map : maps)
 			for (K key : map.keys())

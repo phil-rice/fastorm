@@ -6,13 +6,13 @@ import java.util.Map;
 import org.fastorm.api.IFastOrmContainer;
 import org.fastorm.constants.FastOrmKeys;
 import org.fastorm.constants.FastOrmStringTemplates;
+import org.fastorm.context.OrmReadContext;
 import org.fastorm.dataGenerator.ChildForeignKeyGenerator;
 import org.fastorm.dataGenerator.IGenerator;
 import org.fastorm.dataGenerator.SizeIntegerGenerator;
 import org.fastorm.dataSet.IDrainedTableData;
 import org.fastorm.dataSet.IGetDrainedTableForEntityDefn;
 import org.fastorm.defns.IEntityDefn;
-import org.fastorm.reader.impl.OrmReadContext;
 import org.fastorm.temp.ISecondaryTempTableMaker;
 import org.fastorm.utilities.maps.ISimpleMap;
 import org.fastorm.utilities.maps.Maps;
@@ -79,7 +79,7 @@ public class OneToMany extends AbstractSqlExecutor implements ISecondaryTempTabl
 	@Override
 	public Object findDataIn(IGetDrainedTableForEntityDefn getter, IEntityDefn parentDefn, int parentIndex, IEntityDefn childDefn, int childIndex) {
 		IDrainedTableData parentData = getter.get(parentDefn);
-		Object parentIdValue = parentData.getMap(parentIndex).get(parentDefn.getIdColumn());
+		Object parentIdValue = parentData.get(parentIndex).get(parentDefn.getIdColumn());
 
 		IDrainedTableData childData = getter.get(childDefn);
 		String childLink = childDefn.parameters().get(FastOrmKeys.childLink);

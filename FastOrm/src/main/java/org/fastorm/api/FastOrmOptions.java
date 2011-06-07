@@ -9,16 +9,18 @@ public class FastOrmOptions {
 	public final boolean optimiseLeafAccess;
 	public final int batchSize;
 	public final int maxForOneThread;
+	public int byteBufferSize;
 
 	public FastOrmOptions() {
-		this(true, 1000, 100, true, true, true, true);
+		this(true, 1000, 100, 1000000, true, true, true, true);
 
 	}
 
-	public FastOrmOptions(boolean indexPrimaryTables, int batchSize, int maxForOneThread, boolean indexSecondaryTables, boolean useTemporaryTables, boolean dropProceduresAtStartOfRun, boolean optimiseLeafAccess) {
+	public FastOrmOptions(boolean indexPrimaryTables, int batchSize, int maxForOneThread, int byteBufferSize, boolean indexSecondaryTables, boolean useTemporaryTables, boolean dropProceduresAtStartOfRun, boolean optimiseLeafAccess) {
 		this.indexPrimaryTables = indexPrimaryTables;
 		this.batchSize = batchSize;
 		this.maxForOneThread = maxForOneThread;
+		this.byteBufferSize = byteBufferSize;
 		this.indexSecondaryTables = indexSecondaryTables;
 		this.useTemporaryTables = useTemporaryTables;
 		this.createAnddropProceduresAtStartOfRun = dropProceduresAtStartOfRun;
@@ -34,28 +36,32 @@ public class FastOrmOptions {
 	}
 
 	public FastOrmOptions withTempTables(boolean useTemporaryTables) {
-		return new FastOrmOptions(indexPrimaryTables, batchSize, maxForOneThread, indexSecondaryTables, useTemporaryTables, createAnddropProceduresAtStartOfRun, optimiseLeafAccess);
+		return new FastOrmOptions(indexPrimaryTables, batchSize, maxForOneThread, byteBufferSize, indexSecondaryTables, useTemporaryTables, createAnddropProceduresAtStartOfRun, optimiseLeafAccess);
 	}
 
 	public FastOrmOptions withBatchSize(int batchSize) {
-		return new FastOrmOptions(indexPrimaryTables, batchSize, maxForOneThread, indexSecondaryTables, useTemporaryTables, createAnddropProceduresAtStartOfRun, optimiseLeafAccess);
+		return new FastOrmOptions(indexPrimaryTables, batchSize, maxForOneThread, byteBufferSize, indexSecondaryTables, useTemporaryTables, createAnddropProceduresAtStartOfRun, optimiseLeafAccess);
+	}
+
+	public FastOrmOptions withByteBufferSize(int byteBufferSize) {
+		return new FastOrmOptions(indexPrimaryTables, batchSize, maxForOneThread, byteBufferSize, indexSecondaryTables, useTemporaryTables, createAnddropProceduresAtStartOfRun, optimiseLeafAccess);
 	}
 
 	public FastOrmOptions withIndexSecondaryTables(boolean indexSecondaryTables) {
-		return new FastOrmOptions(indexPrimaryTables, batchSize, maxForOneThread, indexSecondaryTables, useTemporaryTables, createAnddropProceduresAtStartOfRun, optimiseLeafAccess);
+		return new FastOrmOptions(indexPrimaryTables, batchSize, maxForOneThread, byteBufferSize, indexSecondaryTables, useTemporaryTables, createAnddropProceduresAtStartOfRun, optimiseLeafAccess);
 
 	}
 
 	public FastOrmOptions withMaxInOneThread(int maxForOneThread) {
-		return new FastOrmOptions(indexPrimaryTables, batchSize, maxForOneThread, indexSecondaryTables, useTemporaryTables, createAnddropProceduresAtStartOfRun, optimiseLeafAccess);
+		return new FastOrmOptions(indexPrimaryTables, batchSize, maxForOneThread, byteBufferSize, indexSecondaryTables, useTemporaryTables, createAnddropProceduresAtStartOfRun, optimiseLeafAccess);
 	}
 
 	public FastOrmOptions withCreateAndDropProceduresAtStart(boolean createAnddropProceduresAtStartOfRun) {
-		return new FastOrmOptions(indexPrimaryTables, batchSize, maxForOneThread, indexSecondaryTables, useTemporaryTables, createAnddropProceduresAtStartOfRun, optimiseLeafAccess);
+		return new FastOrmOptions(indexPrimaryTables, batchSize, maxForOneThread, byteBufferSize, indexSecondaryTables, useTemporaryTables, createAnddropProceduresAtStartOfRun, optimiseLeafAccess);
 	}
 
 	public FastOrmOptions withOptimiseLeafAccess(boolean optimiseLeafAccess) {
-		return new FastOrmOptions(indexPrimaryTables, batchSize, maxForOneThread, indexSecondaryTables, useTemporaryTables, createAnddropProceduresAtStartOfRun, optimiseLeafAccess);
+		return new FastOrmOptions(indexPrimaryTables, batchSize, maxForOneThread, byteBufferSize, indexSecondaryTables, useTemporaryTables, createAnddropProceduresAtStartOfRun, optimiseLeafAccess);
 	}
 
 	@Override

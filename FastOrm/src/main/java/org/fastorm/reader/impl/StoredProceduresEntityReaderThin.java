@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.fastorm.api.IFastOrmContainer;
+import org.fastorm.context.OrmReadContext;
 import org.fastorm.dataSet.IDataSet;
 import org.fastorm.dataSet.IDrainedTableData;
 import org.fastorm.dataSet.impl.DataSetBuilder;
@@ -38,7 +39,7 @@ public class StoredProceduresEntityReaderThin implements IEntityReaderThin {
 				IDataSet result = fastOrm.getJdbcTemplate().execute(new ConnectionCallback<IDataSet>() {
 					@Override
 					public IDataSet doInConnection(Connection connection) throws SQLException, DataAccessException {
-						final OrmReadContext ormReadContext = new OrmReadContext(connection);
+						final OrmReadContext ormReadContext = new OrmReadContext(fastOrm, connection);
 						class DropAndCreateStoredProcedures implements IMakerAndEntityDefnVisitor {
 							@Override
 							public void acceptPrimary(IPrimaryTempTableMaker maker, IEntityDefn primary) {
@@ -104,7 +105,7 @@ public class StoredProceduresEntityReaderThin implements IEntityReaderThin {
 								return ormReadContext.get(child);
 							}
 						}, new DataSetBuilder(), total);
-						if (last.getPrimaryTable().size() == 0)
+						if (last.size() == 0)
 							return null;
 						else
 							return last;

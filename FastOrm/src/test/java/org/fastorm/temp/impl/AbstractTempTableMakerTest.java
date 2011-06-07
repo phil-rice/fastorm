@@ -15,12 +15,13 @@ import org.fastorm.api.IFastOrmContainer;
 import org.fastorm.api.impl.FastOrm;
 import org.fastorm.constants.FastOrmKeys;
 import org.fastorm.constants.FastOrmTestValues;
+import org.fastorm.context.OrmReadContext;
 import org.fastorm.dataSet.IGetDrainedTableForEntityDefn;
 import org.fastorm.defns.IEntityDefn;
 import org.fastorm.defns.impl.EntityDefn;
-import org.fastorm.reader.impl.OrmReadContext;
 import org.fastorm.temp.IPrimaryTempTableMaker;
 import org.fastorm.temp.ISecondaryTempTableMaker;
+import org.fastorm.utilities.annotations.IntegrationTest;
 import org.fastorm.utilities.callbacks.ICallback;
 import org.fastorm.utilities.exceptions.WrappedException;
 import org.fastorm.utilities.functions.IFunction1;
@@ -32,6 +33,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ConnectionCallback;
 import org.springframework.jdbc.core.JdbcTemplate;
 
+@IntegrationTest
 public abstract class AbstractTempTableMakerTest extends TestCase implements IIntegrationTest {
 
 	protected DataSource dataSource;
@@ -73,7 +75,7 @@ public abstract class AbstractTempTableMakerTest extends TestCase implements IIn
 			@Override
 			public Void doInConnection(Connection con) throws SQLException, DataAccessException {
 				try {
-					callback.process(new OrmReadContext(con));
+					callback.process(new OrmReadContext(fastOrm5, con));
 				} catch (Exception e) {
 					throw WrappedException.wrap(e);
 				}
@@ -87,7 +89,7 @@ public abstract class AbstractTempTableMakerTest extends TestCase implements IIn
 			@Override
 			public T doInConnection(Connection con) throws SQLException, DataAccessException {
 				try {
-					T result = fn.apply(new OrmReadContext(con));
+					T result = fn.apply(new OrmReadContext(fastOrm5, con));
 					if (result == null)
 						throw new NullPointerException();
 					return result;

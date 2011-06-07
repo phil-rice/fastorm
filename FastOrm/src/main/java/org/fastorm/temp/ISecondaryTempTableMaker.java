@@ -4,10 +4,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.fastorm.api.IFastOrmContainer;
+import org.fastorm.context.OrmReadContext;
 import org.fastorm.dataGenerator.IGenerator;
 import org.fastorm.dataSet.IGetDrainedTableForEntityDefn;
 import org.fastorm.defns.IEntityDefn;
-import org.fastorm.reader.impl.OrmReadContext;
 
 public interface ISecondaryTempTableMaker {
 

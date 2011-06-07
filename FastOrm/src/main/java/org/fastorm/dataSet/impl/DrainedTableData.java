@@ -34,7 +34,7 @@ public class DrainedTableData implements IDrainedTableData {
 	}
 
 	@Override
-	public ISimpleMapWithIndex<String, Object> getMap(int i) {
+	public ISimpleMapWithIndex<String, Object> get(int i) {
 		return data[i];
 	}
 
@@ -81,7 +81,7 @@ public class DrainedTableData implements IDrainedTableData {
 			for (int i = 0; i < index; i++) {
 				DrainedLine item = data[i];
 				Object key = item.getByIndex(columnIndex);
-				ISimpleMapWithIndex<String, Object> itemValue = getMap(i);
+				ISimpleMapWithIndex<String, Object> itemValue = get(i);
 				Maps.addToList(map, key, itemValue);
 			}
 		}
@@ -98,5 +98,10 @@ public class DrainedTableData implements IDrainedTableData {
 	@Override
 	public int indexOf(String key) {
 		return commonData.getKeys().indexOf(key);
+	}
+
+	@Override
+	public List<String> keys() {
+		return commonData.getKeys();
 	}
 }

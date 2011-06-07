@@ -22,13 +22,14 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.fastorm.api.FastOrmOptions;
 import org.fastorm.api.IFastOrmContainer;
 import org.fastorm.constants.FastOrmTestValues;
+import org.fastorm.context.OrmReadContext;
 import org.fastorm.dataSet.IDrainedTableData;
 import org.fastorm.dataSet.IGetDrainedTableForEntityDefn;
 import org.fastorm.defns.IEntityDefn;
 import org.fastorm.defns.impl.EntityDefn;
-import org.fastorm.reader.impl.OrmReadContext;
 import org.fastorm.sql.SysOutSqlLogger;
 import org.fastorm.utilities.callbacks.ICallback;
 import org.fastorm.utilities.collections.Lists;
@@ -64,7 +65,8 @@ public class OneToManyTempTableMakerTest extends AbstractTempTableMakerTest {
 
 	public void testPopulate() {
 		makePrimaryAndChildTables();
-		final IFastOrmContainer fastOrm5 = fastOrm.withBatchSize(5).withSqlLogger(new SysOutSqlLogger()).getContainer();
+		FastOrmOptions options = fastOrm.getOptions().withOptimiseLeafAccess(false);
+		final IFastOrmContainer fastOrm5 = fastOrm.withOptions(options).withBatchSize(5).withSqlLogger(new SysOutSqlLogger()).getContainer();
 		sqlHelper.insert(childTableName, childIdColumn, 1, childLinkColumn, 1);
 		sqlHelper.insert(childTableName, childIdColumn, 2, childLinkColumn, 1);
 		sqlHelper.insert(childTableName, childIdColumn, 3, childLinkColumn, 1);
@@ -119,12 +121,12 @@ public class OneToManyTempTableMakerTest extends AbstractTempTableMakerTest {
 		IDrainedTableData table = getter.get(child);
 		assertEquals(6, table.size());
 		assertEquals(child, table.getEntityDefn());
-		SimpleMaps.assertEquals(table.getMap(0), "childidcolumn", 0, "childData", "childData_0", "childLinkValue", 5);
-		SimpleMaps.assertEquals(table.getMap(1), "childidcolumn", 1, "childData", "childData_1", "childLinkValue", 5);
-		SimpleMaps.assertEquals(table.getMap(2), "childidcolumn", 2, "childData", "childData_2", "childLinkValue", 5);
-		SimpleMaps.assertEquals(table.getMap(3), "childidcolumn", 3, "childData", "childData_3", "childLinkValue", 6);
-		SimpleMaps.assertEquals(table.getMap(4), "childidcolumn", 4, "childData", "childData_4", "childLinkValue", 8);
-		SimpleMaps.assertEquals(table.getMap(5), "childidcolumn", 5, "childData", "childData_5", "childLinkValue", 8);
+		SimpleMaps.assertEquals(table.get(0), "childidcolumn", 0, "childData", "childData_0", "childLinkValue", 5);
+		SimpleMaps.assertEquals(table.get(1), "childidcolumn", 1, "childData", "childData_1", "childLinkValue", 5);
+		SimpleMaps.assertEquals(table.get(2), "childidcolumn", 2, "childData", "childData_2", "childLinkValue", 5);
+		SimpleMaps.assertEquals(table.get(3), "childidcolumn", 3, "childData", "childData_3", "childLinkValue", 6);
+		SimpleMaps.assertEquals(table.get(4), "childidcolumn", 4, "childData", "childData_4", "childLinkValue", 8);
+		SimpleMaps.assertEquals(table.get(5), "childidcolumn", 5, "childData", "childData_5", "childLinkValue", 8);
 		assertEquals(0, table.getIdColumnIndex());
 	}
 
@@ -137,17 +139,17 @@ public class OneToManyTempTableMakerTest extends AbstractTempTableMakerTest {
 		assertEquals(6, childTable.size());
 		assertTrue(table.getIdColumnIndex() != -1);
 		assertEquals(fastOrm5.getEntityDefn(), table.getEntityDefn());
-		SimpleMaps.assertEquals(table.getMap(0), FastOrmTestValues.primaryIdColumn, 5, "data", "data_5", childEntityName, expectedChildren(childTable, 0, 1, 2));
-		SimpleMaps.assertEquals(table.getMap(1), FastOrmTestValues.primaryIdColumn, 6, "data", "data_6", childEntityName, expectedChildren(childTable, 3));
-		SimpleMaps.assertEquals(table.getMap(2), FastOrmTestValues.primaryIdColumn, 7, "data", "data_7", childEntityName, expectedChildren(childTable));
-		SimpleMaps.assertEquals(table.getMap(3), FastOrmTestValues.primaryIdColumn, 8, "data", "data_8", childEntityName, expectedChildren(childTable, 4, 5));
-		SimpleMaps.assertEquals(table.getMap(4), FastOrmTestValues.primaryIdColumn, 9, "data", "data_9", childEntityName, expectedChildren(childTable));
+		SimpleMaps.assertEquals(table.get(0), FastOrmTestValues.primaryIdColumn, 5, "data", "data_5", childEntityName, expectedChildren(childTable, 0, 1, 2));
+		SimpleMaps.assertEquals(table.get(1), FastOrmTestValues.primaryIdColumn, 6, "data", "data_6", childEntityName, expectedChildren(childTable, 3));
+		SimpleMaps.assertEquals(table.get(2), FastOrmTestValues.primaryIdColumn, 7, "data", "data_7", childEntityName, expectedChildren(childTable));
+		SimpleMaps.assertEquals(table.get(3), FastOrmTestValues.primaryIdColumn, 8, "data", "data_8", childEntityName, expectedChildren(childTable, 4, 5));
+		SimpleMaps.assertEquals(table.get(4), FastOrmTestValues.primaryIdColumn, 9, "data", "data_9", childEntityName, expectedChildren(childTable));
 	}
 
 	private List<ISimpleMapWithIndex<String, Object>> expectedChildren(IDrainedTableData childTable, int... indices) {
 		List<ISimpleMapWithIndex<String, Object>> result = Lists.newList();
 		for (int i : indices)
-			result.add(childTable.getMap(i));
+			result.add(childTable.get(i));
 		return result;
 	}
 

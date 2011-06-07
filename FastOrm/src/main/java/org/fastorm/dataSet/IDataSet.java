@@ -1,11 +1,7 @@
 package org.fastorm.dataSet;
 
-import org.fastorm.utilities.collections.ISimpleList;
-import org.fastorm.utilities.maps.ISimpleMap;
+import org.fastorm.utilities.maps.IListOfSimpleMapWithIndex;
 
-public interface IDataSet extends ISimpleList<ISimpleMap<String, Object>> {
-
-	IDrainedTableData getPrimaryTable();
-
+public interface IDataSet extends IListOfSimpleMapWithIndex<String, Object> {
 
 }

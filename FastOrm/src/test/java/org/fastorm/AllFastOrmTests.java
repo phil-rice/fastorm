@@ -9,10 +9,10 @@ import org.fastorm.sqlDialects.AllSqlDialectTests;
 import org.fastorm.temp.impl.AllTempImplTests;
 import org.fastorm.xmlToMap.AllXmlToMapTests;
 
-public class AllTests {
+public class AllFastOrmTests {
 
 	public static Test suite() {
-		TestSuite suite = new TestSuite(AllTests.class.getName());
+		TestSuite suite = new TestSuite(AllFastOrmTests.class.getName());
 		// $JUnit-BEGIN$
 		suite.addTest(AllXmlToMapTests.suite());
 		suite.addTest(AllDefnsTests.suite());

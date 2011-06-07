@@ -25,7 +25,7 @@ public class MapToEntityDefn {
 				Map<String, Object> value = (Map<String, Object>) entry.getValue();
 				childList.add(create(factory, parameters, value));
 			}
-		ISecondaryTempTableMaker maker = parentParameters == null ? null : factory.findMakerFor(parentParameters, parameters);
+		ISecondaryTempTableMaker maker = parentParameters == null ? null : factory.findReaderMakerFor(parentParameters, parameters);
 		return new EntityDefn(maker, Collections.unmodifiableMap(parameters), Collections.unmodifiableList(childList));
 	}
 }

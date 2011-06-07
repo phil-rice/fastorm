@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.fastorm.api.IFastOrm;
 import org.fastorm.api.IFastOrmContainer;
 import org.fastorm.dataGenerator.IExtraDataGenerator;
 import org.fastorm.dataGenerator.NoExtraDataGenerator;
@@ -52,7 +53,7 @@ public interface IEntityDefn {
 
 		public static int countOfSelfAndDescendents(IEntityDefn defn) {
 			final AtomicInteger result = new AtomicInteger();
-			walk(defn, new IEntityDefnVisitor() {
+			walk(defn, new IEntityDefnParentChildVisitor() {
 				@Override
 				public void acceptPrimary(IEntityDefn primary) throws Exception {
 					result.incrementAndGet();
@@ -70,7 +71,7 @@ public interface IEntityDefn {
 			final Map<IEntityDefn, Map<String, String>> entityToColumnsAndTypes = findMinimumColumns(fastOrm);
 			final SqlHelper sqlHelper = new SqlHelper(fastOrm.getJdbcTemplate());
 			sqlHelper.dropAllTables();
-			walk(fastOrm.getEntityDefn(), new IEntityDefnVisitor() {
+			walk(fastOrm.getEntityDefn(), new IEntityDefnParentChildVisitor() {
 				@Override
 				public void acceptPrimary(IEntityDefn primary) throws Exception {
 					extraDataGenerator.enrichColumnsForMakingTables(entityToColumnsAndTypes, primary);
@@ -82,7 +83,7 @@ public interface IEntityDefn {
 				}
 
 			});
-			walk(fastOrm.getEntityDefn(), new IEntityDefnVisitor() {
+			walk(fastOrm.getEntityDefn(), new IEntityDefnParentChildVisitor() {
 				@Override
 				public void acceptPrimary(IEntityDefn primary) {
 					sqlHelper.create(primary.getTableName(), Maps.toArray(entityToColumnsAndTypes.get(primary), new String[0]));
@@ -170,12 +171,28 @@ public interface IEntityDefn {
 
 		private static <To, From> void visitChildren(IFastOrmContainer fastOrm, IEntityDefn parent, IMakerAndEntityDefnFoldVisitor<From, To> visitor, IAggregator<From, To> aggregator) {
 			for (IEntityDefn child : parent.getChildren()) {
-				aggregator.add(visitor.acceptChild(fastOrm.getTempTableMakerFactory().findMakerFor(parent.parameters(), child.parameters()), parent, child));
+				aggregator.add(visitor.acceptChild(fastOrm.getTempTableMakerFactory().findReaderMakerFor(parent.parameters(), child.parameters()), parent, child));
 				visitChildren(fastOrm, child, visitor, aggregator);
 			}
 		}
 
-		public static void walk(IEntityDefn primary, IEntityDefnVisitor visitor) {
+		public static void walk(IEntityDefn entityDefn, IEntityDefnVisitor visitor) {
+			try {
+				visitor.accept(entityDefn);
+				visitChildren(entityDefn, visitor);
+			} catch (Exception e) {
+				throw WrappedException.wrap(e);
+			}
+		}
+
+		private static void visitChildren(IEntityDefn parent, IEntityDefnVisitor visitor) throws Exception {
+			for (IEntityDefn child : parent.getChildren()) {
+				visitor.accept(child);
+				visitChildren(child, visitor);
+			}
+		}
+
+		public static void walk(IEntityDefn primary, IEntityDefnParentChildVisitor visitor) {
 			try {
 				visitor.acceptPrimary(primary);
 				visitChildren(primary, visitor);
@@ -184,14 +201,10 @@ public interface IEntityDefn {
 			}
 		}
 
-		private static void visitChildren(IEntityDefn parent, IEntityDefnVisitor visitor) {
-			try {
-				for (IEntityDefn child : parent.getChildren()) {
-					visitor.acceptChild(parent, child);
-					visitChildren(child, visitor);
-				}
-			} catch (Exception e) {
-				throw WrappedException.wrap(e);
+		private static void visitChildren(IEntityDefn parent, IEntityDefnParentChildVisitor visitor) throws Exception {
+			for (IEntityDefn child : parent.getChildren()) {
+				visitor.acceptChild(parent, child);
+				visitChildren(child, visitor);
 			}
 		}
 
@@ -205,6 +218,24 @@ public interface IEntityDefn {
 			}
 		}
 
+		public static void walk(IFastOrm fastOrm, IMutableMakerAndEntityDefnVisitor visitor) {
+			try {
+				IEntityDefn primary = fastOrm.getEntityDefn();
+				IFastOrmContainer container = fastOrm.getContainer();
+				visitor.accept(container.getTempTableMakerFactory().findMutatingMakerFor(primary), primary);
+				visitChildren(container, primary, visitor);
+			} catch (Exception e) {
+				throw WrappedException.wrap(e);
+			}
+		}
+
+		private static void visitChildren(IFastOrmContainer fastOrm, IEntityDefn parent, IMutableMakerAndEntityDefnVisitor visitor) throws Exception {
+			for (IEntityDefn child : parent.getChildren()) {
+				visitor.accept(fastOrm.getTempTableMakerFactory().findMutatingMakerFor(child), child);
+				visitChildren(fastOrm, child, visitor);
+			}
+		}
+
 		public static void walkAndTime(IFastOrmContainer fastOrm, IMakerAndEntityDefnVisitor visitor, ICallback<Long> timeCallback) {
 			long startTime = System.nanoTime();
 			try {
@@ -215,14 +246,10 @@ public interface IEntityDefn {
 			}
 		}
 
-		private static void visitChildren(IFastOrmContainer fastOrm, IEntityDefn parent, IMakerAndEntityDefnVisitor visitor) {
-			try {
-				for (IEntityDefn child : parent.getChildren()) {
-					visitor.acceptChild(fastOrm.getTempTableMakerFactory().findMakerFor(parent.parameters(), child.parameters()), parent, child);
-					visitChildren(fastOrm, child, visitor);
-				}
-			} catch (Exception e) {
-				throw WrappedException.wrap(e);
+		private static void visitChildren(IFastOrmContainer fastOrm, IEntityDefn parent, IMakerAndEntityDefnVisitor visitor) throws Exception {
+			for (IEntityDefn child : parent.getChildren()) {
+				visitor.acceptChild(fastOrm.getTempTableMakerFactory().findReaderMakerFor(parent.parameters(), child.parameters()), parent, child);
+				visitChildren(fastOrm, child, visitor);
 			}
 		}
 

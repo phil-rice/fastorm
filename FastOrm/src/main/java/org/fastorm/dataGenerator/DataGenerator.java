@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.Random;
 
 import org.fastorm.defns.IEntityDefn;
-import org.fastorm.defns.IEntityDefnVisitor;
+import org.fastorm.defns.IEntityDefnParentChildVisitor;
 import org.fastorm.utilities.exceptions.WrappedException;
 import org.fastorm.utilities.maps.Maps;
 
@@ -21,7 +21,7 @@ public class DataGenerator {
 			final Map<IEntityDefn, Integer> sizeMap = Maps.newMap();
 			for (int i = 0; i < size; i++) {
 				final Map<IEntityDefn, List<Map<String, Object>>> data = Maps.newMap();
-				IEntityDefn.Utils.walk(primary, new IEntityDefnVisitor() {
+				IEntityDefn.Utils.walk(primary, new IEntityDefnParentChildVisitor() {
 					@Override
 					public void acceptPrimary(IEntityDefn primary) {
 						data.put(primary, new ArrayList<Map<String, Object>>());
@@ -38,7 +38,7 @@ public class DataGenerator {
 				for (IEntityDefn child1 : primary.getChildren())
 					generateFor(generators, data, sizeMap, primary, child1);
 				visitor.acceptPrimary(data);
-				IEntityDefn.Utils.walk(primary, new IEntityDefnVisitor() {
+				IEntityDefn.Utils.walk(primary, new IEntityDefnParentChildVisitor() {
 					@Override
 					public void acceptPrimary(IEntityDefn primary) {
 						Maps.add(sizeMap, primary, data.get(primary).size());

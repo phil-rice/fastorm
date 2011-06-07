@@ -70,7 +70,7 @@ public class SimpleListsTest extends TestCase {
 		assertEquals(ints.length, simpleList.size());
 		for (int i = 0; i < ints.length; i++)
 			assertEquals(ints[i], simpleList.get(i));
-		assertEquals(Arrays.asList(ints), simpleList.slowList());
+		assertEquals(Arrays.asList(ints), SimpleLists.asList(simpleList));
 	}
 
 }

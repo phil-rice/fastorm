@@ -6,6 +6,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.fastorm.defns.IEntityDefn;
+import org.fastorm.temp.IMutatingTempTableMaker;
 import org.fastorm.temp.ISecondaryTempTableMaker;
 import org.fastorm.temp.ITempTableMakerFactory;
 
@@ -22,7 +24,7 @@ public class TempTableMakerFactory implements ITempTableMakerFactory {
 	}
 
 	@Override
-	public ISecondaryTempTableMaker findMakerFor(Map<String, String> parent, Map<String, String> child) {
+	public ISecondaryTempTableMaker findReaderMakerFor(Map<String, String> parent, Map<String, String> child) {
 		if (parent == null)
 			throw new NullPointerException();
 		if (child == null)
@@ -32,6 +34,11 @@ public class TempTableMakerFactory implements ITempTableMakerFactory {
 				return maker;
 		}
 		throw new CannotDetermineTempTableMakerToUseException();
+	}
+
+	@Override
+	public IMutatingTempTableMaker findMutatingMakerFor(IEntityDefn entityDefn) {
+		return null;
 	}
 
 }

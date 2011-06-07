@@ -29,4 +29,5 @@ public interface IFastOrmContainer extends IFastOrm {
 	IEntityReaderThin getEntityReaderThin();
 
 	void shutdown();
+
 }
