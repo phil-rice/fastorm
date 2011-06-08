@@ -22,10 +22,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.fastorm.api.FastOrmOptions;
 import org.fastorm.api.IFastOrmContainer;
 import org.fastorm.constants.FastOrmTestValues;
-import org.fastorm.context.OrmReadContext;
+import org.fastorm.context.ReadContext;
 import org.fastorm.dataSet.IDrainedTableData;
 import org.fastorm.dataSet.IGetDrainedTableForEntityDefn;
 import org.fastorm.defns.IEntityDefn;
@@ -52,9 +51,9 @@ public class OneToManyTempTableMakerTest extends AbstractTempTableMakerTest {
 
 	public void testCreateTempTable() {
 		emptyDatabase();
-		execute(new ICallback<OrmReadContext>() {
+		execute(new ICallback<ReadContext>() {
 			@Override
-			public void process(OrmReadContext context) throws Exception {
+			public void process(ReadContext context) throws Exception {
 				maker.create(fastOrm, context, primary, child);
 			}
 		});
@@ -65,8 +64,7 @@ public class OneToManyTempTableMakerTest extends AbstractTempTableMakerTest {
 
 	public void testPopulate() {
 		makePrimaryAndChildTables();
-		FastOrmOptions options = fastOrm.getOptions().withOptimiseLeafAccess(false);
-		final IFastOrmContainer fastOrm5 = fastOrm.withOptions(options).withBatchSize(5).withSqlLogger(new SysOutSqlLogger()).getContainer();
+		final IFastOrmContainer fastOrm5 = fastOrm.withOptimiseLeafAccess(false).withBatchSize(5).withSqlLogger(new SysOutSqlLogger()).getContainer();
 		sqlHelper.insert(childTableName, childIdColumn, 1, childLinkColumn, 1);
 		sqlHelper.insert(childTableName, childIdColumn, 2, childLinkColumn, 1);
 		sqlHelper.insert(childTableName, childIdColumn, 3, childLinkColumn, 1);
@@ -79,9 +77,9 @@ public class OneToManyTempTableMakerTest extends AbstractTempTableMakerTest {
 	}
 
 	private void truncatePrimaryAndSecondary() {
-		execute(new ICallback<OrmReadContext>() {
+		execute(new ICallback<ReadContext>() {
 			@Override
-			public void process(OrmReadContext context) throws Exception {
+			public void process(ReadContext context) throws Exception {
 				primaryMaker.truncate(fastOrm, context);
 				maker.truncate(fastOrm, context, primary, child);
 			}
@@ -89,9 +87,9 @@ public class OneToManyTempTableMakerTest extends AbstractTempTableMakerTest {
 	}
 
 	private void populateSecondary(final IFastOrmContainer fastOrm5, final int page) {
-		execute(new ICallback<OrmReadContext>() {
+		execute(new ICallback<ReadContext>() {
 			@Override
-			public void process(OrmReadContext context) throws Exception {
+			public void process(ReadContext context) throws Exception {
 				primaryMaker.populate(fastOrm5, context, page);
 				maker.populate(fastOrm5, context, primary, child);
 			}
@@ -100,9 +98,9 @@ public class OneToManyTempTableMakerTest extends AbstractTempTableMakerTest {
 
 	private void makePrimaryAndChildTables() {
 		emptyDatabase();
-		execute(new ICallback<OrmReadContext>() {
+		execute(new ICallback<ReadContext>() {
 			@Override
-			public void process(OrmReadContext context) throws Exception {
+			public void process(ReadContext context) throws Exception {
 				primaryMaker.create(fastOrm5, context);
 				maker.create(fastOrm5, context, primary, child);
 

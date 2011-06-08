@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.fastorm.api.IFastOrm;
+import org.fastorm.api.IJob;
 import org.fastorm.api.IFastOrmContainer;
 import org.fastorm.dataGenerator.IExtraDataGenerator;
 import org.fastorm.dataGenerator.NoExtraDataGenerator;
@@ -218,10 +218,10 @@ public interface IEntityDefn {
 			}
 		}
 
-		public static void walk(IFastOrm fastOrm, IMutableMakerAndEntityDefnVisitor visitor) {
+		public static void walk(IJob job, IMutableMakerAndEntityDefnVisitor visitor) {
 			try {
-				IEntityDefn primary = fastOrm.getEntityDefn();
-				IFastOrmContainer container = fastOrm.getContainer();
+				IEntityDefn primary = job.getEntityDefn();
+				IFastOrmContainer container = job.getContainer();
 				visitor.accept(container.getTempTableMakerFactory().findMutatingMakerFor(primary), primary);
 				visitChildren(container, primary, visitor);
 			} catch (Exception e) {

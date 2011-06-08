@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
-import org.fastorm.api.FastOrmOptions;
+import org.fastorm.api.IJobDetails;
 import org.fastorm.constants.FastOrmKeys;
 import org.fastorm.dataSet.IGetDrainedTableForEntityDefn;
 import org.fastorm.dataSet.impl.DrainedLine;
@@ -23,17 +23,21 @@ public class MemoryManager implements IMemoryManager {
 	private final Map<IEntityDefn, IPool<DrainedLine>> lineMap = Maps.newMap();
 	private final Map<IEntityDefn, IPool<DrainedTableData>> tableMap = Maps.newMap();
 	private final List<IPool<?>> allPools = Lists.newList();
-	private final FastOrmOptions fastOrmOptions;
+	private final IJobDetails jobDetails;
 	private final PoolOptions poolOptions;
 
 	public MemoryManager() {
-		this.fastOrmOptions = new FastOrmOptions();
+		this.jobDetails = null;
 		this.poolOptions = new PoolOptions();
 	}
 
-	public MemoryManager(FastOrmOptions fastOrmOptions, PoolOptions poolOptions) {
-		this.fastOrmOptions = fastOrmOptions;
+	public MemoryManager(IJobDetails jobDetails, PoolOptions poolOptions) {
+		this.jobDetails = jobDetails;
 		this.poolOptions = poolOptions;
+	}
+
+	public IMemoryManager withJobDetails(IJobDetails jobDetails) {
+		return new MemoryManager(jobDetails, poolOptions);
 	}
 
 	@Override
@@ -82,7 +86,7 @@ public class MemoryManager implements IMemoryManager {
 		Map<String, String> parameters = defn.parameters();
 		String string = parameters.get(FastOrmKeys.maxLinesPerBatch);
 		Integer maxLinesPerBatch = Integer.parseInt(string);
-		int linesSize = fastOrmOptions.batchSize * maxLinesPerBatch;
+		int linesSize = jobDetails.getBatchSize() * maxLinesPerBatch;
 		return linesSize;
 	}
 
@@ -98,13 +102,8 @@ public class MemoryManager implements IMemoryManager {
 	}
 
 	@Override
-	public IMemoryManager withFastOrmOptions(FastOrmOptions fastOrmOptions) {
-		return new MemoryManager(fastOrmOptions, poolOptions);
-	}
-
-	@Override
 	public IMemoryManager withPoolOptions(PoolOptions poolOptions) {
-		return new MemoryManager(fastOrmOptions, poolOptions);
+		return new MemoryManager(jobDetails, poolOptions);
 	}
 
 }

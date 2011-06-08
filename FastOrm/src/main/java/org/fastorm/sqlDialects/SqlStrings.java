@@ -9,7 +9,7 @@ import java.util.Set;
 
 import org.antlr.stringtemplate.StringTemplate;
 import org.antlr.stringtemplate.StringTemplateGroup;
-import org.fastorm.api.FastOrmOptions;
+import org.fastorm.api.IJobDetails;
 import org.fastorm.constants.FastOrmKeys;
 import org.fastorm.utilities.exceptions.WrappedException;
 import org.fastorm.utilities.maps.IListOfSimpleMapWithIndex;
@@ -43,7 +43,7 @@ public class SqlStrings implements ISqlStrings {
 
 	@Override
 	@SuppressWarnings("rawtypes")
-	public String getFromTemplate(FastOrmOptions options, String templateName, Map<String, ? extends Object> map, Object... other) {
+	public String getFromTemplate(IJobDetails details, String templateName, Map<String, ? extends Object> map, Object... other) {
 		StringTemplate template = templateGroup.getInstanceOf(templateName);
 		Map formalArguments = template.getFormalArguments();
 		template.setAttributes(Maps.newMap());
@@ -52,7 +52,7 @@ public class SqlStrings implements ISqlStrings {
 				template.setAttribute(entry.getKey(), entry.getValue());
 		for (int i = 0; i < other.length; i += 2)
 			template.setAttribute((String) other[i + 0], other[i + 1]);
-		if (!options.useTemporaryTables)
+		if (!details.useTemporaryTables())
 			template.removeAttribute(FastOrmKeys.useTemporaryTable);
 		assert assertInAllParametersSet(template);
 		return template.toString();

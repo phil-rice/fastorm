@@ -5,7 +5,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 
 import org.fastorm.api.IFastOrmContainer;
-import org.fastorm.api.impl.FastOrmServices;
+import org.fastorm.api.impl.JobServices;
 import org.fastorm.dataSet.IDataSet;
 import org.fastorm.reader.IEntityReader;
 import org.fastorm.utilities.aggregators.IAggregator;
@@ -57,13 +57,13 @@ public class EntityReader<T> implements IEntityReader<T> {
 
 	@Override
 	public Future<Void> processAll(ICallback<T> callback) {
-		FastOrmServices optimisation = fastOrm.getServices();
+		JobServices optimisation = fastOrm.getServices();
 		return Iterables.processCallbacks(optimisation.service, getIterator(), callback);
 	}
 
 	@Override
 	public <Result> Future<IAggregator<T, Result>> merge(final IAggregator<T, Result> aggregator) {
-		final FastOrmServices optimisation = fastOrm.getServices();
+		final JobServices optimisation = fastOrm.getServices();
 		return optimisation.service.submit(new Callable<IAggregator<T, Result>>() {
 			@Override
 			public IAggregator<T, Result> call() throws Exception {
@@ -76,7 +76,7 @@ public class EntityReader<T> implements IEntityReader<T> {
 
 	@Override
 	public <Result> Future<IAggregator<Result, Result>> twoStageMerge(final IAggregator<Result, Result> middleAggregator, final Callable<IAggregator<T, Result>> leafAggregator) {
-		final FastOrmServices optimisation = fastOrm.getServices();
+		final JobServices optimisation = fastOrm.getServices();
 		return optimisation.service.submit(new Callable<IAggregator<Result, Result>>() {
 			@Override
 			public IAggregator<Result, Result> call() throws Exception {
@@ -89,7 +89,7 @@ public class EntityReader<T> implements IEntityReader<T> {
 
 	@Override
 	public <Result> Future<Result> reduce(final IAggregateFunction<Result> aggregateFunction, final IFoldFunction<T, Result> foldFunction, Result initial) {
-		final FastOrmServices optimisation = fastOrm.getServices();
+		final JobServices optimisation = fastOrm.getServices();
 		return Iterables.fold(optimisation.service, getDataSets(), new IFoldFunction<IDataSet, Result>() {
 			@Override
 			public Result apply(IDataSet value, Result initial) {

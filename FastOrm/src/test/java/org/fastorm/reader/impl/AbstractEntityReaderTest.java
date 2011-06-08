@@ -9,9 +9,9 @@ import java.util.Collections;
 
 import junit.framework.TestCase;
 
-import org.fastorm.api.IFastOrm;
+import org.fastorm.api.IJob;
 import org.fastorm.api.IFastOrmContainer;
-import org.fastorm.api.impl.FastOrm;
+import org.fastorm.api.impl.Job;
 import org.fastorm.dataSet.IDataSet;
 import org.fastorm.defns.IEntityDefn;
 import org.fastorm.defns.impl.EntityDefn;
@@ -22,7 +22,7 @@ import org.fastorm.utilities.maps.ISimpleMap;
 
 public class AbstractEntityReaderTest extends TestCase {
 
-	protected IFastOrm fastOrm;
+	protected IJob job;
 
 	public void testDataSets() {
 		checkDataSets();
@@ -31,7 +31,7 @@ public class AbstractEntityReaderTest extends TestCase {
 
 	private void checkDataSets(IDataSet... dataSets) {
 		EntityReaderThinMock mock = new EntityReaderThinMock(dataSets);
-		IFastOrmContainer expectedFastOrm = (IFastOrmContainer) fastOrm.withThinInterface(mock).withEntityDefn(new EntityDefn());
+		IFastOrmContainer expectedFastOrm = (IFastOrmContainer) job.withThinInterface(mock).withEntityDefn(new EntityDefn());
 		IEntityReader<ISimpleMap<String, Object>> reader = expectedFastOrm.makeReader();
 		mock.setExpectedFastOrm(expectedFastOrm);
 
@@ -50,11 +50,11 @@ public class AbstractEntityReaderTest extends TestCase {
 	@SuppressWarnings("unchecked")
 	protected void setUp() throws Exception {
 		IEntityDefn entityDefn = new EntityDefn(null, Collections.EMPTY_MAP, Collections.EMPTY_LIST);
-		fastOrm = makeFactory(entityDefn);
+		job = makeFactory(entityDefn);
 	}
 
-	protected IFastOrm makeFactory(IEntityDefn entityDefn) {
-		return new FastOrm().withEntityDefn(entityDefn);
+	protected IJob makeFactory(IEntityDefn entityDefn) {
+		return new Job().withEntityDefn(entityDefn);
 	}
 
 }

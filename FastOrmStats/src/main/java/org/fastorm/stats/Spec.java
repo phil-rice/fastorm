@@ -3,7 +3,7 @@ package org.fastorm.stats;
 import java.util.Arrays;
 import java.util.List;
 
-import org.fastorm.api.IFastOrm;
+import org.fastorm.api.IJob;
 import org.fastorm.stats.Spec.SpecContext;
 import org.fastorm.utilities.aggregators.IAggregator;
 import org.fastorm.utilities.collections.AbstractFindNextIterable;
@@ -11,22 +11,22 @@ import org.fastorm.utilities.collections.Iterables;
 import org.fastorm.utilities.exceptions.WrappedException;
 import org.fastorm.utilities.functions.IFunction1;
 
-public class Spec extends AbstractFindNextIterable<IFastOrm, SpecContext> {
+public class Spec extends AbstractFindNextIterable<IJob, SpecContext> {
 
 	private final List<ISpecStage> stages;
-	private final IFastOrm initial;
+	private final IJob initial;
 	private Integer databaseSize;
 
-	public Spec(IFastOrm initial, ISpecStage... stages) {
+	public Spec(IJob initial, ISpecStage... stages) {
 		this(initial, Arrays.asList(stages));
 	}
 
-	public Spec(IFastOrm initial, List<ISpecStage> stages) {
+	public Spec(IJob initial, List<ISpecStage> stages) {
 		this.initial = initial;
 		this.stages = stages;
 	}
 
-	private Spec(IFastOrm initial, Integer databaseSize, List<ISpecStage> stages) {
+	private Spec(IJob initial, Integer databaseSize, List<ISpecStage> stages) {
 		this.initial = initial;
 		this.databaseSize = databaseSize;
 		this.stages = stages;
@@ -43,26 +43,26 @@ public class Spec extends AbstractFindNextIterable<IFastOrm, SpecContext> {
 	}
 
 	@Override
-	protected IFastOrm findNext(SpecContext context) throws Exception {
+	protected IJob findNext(SpecContext context) throws Exception {
 		return context.findNext(initial);
 	}
 
 	public String title() {
 		String result = Iterables.aggregate(stages, new SpecStringAggregator(databaseSize == null ? null : "DatabaseSize", null) {
 			@Override
-			protected String toString(IFastOrm fastOrm, ISpecStage t) {
+			protected String toString(IJob job, ISpecStage t) {
 				return t.titleFor();
 			}
 		});
 		return result;
 	}
 
-	public String stringFor(IFastOrm fastOrm) {
-		return Iterables.aggregate(stages, new SpecStringAggregator(databaseSize == null ? null : String.format("%12s", databaseSize), fastOrm) {
+	public String stringFor(IJob job) {
+		return Iterables.aggregate(stages, new SpecStringAggregator(databaseSize == null ? null : String.format("%12s", databaseSize), job) {
 			@Override
-			protected String toString(IFastOrm fastOrm, ISpecStage t) {
-				String format = t.formatFor(fastOrm);
-				Object value = t.valueFor(fastOrm);
+			protected String toString(IJob job, ISpecStage t) {
+				String format = t.formatFor(job);
+				Object value = t.valueFor(job);
 				return String.format(format, value);
 			}
 		});
@@ -74,13 +74,13 @@ public class Spec extends AbstractFindNextIterable<IFastOrm, SpecContext> {
 	}
 
 	abstract static class SpecStringAggregator implements IAggregator<ISpecStage, String> {
-		abstract protected String toString(final IFastOrm fastOrm, ISpecStage t);
+		abstract protected String toString(final IJob job, ISpecStage t);
 
-		private final IFastOrm fastOrm;
+		private final IJob job;
 		private final StringBuilder builder;
 
-		private SpecStringAggregator(Object initialValue, IFastOrm fastOrm) {
-			this.fastOrm = fastOrm;
+		private SpecStringAggregator(Object initialValue, IJob job) {
+			this.job = job;
 			builder = new StringBuilder();
 			if (initialValue != null)
 				builder.append(initialValue);
@@ -90,7 +90,7 @@ public class Spec extends AbstractFindNextIterable<IFastOrm, SpecContext> {
 		public void add(ISpecStage t) {
 			if (builder.length() > 0)
 				builder.append(" ");
-			builder.append(toString(fastOrm, t));
+			builder.append(toString(job, t));
 
 		}
 
@@ -145,11 +145,11 @@ public class Spec extends AbstractFindNextIterable<IFastOrm, SpecContext> {
 			}
 		}
 
-		IFastOrm getFastOrm(IFastOrm initial) {
+		IJob getFastOrm(IJob initial) {
 			try {
 				if (finished)
 					return null;
-				IFastOrm value = initial;
+				IJob value = initial;
 				for (int i = 0; i < stageAndIndicies.size(); i++) {
 					SpecStageAndIndex specStageAndIndex = stageAndIndicies.get(i);
 					value = specStageAndIndex.specStage.makeFastOrm(value, specStageAndIndex.index);
@@ -164,8 +164,8 @@ public class Spec extends AbstractFindNextIterable<IFastOrm, SpecContext> {
 			}
 		}
 
-		public IFastOrm findNext(IFastOrm initial) {
-			IFastOrm result = getFastOrm(initial);
+		public IJob findNext(IJob initial) {
+			IJob result = getFastOrm(initial);
 			addOne();
 			return result;
 		}
@@ -176,7 +176,7 @@ public class Spec extends AbstractFindNextIterable<IFastOrm, SpecContext> {
 		}
 	}
 
-	public IFastOrm getInitialFastOrm() {
+	public IJob getInitialFastOrm() {
 		return initial;
 	}
 

@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
-import org.fastorm.api.IFastOrm;
+import org.fastorm.api.IJob;
 import org.fastorm.dataSet.IDataSet;
 import org.fastorm.defns.impl.EntityDefn;
 import org.fastorm.reader.IEntityReader;
@@ -47,7 +47,7 @@ public class EntityReaderTest extends AbstractEntityReaderTest {
 		}));
 
 		EntityReaderThinMock mock = new EntityReaderThinMock(dataSets);
-		IFastOrm expectedFastOrm = fastOrm.withThinInterface(mock).withEntityDefn(new EntityDefn());
+		IJob expectedFastOrm = job.withThinInterface(mock).withEntityDefn(new EntityDefn());
 		IEntityReader<ISimpleMap<String, Object>> reader = expectedFastOrm.makeReader();
 		mock.setExpectedFastOrm(expectedFastOrm);
 
@@ -77,7 +77,7 @@ public class EntityReaderTest extends AbstractEntityReaderTest {
 			}
 		});
 		EntityReaderThinMock mock = new EntityReaderThinMock(dataSets);
-		IFastOrm actualFastOrm = fastOrm.withThinInterface(mock).withEntityDefn(new EntityDefn());
+		IJob actualFastOrm = job.withThinInterface(mock).withEntityDefn(new EntityDefn());
 		IEntityReader<ISimpleMap<String, Object>> reader = actualFastOrm.makeReader();
 		mock.setExpectedFastOrm(actualFastOrm);
 

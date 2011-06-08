@@ -2,7 +2,7 @@ package org.fastorm.stats;
 
 import java.util.List;
 
-import org.fastorm.api.IFastOrm;
+import org.fastorm.api.IJob;
 
 public abstract class SpecStage<T> implements ISpecStage {
 
@@ -12,7 +12,7 @@ public abstract class SpecStage<T> implements ISpecStage {
 		this.values = values;
 	}
 
-	abstract protected IFastOrm transform(IFastOrm container, T t) throws Exception;
+	abstract protected IJob transform(IJob container, T t) throws Exception;
 
 	@Override
 	public int size() {
@@ -20,7 +20,7 @@ public abstract class SpecStage<T> implements ISpecStage {
 	}
 
 	@Override
-	public IFastOrm makeFastOrm(final IFastOrm initial, int index) throws Exception {
+	public IJob makeFastOrm(final IJob initial, int index) throws Exception {
 		if (index >= values.size())
 			return null;
 		return transform(initial, values.get(index));

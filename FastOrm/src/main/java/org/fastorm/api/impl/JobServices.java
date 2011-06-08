@@ -7,11 +7,11 @@ import java.util.concurrent.TimeUnit;
 
 import org.codehaus.cake.forkjoin.ForkJoinPool;
 
-public class FastOrmServices {
+public class JobServices {
 	public ForkJoinPool pool;
 	public ExecutorService service;
 
-	public FastOrmServices() {
+	public JobServices() {
 		this.pool = new ForkJoinPool();
 		this.service = new ThreadPoolExecutor(2, 10, 1, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(100));
 	}

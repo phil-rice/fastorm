@@ -8,13 +8,13 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
-import org.fastorm.api.IFastOrm;
-import org.fastorm.api.impl.FastOrm;
+import org.fastorm.api.IJob;
+import org.fastorm.api.impl.Job;
 import org.fastorm.utilities.collections.Iterables;
 
 public class SpecTest extends TestCase {
 
-	private FastOrm initial;
+	private Job initial;
 
 	public void testSpecsWithOneSpec() {
 		checkBatchSize(Arrays.<Integer> asList(), batchSize());
@@ -30,11 +30,11 @@ public class SpecTest extends TestCase {
 	}
 
 	private void checkBatchSize(List<Integer> expected, ISpecStage... specs) {
-		assertEquals(expected, Iterables.list(Iterables.map(new Spec(initial, specs), IFastOrm.Utils.getBatchSize())));
+		assertEquals(expected, Iterables.list(Iterables.map(new Spec(initial, specs), IJob.Utils.getBatchSize())));
 	}
 
 	private void checkTempTable(List<Boolean> expected, ISpecStage... specs) {
-		assertEquals(expected, Iterables.list(Iterables.map(new Spec(initial, specs), IFastOrm.Utils.getUseTemporaryTables())));
+		assertEquals(expected, Iterables.list(Iterables.map(new Spec(initial, specs), IJob.Utils.getUseTemporaryTables())));
 	}
 
 	public void testTitle() {
@@ -58,7 +58,7 @@ public class SpecTest extends TestCase {
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
-		initial = new FastOrm();
+		initial = new Job();
 	}
 
 }

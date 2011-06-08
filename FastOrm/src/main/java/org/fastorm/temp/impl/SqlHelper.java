@@ -18,7 +18,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import junit.framework.Assert;
 
-import org.fastorm.api.IFastOrm;
+import org.fastorm.api.IJob;
 import org.fastorm.defns.IEntityDefn;
 import org.fastorm.defns.IMakerAndEntityDefnVisitor;
 import org.fastorm.temp.IPrimaryTempTableMaker;
@@ -124,9 +124,9 @@ public class SqlHelper {
 		template.execute(sql.toString());
 	}
 
-	public void index(IFastOrm fastOrm) {
+	public void index(IJob job) {
 		final Map<IEntityDefn, List<String>> columnsToIndex = Maps.newMap();
-		IEntityDefn.Utils.walk(fastOrm.getContainer(), new IMakerAndEntityDefnVisitor() {
+		IEntityDefn.Utils.walk(job.getContainer(), new IMakerAndEntityDefnVisitor() {
 			@Override
 			public void acceptPrimary(IPrimaryTempTableMaker maker, IEntityDefn primary) throws Exception {
 				Maps.addToList(columnsToIndex, primary, primary.getIdColumn());

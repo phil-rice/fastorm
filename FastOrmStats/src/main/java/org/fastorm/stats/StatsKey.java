@@ -1,22 +1,22 @@
 package org.fastorm.stats;
 
-import org.fastorm.api.FastOrmOptions;
-import org.fastorm.api.IFastOrm;
 import org.fastorm.api.IFastOrmContainer;
+import org.fastorm.api.IJob;
+import org.fastorm.api.IJobDetails;
 import org.fastorm.memory.IMemoryManager;
 import org.fastorm.sqlDialects.ISqlStrings;
 
 public class StatsKey {
 
 	private final int databaseSize;
-	private final FastOrmOptions options;
+	private final IJobDetails options;
 	private final Class<? extends IMemoryManager> memoryManager;
 	private final ISqlStrings sqlStrings;
 
-	public StatsKey(IFastOrm fastOrm, int databaseSize) {
-		IFastOrmContainer container = fastOrm.getContainer();
+	public StatsKey(IJob job, int databaseSize) {
+		IFastOrmContainer container = job.getContainer();
 		this.databaseSize = databaseSize;
-		this.options = container.getOptions();
+		this.options = job;
 		this.memoryManager = container.getMemoryManager().getClass();
 		this.sqlStrings = container.getSqlStrings();
 	}

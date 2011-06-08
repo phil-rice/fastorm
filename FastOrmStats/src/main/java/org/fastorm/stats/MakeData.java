@@ -5,7 +5,7 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
-import org.fastorm.api.IFastOrm;
+import org.fastorm.api.IJob;
 import org.fastorm.api.IFastOrmContainer;
 import org.fastorm.dataGenerator.DataGenerator;
 import org.fastorm.dataGenerator.DataGeneratorVisitor;
@@ -34,7 +34,7 @@ public class MakeData {
 	public static void makeData(Resource dataSourceResource, Resource defnResource, int dataSize, ICallback<Integer> countCallback) {
 		DataSource dataSource = new XmlBeanFactory(dataSourceResource).getBean(DataSource.class);
 		IEntityDefn defn = IEntityDefn.Utils.parse(new TempTableMakerFactory(), defnResource);
-		IFastOrmContainer fastOrm = IFastOrm.Utils.mySqlSingleThreaded(defn, dataSource).getContainer();
+		IFastOrmContainer fastOrm = IJob.Utils.mySqlSingleThreaded(defn, dataSource).getContainer();
 		makeData(fastOrm, dataSize, countCallback);
 		fastOrm.getContainer().shutdown();
 	}

@@ -2,7 +2,7 @@ package org.fastorm.stats;
 
 import javax.sql.DataSource;
 
-import org.fastorm.api.IFastOrm;
+import org.fastorm.api.IJob;
 import org.fastorm.defns.IEntityDefn;
 import org.fastorm.reader.IEntityReader;
 import org.fastorm.reader.impl.StoredProceduresEntityReaderThin;
@@ -23,9 +23,9 @@ public class HelloFastOrm {
 		while (true) {
 			int count = 0;
 			// IFastOrmContainer fastOrm = IFastOrm.Utils.mySqlSingleThreaded(defn, dataSource).withDataSize(100).getContainer();
-			IFastOrm fastOrm = IFastOrm.Utils.mySqlSingleThreaded(defn, dataSource).withBatchSize(100).//
+			IJob job = IJob.Utils.mySqlSingleThreaded(defn, dataSource).withBatchSize(100).//
 					withSqlLogger(new SysOutSqlLogger()).withThinInterface(new StoredProceduresEntityReaderThin());
-			IEntityReader<ISimpleMap<String, Object>> reader = fastOrm.makeReader();
+			IEntityReader<ISimpleMap<String, Object>> reader = job.makeReader();
 			long forStartTime = System.currentTimeMillis();
 			for (ISimpleMap<String, Object> item : reader) {
 				count++;
@@ -33,7 +33,7 @@ public class HelloFastOrm {
 			}
 			System.out.println(count + " Took " + (System.currentTimeMillis() - forStartTime));
 
-			fastOrm.getContainer().shutdown();
+			job.getContainer().shutdown();
 		}
 	}
 }

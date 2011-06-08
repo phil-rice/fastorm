@@ -5,7 +5,7 @@ import java.sql.SQLException;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.fastorm.api.IFastOrmContainer;
-import org.fastorm.context.OrmReadContext;
+import org.fastorm.context.ReadContext;
 import org.fastorm.dataSet.IDataSet;
 import org.fastorm.dataSet.IDrainedTableData;
 import org.fastorm.dataSet.impl.DataSetBuilder;
@@ -38,42 +38,42 @@ public class EntityReaderThin implements IEntityReaderThin {
 				IDataSet result = fastOrm.getJdbcTemplate().execute(new ConnectionCallback<IDataSet>() {
 					@Override
 					public IDataSet doInConnection(Connection connection) throws SQLException, DataAccessException {
-						final OrmReadContext ormReadContext = new OrmReadContext(fastOrm, connection);
+						final ReadContext readContext = new ReadContext(fastOrm, connection);
 						class CreateTempTables implements IMakerAndEntityDefnVisitor {
 							@Override
 							public void acceptPrimary(IPrimaryTempTableMaker maker, IEntityDefn primary) {
-								maker.drop(fastOrm, ormReadContext);
-								maker.create(fastOrm, ormReadContext);
+								maker.drop(fastOrm, readContext);
+								maker.create(fastOrm, readContext);
 							}
 
 							@Override
 							public void acceptChild(ISecondaryTempTableMaker maker, IEntityDefn parent, IEntityDefn child) {
-								maker.drop(fastOrm, ormReadContext, child);
-								maker.create(fastOrm, ormReadContext, parent, child);
+								maker.drop(fastOrm, readContext, child);
+								maker.create(fastOrm, readContext, parent, child);
 							}
 						}
 
 						class TruncateTempTables implements IMakerAndEntityDefnVisitor {
 							@Override
 							public void acceptPrimary(IPrimaryTempTableMaker maker, IEntityDefn primary) {
-								maker.truncate(fastOrm, ormReadContext);
+								maker.truncate(fastOrm, readContext);
 							}
 
 							@Override
 							public void acceptChild(ISecondaryTempTableMaker maker, IEntityDefn parent, IEntityDefn child) {
-								maker.truncate(fastOrm, ormReadContext, parent, child);
+								maker.truncate(fastOrm, readContext, parent, child);
 
 							}
 						}
 						class PopulateTempTables implements IMakerAndEntityDefnVisitor {
 							@Override
 							public void acceptPrimary(IPrimaryTempTableMaker maker, IEntityDefn primary) {
-								maker.populate(fastOrm, ormReadContext, page);
+								maker.populate(fastOrm, readContext, page);
 							}
 
 							@Override
 							public void acceptChild(ISecondaryTempTableMaker maker, IEntityDefn parent, IEntityDefn child) {
-								maker.populate(fastOrm, ormReadContext, parent, child);
+								maker.populate(fastOrm, readContext, parent, child);
 
 							}
 						}
@@ -82,12 +82,12 @@ public class EntityReaderThin implements IEntityReaderThin {
 
 							@Override
 							public void acceptPrimary(IPrimaryTempTableMaker maker, IEntityDefn primary) {
-								maker.drain(fastOrm, ormReadContext);
+								maker.drain(fastOrm, readContext);
 							}
 
 							@Override
 							public void acceptChild(ISecondaryTempTableMaker maker, IEntityDefn parent, IEntityDefn child) {
-								maker.drain(fastOrm, ormReadContext, parent, child);
+								maker.drain(fastOrm, readContext, parent, child);
 							}
 						}
 						ICallback<Long> total = new ICallback<Long>() {
@@ -104,12 +104,12 @@ public class EntityReaderThin implements IEntityReaderThin {
 						last = IEntityDefn.Utils.aggregateAndTime(fastOrm, new IMakerAndEntityDefnFoldVisitor<IDrainedTableData, IDataSet>() {
 							@Override
 							public IDrainedTableData acceptPrimary(IPrimaryTempTableMaker maker, IEntityDefn primary) {
-								return ormReadContext.get(primary);
+								return readContext.get(primary);
 							}
 
 							@Override
 							public IDrainedTableData acceptChild(ISecondaryTempTableMaker maker, IEntityDefn parent, IEntityDefn child) {
-								return ormReadContext.get(child);
+								return readContext.get(child);
 							}
 						}, new DataSetBuilder(), total);
 						if (last.size() == 0)

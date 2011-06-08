@@ -5,7 +5,6 @@ import java.util.Map;
 import org.fastorm.dataSet.IMutableDataSet;
 import org.fastorm.temp.IPrimaryTempTableMaker;
 import org.fastorm.temp.impl.AllEntitiesTempTableMaker;
-import org.fastorm.temp.impl.IMutableItem;
 import org.fastorm.utilities.callbacks.ICallback;
 import org.fastorm.utilities.functions.IFunction1;
 

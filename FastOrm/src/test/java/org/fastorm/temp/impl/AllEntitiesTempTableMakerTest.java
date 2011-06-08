@@ -8,7 +8,7 @@ import static org.fastorm.constants.FastOrmTestValues.primaryTempTableName;
 import java.util.Arrays;
 
 import org.fastorm.constants.FastOrmTestValues;
-import org.fastorm.context.OrmReadContext;
+import org.fastorm.context.ReadContext;
 import org.fastorm.dataSet.IDrainedTableData;
 import org.fastorm.sql.SysOutSqlLogger;
 import org.fastorm.utilities.callbacks.ICallback;
@@ -21,9 +21,9 @@ public class AllEntitiesTempTableMakerTest extends AbstractTempTableMakerTest {
 
 	public void testCreateTempTable() {
 		emptyDatabase();
-		execute(new ICallback<OrmReadContext>() {
+		execute(new ICallback<ReadContext>() {
 			@Override
-			public void process(OrmReadContext context) throws Exception {
+			public void process(ReadContext context) throws Exception {
 				maker.create(fastOrm, context);
 			}
 		});
@@ -37,9 +37,9 @@ public class AllEntitiesTempTableMakerTest extends AbstractTempTableMakerTest {
 		sqlHelper.create(primaryTableName, primaryIdColumn, primaryIdType, "data", "varchar(20)");
 		sqlHelper.insert(primaryTableName, 100, primaryIdColumn, "{1}", "data", "''{0}_{1}''");
 		sqlHelper.assertTableMatches(primaryTableName, 100, 0, primaryIdColumn, "{1}", "data", "{0}_{1}");
-		execute(new ICallback<OrmReadContext>() {
+		execute(new ICallback<ReadContext>() {
 			@Override
-			public void process(OrmReadContext context) throws Exception {
+			public void process(ReadContext context) throws Exception {
 				fastOrm5 = fastOrm5.withSqlLogger(new SysOutSqlLogger()).getContainer();
 				maker.create(fastOrm5, context);
 				int popCount0 = maker.populate(fastOrm5, context, 0);
@@ -57,9 +57,9 @@ public class AllEntitiesTempTableMakerTest extends AbstractTempTableMakerTest {
 		emptyDatabase();
 		sqlHelper.create(primaryTableName, primaryIdColumn, primaryIdType, "data", "varchar(20)");
 		sqlHelper.insert(primaryTableName, 10, primaryIdColumn, "{1}", "data", "''{0}_{1}''");
-		IDrainedTableData table = query(new IFunction1<OrmReadContext, IDrainedTableData>() {
+		IDrainedTableData table = query(new IFunction1<ReadContext, IDrainedTableData>() {
 			@Override
-			public IDrainedTableData apply(OrmReadContext from) throws Exception {
+			public IDrainedTableData apply(ReadContext from) throws Exception {
 				maker.drop(fastOrm5, from);// this is for debugging so that you can drop to stack frame here
 				maker.create(fastOrm5, from);
 				maker.populate(fastOrm5, from, 0);

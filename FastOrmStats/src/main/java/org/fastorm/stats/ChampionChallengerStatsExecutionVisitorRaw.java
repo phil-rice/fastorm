@@ -3,7 +3,7 @@ package org.fastorm.stats;
 import java.util.List;
 import java.util.Map;
 
-import org.fastorm.api.IFastOrm;
+import org.fastorm.api.IJob;
 import org.fastorm.utilities.exceptions.WrappedException;
 import org.fastorm.utilities.maps.Maps;
 
@@ -15,10 +15,10 @@ public class ChampionChallengerStatsExecutionVisitorRaw implements IFastOrmExecu
 	private Spec spec;
 	private final String championName;
 	private final String challengerName;
-	private final IProfilable<IFastOrm, ?> championCallback;
-	private final IProfilable<IFastOrm, ?> challengerCallback;
+	private final IProfilable<IJob, ?> championCallback;
+	private final IProfilable<IJob, ?> challengerCallback;
 
-	public ChampionChallengerStatsExecutionVisitorRaw(String championName, IProfilable<IFastOrm, ?> championCallback, String challengerName, IProfilable<IFastOrm, ?> challengerCallback) {
+	public ChampionChallengerStatsExecutionVisitorRaw(String championName, IProfilable<IJob, ?> championCallback, String challengerName, IProfilable<IJob, ?> challengerCallback) {
 		this.championName = championName;
 		this.championCallback = championCallback;
 		this.challengerName = challengerName;
@@ -26,7 +26,7 @@ public class ChampionChallengerStatsExecutionVisitorRaw implements IFastOrmExecu
 	}
 
 	@Override
-	public void atStart(Spec spec, IFastOrm initial, ExerciseNumbers numbers) {
+	public void atStart(Spec spec, IJob initial, ExerciseNumbers numbers) {
 		this.spec = spec;
 		this.databaseSizes = numbers.databaseSizes;
 		System.out.println("Initial: " + initial);
@@ -46,28 +46,28 @@ public class ChampionChallengerStatsExecutionVisitorRaw implements IFastOrmExecu
 	}
 
 	@Override
-	public void innerRun(int outerRun, int databaseSize, Spec spec, IFastOrm fastOrm, int innerRun) throws Exception {
-		time(databaseSize, fastOrm, challengerStatsMap, challengerCallback);
-		time(databaseSize, fastOrm, championStatsMap, championCallback);
+	public void innerRun(int outerRun, int databaseSize, Spec spec, IJob job, int innerRun) throws Exception {
+		time(databaseSize, job, challengerStatsMap, challengerCallback);
+		time(databaseSize, job, championStatsMap, championCallback);
 	}
 
-	private <Context> void time(int databaseSize, IFastOrm fastOrm, Map<Integer, StatsMap> statsMap, IProfilable<IFastOrm, Context> profilable) throws Exception {
+	private <Context> void time(int databaseSize, IJob job, Map<Integer, StatsMap> statsMap, IProfilable<IJob, Context> profilable) throws Exception {
 		try {
 			Maps.findOrCreate(statsMap, databaseSize, StatsMap.Utils.newStatsMap);
-			Context context = profilable.start(fastOrm);
+			Context context = profilable.start(job);
 			long startTime = System.currentTimeMillis();
-			profilable.job(fastOrm, context);
+			profilable.job(job, context);
 			long duration = System.currentTimeMillis() - startTime;
-			profilable.finish(fastOrm, context);
-			statsMap.get(databaseSize).add(fastOrm, databaseSize, duration);
+			profilable.finish(job, context);
+			statsMap.get(databaseSize).add(job, databaseSize, duration);
 		} catch (Exception e) {
 			throw WrappedException.wrap(e);
 		}
 	}
 
 	@Override
-	public void endTest(int outerRun, int databaseSize, Spec spec, IFastOrm fastOrm) {
-		printStats(databaseSize, spec, fastOrm);
+	public void endTest(int outerRun, int databaseSize, Spec spec, IJob job) {
+		printStats(databaseSize, spec, job);
 	}
 
 	@Override
@@ -81,8 +81,8 @@ public class ChampionChallengerStatsExecutionVisitorRaw implements IFastOrmExecu
 		for (int databaseSize : databaseSizes) {
 			Spec thisSpec = spec.withDatabaseSize(databaseSize);
 			printTitle(thisSpec);
-			for (IFastOrm fastOrm : thisSpec) {
-				printStats(databaseSize, thisSpec, fastOrm);
+			for (IJob job : thisSpec) {
+				printStats(databaseSize, thisSpec, job);
 			}
 		}
 	}
@@ -91,12 +91,12 @@ public class ChampionChallengerStatsExecutionVisitorRaw implements IFastOrmExecu
 		System.out.println(spec.title() + String.format(" %-21s", championName) + String.format(" %-21s", challengerName) + String.format(" %10s", "Better"));
 	}
 
-	private void printStats(int databaseSize, Spec spec, IFastOrm fastOrm) {
-		Stats championStats = championStatsMap.get(databaseSize).get(fastOrm);
-		Stats challangerStats = challengerStatsMap.get(databaseSize).get(fastOrm);
+	private void printStats(int databaseSize, Spec spec, IJob job) {
+		Stats championStats = championStatsMap.get(databaseSize).get(job);
+		Stats challangerStats = challengerStatsMap.get(databaseSize).get(job);
 		long championDuration = championStats.averageDuration();
 		long challengerDuration = challangerStats.averageDuration();
-		String result = spec.stringFor(fastOrm) + String.format(" %10d %10.2f %10d %10.2f %10.2f", //
+		String result = spec.stringFor(job) + String.format(" %10d %10.2f %10d %10.2f %10.2f", //
 				championDuration, championDuration * 1.0 / databaseSize,//
 				challengerDuration, challengerDuration * 1.0 / databaseSize, championDuration * 1.0 / challengerDuration);
 		System.out.println(result);

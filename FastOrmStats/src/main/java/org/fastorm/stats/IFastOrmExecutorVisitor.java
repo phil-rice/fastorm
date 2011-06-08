@@ -1,10 +1,10 @@
 package org.fastorm.stats;
 
-import org.fastorm.api.IFastOrm;
+import org.fastorm.api.IJob;
 
 interface IFastOrmExecutorVisitor {
 
-	void atStart(Spec spec, IFastOrm initial, ExerciseNumbers numbers);
+	void atStart(Spec spec, IJob initial, ExerciseNumbers numbers);
 
 	void startOuterRun(int outerRun);
 
@@ -16,8 +16,8 @@ interface IFastOrmExecutorVisitor {
 
 	void startTest(int outerRun, Spec spec);
 
-	void endTest(int outerRun, int databaseSize, Spec spec, IFastOrm fastOrm);
+	void endTest(int outerRun, int databaseSize, Spec spec, IJob job);
 
-	void innerRun(int outerRun, int databaseSize, Spec spec, IFastOrm fastOrm, int innerRun) throws Exception;
+	void innerRun(int outerRun, int databaseSize, Spec spec, IJob job, int innerRun) throws Exception;
 
 }

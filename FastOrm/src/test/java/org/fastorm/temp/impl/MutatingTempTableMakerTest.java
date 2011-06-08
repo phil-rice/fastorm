@@ -4,34 +4,14 @@ import static org.fastorm.constants.FastOrmTestValues.primaryIdColumn;
 import static org.fastorm.constants.FastOrmTestValues.primaryIdType;
 import static org.fastorm.constants.FastOrmTestValues.primaryTableName;
 
-import org.fastorm.dataSet.IMutableDataSet;
 import org.fastorm.defns.IEntityDefn;
+import org.fastorm.mutate.IMutableItem;
 import org.fastorm.mutate.IMutate;
 import org.fastorm.utilities.annotations.IntegrationTest;
 import org.fastorm.utilities.callbacks.ICallback;
-import org.fastorm.utilities.maps.ISimpleMapWithIndex;
 
 @IntegrationTest
 public class MutatingTempTableMakerTest extends AbstractTempTableMakerTest {
-
-	public void testReadModifyWriteOfDataSet() {
-		populate();
-		final IEntityDefn entityDefn = fastOrm5.getEntityDefn();
-		IMutate<Object> mutate = fastOrm5.makeMutator();
-		mutate.readModifyWrite(new AllEntitiesTempTableMaker(), new ICallback<IMutableDataSet>() {
-			@Override
-			public void process(IMutableDataSet t) throws Exception {
-				ISimpleMapWithIndex<String, Object> old = t.get(0);
-				assertEquals("data_0", old.get("data"));
-				t.change(entityDefn, 1, "data", "newData_1");
-				assertEquals("name1", old.get("data")); // hasn't changed
-				assertEquals("name1", t.get(0).get("data")); // hasn't changed
-			}
-		});
-		checkName(entityDefn, 1, "newData_1");
-		checkName(entityDefn, 2, "data_1");
-		checkName(entityDefn, 3, "data_2");
-	}
 
 	public void testReadModifyWriteOfItems() {
 		populate();

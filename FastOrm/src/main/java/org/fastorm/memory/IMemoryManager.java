@@ -3,7 +3,7 @@ package org.fastorm.memory;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.fastorm.api.FastOrmOptions;
+import org.fastorm.api.IJobDetails;
 import org.fastorm.dataSet.IGetDrainedTableForEntityDefn;
 import org.fastorm.dataSet.impl.DrainedLine;
 import org.fastorm.dataSet.impl.DrainedLineCommonData;
@@ -20,9 +20,9 @@ public interface IMemoryManager {
 
 	DrainedTableData makeDrainedTableData(IMemoryManager memoryManager, IEntityDefn entityDefn, IGetDrainedTableForEntityDefn getter, ResultSet rs) throws SQLException;
 
-	void dispose();
+	IMemoryManager withJobDetails(IJobDetails jobDetails);
 
-	IMemoryManager withFastOrmOptions(FastOrmOptions options);
+	void dispose();
 
 	/** This is a prototype poolOptions. Everything except for size is determined by this */
 	IMemoryManager withPoolOptions(PoolOptions poolOptions);

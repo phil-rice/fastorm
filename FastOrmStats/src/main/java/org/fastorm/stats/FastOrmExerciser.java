@@ -2,9 +2,8 @@ package org.fastorm.stats;
 
 import javax.sql.DataSource;
 
-import org.fastorm.api.FastOrmOptions;
-import org.fastorm.api.IFastOrm;
 import org.fastorm.api.IFastOrmContainer;
+import org.fastorm.api.IJob;
 import org.fastorm.defns.IEntityDefn;
 import org.fastorm.defns.IEntityDefnParentChildVisitor;
 import org.fastorm.reader.IEntityReader;
@@ -20,39 +19,39 @@ import org.springframework.core.io.ClassPathResource;
 public class FastOrmExerciser {
 
 	public static class Utils {
-		public static final IFastOrm makeInitial() {
+		public static final IJob makeInitial() {
 			DataSource dataSource = new XmlBeanFactory(new ClassPathResource("MySqlDataSource.xml")).getBean(DataSource.class);
 			IEntityDefn defn = IEntityDefn.Utils.parse(new TempTableMakerFactory(), new ClassPathResource("sample.xml"));
-			return IFastOrm.Utils.mySqlSingleThreaded(defn, dataSource);
+			return IJob.Utils.mySqlSingleThreaded(defn, dataSource);
 		}
 
-		public static Spec specWithBatch1_10_100_1000(final IFastOrm initial) {
+		public static Spec specWithBatch1_10_100_1000(final IJob initial) {
 			final Spec initialSpec = new Spec(initial, //
 					ISpecStage.Utils.batchSize(1, 10, 100, 1000)); //
 			return initialSpec;
 		}
 
-		public static Spec specWithBatch1_10_100_1000_10000(final IFastOrm initial) {
+		public static Spec specWithBatch1_10_100_1000_10000(final IJob initial) {
 			final Spec initialSpec = new Spec(initial, //
 					ISpecStage.Utils.batchSize(1, 10, 100, 1000, 10000)); //
 			return initialSpec;
 		}
 
-		public static final ICallback<IFastOrm> getAllItemsCallback = new ICallback<IFastOrm>() {
+		public static final ICallback<IJob> getAllItemsCallback = new ICallback<IJob>() {
 			@Override
 			@SuppressWarnings("unused")
-			public void process(IFastOrm t) throws Exception {
+			public void process(IJob t) throws Exception {
 				for (ISimpleMap<String, Object> item : t.makeReader())
 					;
 			}
 		};
 
 		@SuppressWarnings("unused")
-		public static void warmUp(int walmUpCount, final IFastOrm fastOrm, ICallback<Integer> countCallback) throws Exception {
-			IFastOrmContainer container = fastOrm.getContainer();
+		public static void warmUp(int walmUpCount, final IJob job, ICallback<Integer> countCallback) throws Exception {
+			IFastOrmContainer container = job.getContainer();
 			new SqlHelper(container.getJdbcTemplate()).dropAllTables();
 			MakeData.makeData(container, 100, ICallback.Utils.<Integer> noCallback());
-			IEntityReader<ISimpleMap<String, Object>> reader = fastOrm.makeReader();
+			IEntityReader<ISimpleMap<String, Object>> reader = job.makeReader();
 			for (int i = 0; i < walmUpCount; i++) {
 				for (ISimpleMap<String, Object> item : reader)
 					;
@@ -63,7 +62,7 @@ public class FastOrmExerciser {
 	}
 
 	public FastOrmExerciser(ExerciseNumbers exerciseNumbers, Spec initialSpec, IFastOrmExecutorVisitor visitor) throws Exception {
-		IFastOrm initial = initialSpec.getInitialFastOrm();
+		IJob initial = initialSpec.getInitialFastOrm();
 		visitor.atStart(initialSpec, initial, exerciseNumbers);
 
 		for (int outerRun = 0; outerRun < exerciseNumbers.outerRuns; outerRun++) {
@@ -72,9 +71,9 @@ public class FastOrmExerciser {
 				MakeData.makeData(initial.getContainer(), databaseSize, new NoCallback<Integer>());
 				Spec spec = initialSpec.withDatabaseSize(databaseSize);
 				visitor.startDatabase(outerRun, databaseSize, spec);
-				for (final IFastOrm fastOrm : spec) {
-					IEntityDefn.Utils.walk(fastOrm.getEntityDefn(), new IEntityDefnParentChildVisitor() {
-						SqlHelper helper = new SqlHelper(fastOrm.getContainer().getJdbcTemplate());
+				for (final IJob job : spec) {
+					IEntityDefn.Utils.walk(job.getEntityDefn(), new IEntityDefnParentChildVisitor() {
+						SqlHelper helper = new SqlHelper(job.getContainer().getJdbcTemplate());
 
 						@Override
 						public void acceptPrimary(IEntityDefn primary) throws Exception {
@@ -88,9 +87,9 @@ public class FastOrmExerciser {
 					});
 					visitor.startTest(outerRun, spec);
 					for (int innerRun = 0; innerRun < exerciseNumbers.innerRuns; innerRun++) {
-						visitor.innerRun(outerRun, databaseSize, spec, fastOrm, innerRun);
+						visitor.innerRun(outerRun, databaseSize, spec, job, innerRun);
 					}
-					visitor.endTest(outerRun, databaseSize, spec, fastOrm);
+					visitor.endTest(outerRun, databaseSize, spec, job);
 				}
 				visitor.endDatabase(outerRun, databaseSize);
 			}
@@ -100,7 +99,7 @@ public class FastOrmExerciser {
 
 	public static void main(String[] args) throws Exception {
 		final IFastOrmContainer initial = Utils.makeInitial().//
-				withOptions(new FastOrmOptions().withCreateAndDropProceduresAtStart(false)).//
+				withCreateAndDropProceduresAtStart(false).//
 				withThinInterface(new StoredProceduresEntityReaderThin()).//
 				getContainer();
 		Utils.warmUp(50, initial, ICallback.Utils.count);

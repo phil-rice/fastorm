@@ -2,28 +2,28 @@ package org.fastorm.stats;
 
 import java.util.Arrays;
 
-import org.fastorm.api.IFastOrm;
 import org.fastorm.api.IFastOrmContainer;
+import org.fastorm.api.IJob;
 import org.fastorm.utilities.exceptions.WrappedException;
 import org.fastorm.utilities.functions.IFunction1;
 
 public interface ISpecStage {
 	public int size();
 
-	public IFastOrm makeFastOrm(final IFastOrm initial, int index) throws Exception;
+	public IJob makeFastOrm(final IJob initial, int index) throws Exception;
 
 	String titleFor();
 
-	String formatFor(IFastOrm fastOrm);
+	String formatFor(IJob job);
 
-	Object valueFor(IFastOrm fastOrm);
+	Object valueFor(IJob job);
 
 	public static class Utils {
 
-		public static ISpecStage specific(final int width, final IFunction1<IFastOrm, String> nameFunction, IFunction1<IFastOrm, IFastOrm>... convertors) {
-			return new SpecStage<IFunction1<IFastOrm, IFastOrm>>(Arrays.asList(convertors)) {
+		public static ISpecStage specific(final int width, final IFunction1<IJob, String> nameFunction, IFunction1<IJob, IJob>... convertors) {
+			return new SpecStage<IFunction1<IJob, IJob>>(Arrays.asList(convertors)) {
 				@Override
-				protected IFastOrm transform(IFastOrm container, IFunction1<IFastOrm, IFastOrm> t) throws Exception {
+				protected IJob transform(IJob container, IFunction1<IJob, IJob> t) throws Exception {
 					return t.apply(container);
 				}
 
@@ -33,14 +33,14 @@ public interface ISpecStage {
 				}
 
 				@Override
-				public String formatFor(IFastOrm fastOrm) {
+				public String formatFor(IJob job) {
 					return "%-" + width + "s";
 				}
 
 				@Override
-				public Object valueFor(IFastOrm fastOrm) {
+				public Object valueFor(IJob job) {
 					try {
-						return nameFunction.apply(fastOrm);
+						return nameFunction.apply(job);
 					} catch (Exception e) {
 						throw WrappedException.wrap(e);
 					}
@@ -56,9 +56,9 @@ public interface ISpecStage {
 		public static ISpecStage batchSize(final Integer... sizes) {
 			return new SpecStage<Integer>(Arrays.asList(sizes)) {
 				@Override
-				protected IFastOrm transform(IFastOrm fastOrm, Integer t) {
-					IFastOrmContainer container = fastOrm.getContainer();
-					return container.withOptions(container.getOptions().withBatchSize(t));
+				protected IJob transform(IJob job, Integer t) {
+					IFastOrmContainer container = job.getContainer();
+					return container.withBatchSize(t);
 				}
 
 				@Override
@@ -67,13 +67,13 @@ public interface ISpecStage {
 				}
 
 				@Override
-				public String formatFor(IFastOrm fastOrm) {
+				public String formatFor(IJob job) {
 					return "%9d";
 				}
 
 				@Override
-				public Object valueFor(IFastOrm fastOrm) {
-					return fastOrm.getBatchSize();
+				public Object valueFor(IJob job) {
+					return job.getBatchSize();
 				}
 
 				@Override
@@ -86,9 +86,9 @@ public interface ISpecStage {
 		public static ISpecStage temporaryTables(final Boolean... use) {
 			return new SpecStage<Boolean>(Arrays.asList(use)) {
 				@Override
-				protected IFastOrm transform(IFastOrm fastOrm, Boolean t) {
-					IFastOrmContainer container = fastOrm.getContainer();
-					return container.withOptions(container.getOptions().withTempTables(t));
+				protected IJob transform(IJob job, Boolean t) {
+					IFastOrmContainer container = job.getContainer();
+					return container.withTempTables(t);
 				}
 
 				@Override
@@ -102,13 +102,13 @@ public interface ISpecStage {
 				}
 
 				@Override
-				public String formatFor(IFastOrm fastOrm) {
+				public String formatFor(IJob job) {
 					return "%7s";
 				}
 
 				@Override
-				public Object valueFor(IFastOrm fastOrm) {
-					return fastOrm.getContainer().getOptions().useTemporaryTables ? "temp" : "";
+				public Object valueFor(IJob job) {
+					return job.useTemporaryTables() ? "temp" : "";
 				}
 			};
 		}
@@ -116,9 +116,9 @@ public interface ISpecStage {
 		public static ISpecStage indexSecondaryTables(final Boolean... use) {
 			return new SpecStage<Boolean>(Arrays.asList(use)) {
 				@Override
-				protected IFastOrm transform(IFastOrm fastOrm, Boolean t) {
-					IFastOrmContainer container = fastOrm.getContainer();
-					return container.withOptions(container.getOptions().withIndexSecondaryTables(t));
+				protected IJob transform(IJob job, Boolean t) {
+					IFastOrmContainer container = job.getContainer();
+					return container.withIndexSecondaryTables(t);
 				}
 
 				@Override
@@ -127,8 +127,8 @@ public interface ISpecStage {
 				}
 
 				@Override
-				public Object valueFor(IFastOrm fastOrm) {
-					return fastOrm.getContainer().getOptions().indexSecondaryTables ? "index" : "";
+				public Object valueFor(IJob job) {
+					return job.indexSecondaryTables() ? "index" : "";
 				}
 
 				@Override
@@ -137,7 +137,7 @@ public interface ISpecStage {
 				}
 
 				@Override
-				public String formatFor(IFastOrm fastOrm) {
+				public String formatFor(IJob job) {
 					return "%7s";
 				}
 

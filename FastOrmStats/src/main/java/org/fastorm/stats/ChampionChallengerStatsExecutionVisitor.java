@@ -1,32 +1,32 @@
 package org.fastorm.stats;
 
-import org.fastorm.api.IFastOrm;
+import org.fastorm.api.IJob;
 import org.fastorm.utilities.callbacks.ICallback;
 import org.fastorm.utilities.functions.IFunction1;
 
 public class ChampionChallengerStatsExecutionVisitor extends ChampionChallengerStatsExecutionVisitorRaw {
 
-	public static IProfilable<IFastOrm, IFastOrm> toTime(final ICallback<IFastOrm> rawToTime, final IFunction1<IFastOrm, IFastOrm> fn) {
-		return new IProfilable<IFastOrm, IFastOrm>() {
+	public static IProfilable<IJob, IJob> toTime(final ICallback<IJob> rawToTime, final IFunction1<IJob, IJob> fn) {
+		return new IProfilable<IJob, IJob>() {
 
 			@Override
-			public IFastOrm start(IFastOrm situation) throws Exception {
+			public IJob start(IJob situation) throws Exception {
 				return fn.apply(situation);
 			}
 
 			@Override
-			public void job(IFastOrm situation, IFastOrm context) throws Exception {
+			public void job(IJob situation, IJob context) throws Exception {
 				rawToTime.process(fn.apply(context));
 			}
 
 			@Override
-			public void finish(IFastOrm situation, IFastOrm context) {
+			public void finish(IJob situation, IJob context) {
 			}
 		};
 	}
 
-	ChampionChallengerStatsExecutionVisitor(ICallback<IFastOrm> toTime, String championName, IFunction1<IFastOrm, IFastOrm> championFn, String challengerName,
-			IFunction1<IFastOrm, IFastOrm> challengerFn) {
+	ChampionChallengerStatsExecutionVisitor(ICallback<IJob> toTime, String championName, IFunction1<IJob, IJob> championFn, String challengerName,
+			IFunction1<IJob, IJob> challengerFn) {
 		super(championName, toTime(toTime, championFn), challengerName, toTime(toTime, challengerFn));
 	}
 

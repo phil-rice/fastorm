@@ -4,12 +4,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
-import org.fastorm.api.IFastOrm;
+import org.fastorm.api.IJob;
 import org.fastorm.utilities.collections.Iterables;
 import org.fastorm.utilities.maps.ISimpleMap;
 import org.fastorm.utilities.maps.Maps;
 
-public class StatsMap implements ISimpleMap<IFastOrm, Stats> {
+public class StatsMap implements ISimpleMap<IJob, Stats> {
 
 	static class Utils {
 		public static final Callable<StatsMap> newStatsMap = new Callable<StatsMap>() {
@@ -20,10 +20,10 @@ public class StatsMap implements ISimpleMap<IFastOrm, Stats> {
 		};
 	}
 
-	private final Map<IFastOrm, Stats> map = Maps.newMap();
+	private final Map<IJob, Stats> map = Maps.newMap();
 
-	public void add(IFastOrm fastOrm, int databaseSize, long duration) {
-		Maps.findOrCreate(map, fastOrm, new Callable<Stats>() {
+	public void add(IJob job, int databaseSize, long duration) {
+		Maps.findOrCreate(map, job, new Callable<Stats>() {
 			@Override
 			public Stats call() throws Exception {
 				return new Stats();
@@ -32,12 +32,12 @@ public class StatsMap implements ISimpleMap<IFastOrm, Stats> {
 	}
 
 	@Override
-	public Stats get(IFastOrm key) {
+	public Stats get(IJob key) {
 		return map.get(key);
 	}
 
 	@Override
-	public List<IFastOrm> keys() {
+	public List<IJob> keys() {
 		return Iterables.list(map.keySet());
 	}
 

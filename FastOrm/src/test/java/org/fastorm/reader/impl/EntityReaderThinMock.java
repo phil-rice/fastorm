@@ -5,7 +5,7 @@ import java.util.Collections;
 
 import junit.framework.Assert;
 
-import org.fastorm.api.IFastOrm;
+import org.fastorm.api.IJob;
 import org.fastorm.api.IFastOrmContainer;
 import org.fastorm.dataSet.IDataSet;
 import org.fastorm.reader.IEntityReaderThin;
@@ -13,19 +13,19 @@ import org.fastorm.reader.IEntityReaderThin;
 public class EntityReaderThinMock implements IEntityReaderThin {
 
 	private final Iterable<IDataSet> result;
-	private IFastOrm fastOrm;
+	private IJob job;
 
 	public EntityReaderThinMock(IDataSet... dataSets) {
 		result = Collections.unmodifiableCollection(Arrays.asList(dataSets));
 	}
 
-	public void setExpectedFastOrm(IFastOrm fastOrm) {
-		this.fastOrm = fastOrm;
+	public void setExpectedFastOrm(IJob job) {
+		this.job = job;
 	}
 
 	@Override
 	public <T> Iterable<IDataSet> dataSets(IFastOrmContainer fastOrm) {
-		Assert.assertSame(this.fastOrm, fastOrm);
+		Assert.assertSame(this.job, fastOrm);
 		return result;
 	}
 

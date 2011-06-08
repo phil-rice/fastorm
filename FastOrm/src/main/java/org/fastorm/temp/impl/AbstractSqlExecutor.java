@@ -8,7 +8,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.fastorm.api.IFastOrmContainer;
 import org.fastorm.constants.FastOrmConstants;
 import org.fastorm.context.IContext;
-import org.fastorm.context.OrmReadContext;
+import org.fastorm.context.ReadContext;
 import org.fastorm.dataSet.IDrainedTableData;
 import org.fastorm.dataSet.impl.DrainedTableData;
 import org.fastorm.defns.IEntityDefn;
@@ -20,20 +20,20 @@ import org.springframework.jdbc.core.ResultSetExtractor;
 
 public class AbstractSqlExecutor {
 
-	protected int updatePrimary(IFastOrmContainer fastOrm, OrmReadContext context, String template, Object... parameters) {
+	protected int updatePrimary(IFastOrmContainer fastOrm, ReadContext context, String template, Object... parameters) {
 		IEntityDefn primary = fastOrm.getEntityDefn();
-		String sql = fastOrm.getSqlStrings().getFromTemplate(fastOrm.getOptions(), template, primary.parameters(), parameters);
+		String sql = fastOrm.getSqlStrings().getFromTemplate(fastOrm, template, primary.parameters(), parameters);
 		return updateSql(fastOrm, context, sql);
 	}
 
-	protected int update(IFastOrmContainer fastOrm, OrmReadContext context, String template, IEntityDefn entityDefn, Object... parameters) {
-		String sql = fastOrm.getSqlStrings().getFromTemplate(fastOrm.getOptions(), template, entityDefn.parameters(), parameters);
+	protected int update(IFastOrmContainer fastOrm, ReadContext context, String template, IEntityDefn entityDefn, Object... parameters) {
+		String sql = fastOrm.getSqlStrings().getFromTemplate(fastOrm, template, entityDefn.parameters(), parameters);
 		return updateSql(fastOrm, context, sql);
 	}
 
-	protected void drainPrimary(final IFastOrmContainer fastOrm, final OrmReadContext context, String template, Object... parameters) {
+	protected void drainPrimary(final IFastOrmContainer fastOrm, final ReadContext context, String template, Object... parameters) {
 		final IEntityDefn entityDefn = fastOrm.getEntityDefn();
-		String sql = fastOrm.getSqlStrings().getFromTemplate(fastOrm.getOptions(), template, entityDefn.parameters(), parameters);
+		String sql = fastOrm.getSqlStrings().getFromTemplate(fastOrm, template, entityDefn.parameters(), parameters);
 		IDrainedTableData result = querySql(fastOrm, context, sql, new ResultSetExtractor<IDrainedTableData>() {
 			@Override
 			public IDrainedTableData extractData(ResultSet rs) throws SQLException, DataAccessException {
@@ -45,9 +45,9 @@ public class AbstractSqlExecutor {
 		context.add(result);
 	}
 
-	protected void drainSecondary(final IFastOrmContainer fastOrm, final OrmReadContext context, final IEntityDefn childDefn, String template, Object... parameters) {
+	protected void drainSecondary(final IFastOrmContainer fastOrm, final ReadContext context, final IEntityDefn childDefn, String template, Object... parameters) {
 		ISqlStrings sqlStrings = fastOrm.getSqlStrings();
-		String sql = sqlStrings.getFromTemplate(fastOrm.getOptions(), template, childDefn.parameters(), parameters);
+		String sql = sqlStrings.getFromTemplate(fastOrm, template, childDefn.parameters(), parameters);
 		IDrainedTableData result = querySql(fastOrm, context, sql, new ResultSetExtractor<IDrainedTableData>() {
 			@Override
 			public IDrainedTableData extractData(ResultSet rs) throws SQLException, DataAccessException {
@@ -66,7 +66,7 @@ public class AbstractSqlExecutor {
 		return updateSql(fastOrm, context, sql);
 	}
 
-	private IDrainedTableData querySql(final IFastOrmContainer fastOrm, OrmReadContext context, String sql, final ResultSetExtractor<IDrainedTableData> rse) {
+	private IDrainedTableData querySql(final IFastOrmContainer fastOrm, ReadContext context, String sql, final ResultSetExtractor<IDrainedTableData> rse) {
 		final AtomicLong queryTime = new AtomicLong();
 		long startTime = System.nanoTime();
 		IDrainedTableData result = fastOrm.getJdbcTemplate().query(sql, new ResultSetExtractor<IDrainedTableData>() {
