@@ -7,12 +7,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.fastorm.constants.FastOrmMessages;
 import org.fastorm.dataSet.IDrainedTableData;
 import org.fastorm.dataSet.IGetDrainedTableForEntityDefn;
 import org.fastorm.defns.IEntityDefn;
 import org.fastorm.memory.IMemoryManager;
 import org.fastorm.utilities.annotations.TightLoop;
 import org.fastorm.utilities.exceptions.WrappedException;
+import org.fastorm.utilities.maps.IMutableSimpleMapWithIndex;
 import org.fastorm.utilities.maps.ISimpleMap;
 import org.fastorm.utilities.maps.ISimpleMapWithIndex;
 import org.fastorm.utilities.maps.Maps;
@@ -30,18 +32,14 @@ public class DrainedTableData implements IDrainedTableData {
 
 	@Override
 	public String toString() {
-		return "DrainedTableData [entityDefn=" + getEntityDefn().getEntityName() + ", data=" + size() + "]";
-	}
-
-	@Override
-	public ISimpleMapWithIndex<String, Object> get(int i) {
-		return data[i];
+		String entityName = commonData == null ? null : getEntityDefn().getEntityName();
+		return "DrainedTableData [entityDefn=" + entityName + ", data=" + size() + "]";
 	}
 
 	public void setData(IMemoryManager memoryManager, IEntityDefn entityDefn, IGetDrainedTableForEntityDefn getter, ResultSet rs) {
 		try {
 			commonData = new DrainedLineCommonData(memoryManager, entityDefn);
-			commonData.setData(getter, rs);
+			commonData.setData(getter, rs.getMetaData());
 			index = 0;
 			while (rs.next()) {
 				data[index] = memoryManager.makeDrainedLine(commonData, rs, index);
@@ -55,11 +53,13 @@ public class DrainedTableData implements IDrainedTableData {
 
 	@Override
 	public IEntityDefn getEntityDefn() {
+		checkSetup();
 		return commonData.getEntityDefn();
 	}
 
 	@Override
 	public int getIdColumnIndex() {
+		checkSetup();
 		return commonData.getIdColumnIndex();
 	}
 
@@ -97,11 +97,24 @@ public class DrainedTableData implements IDrainedTableData {
 
 	@Override
 	public int indexOf(String key) {
+		checkSetup();
 		return commonData.getKeys().indexOf(key);
 	}
 
 	@Override
 	public List<String> keys() {
+		checkSetup();
 		return commonData.getKeys();
 	}
+
+	private void checkSetup() {
+		if (commonData == null)
+			throw new IllegalStateException(FastOrmMessages.cannotAccessBeforeItHasBeenSetup);
+	}
+
+	@Override
+	public IMutableSimpleMapWithIndex<String, Object> get(int index) {
+		return data[index];
+	}
+
 }

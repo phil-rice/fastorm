@@ -1,10 +1,12 @@
 package org.fastorm.temp.impl;
 
+import java.text.MessageFormat;
 import java.util.List;
 import java.util.Map;
 
 import org.fastorm.api.IFastOrmContainer;
 import org.fastorm.constants.FastOrmKeys;
+import org.fastorm.constants.FastOrmMessages;
 import org.fastorm.constants.FastOrmStringTemplates;
 import org.fastorm.context.ReadContext;
 import org.fastorm.dataGenerator.ChildForeignKeyGenerator;
@@ -82,6 +84,8 @@ public class OneToMany extends AbstractSqlExecutor implements ISecondaryTempTabl
 		Object parentIdValue = parentData.get(parentIndex).get(parentDefn.getIdColumn());
 
 		IDrainedTableData childData = getter.get(childDefn);
+		if (childData == null)
+			throw new IllegalStateException(MessageFormat.format(FastOrmMessages.cannotFindChildDataFor, childDefn));
 		String childLink = childDefn.parameters().get(FastOrmKeys.childLink);
 		int columnIndex = childData.indexOf(childLink);
 		List<ISimpleMap<String, Object>> result = childData.findWith(columnIndex, parentIdValue);

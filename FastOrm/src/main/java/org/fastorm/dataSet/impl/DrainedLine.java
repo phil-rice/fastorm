@@ -4,13 +4,16 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
+import org.fastorm.constants.FastOrmMessages;
 import org.fastorm.defns.IEntityDefn;
+import org.fastorm.exceptions.IllegalKeyException;
+import org.fastorm.temp.ISecondaryTempTableMaker;
 import org.fastorm.utilities.collections.Iterables;
 import org.fastorm.utilities.collections.Lists;
 import org.fastorm.utilities.functions.IFoldFunction;
-import org.fastorm.utilities.maps.ISimpleMapWithIndex;
+import org.fastorm.utilities.maps.IMutableSimpleMapWithIndex;
 
-public class DrainedLine implements ISimpleMapWithIndex<String, Object> {
+public class DrainedLine implements IMutableSimpleMapWithIndex<String, Object> {
 
 	private DrainedLineCommonData commonData;
 	private int index;
@@ -32,12 +35,14 @@ public class DrainedLine implements ISimpleMapWithIndex<String, Object> {
 
 	@Override
 	public Object get(String key) {
+		checkSetup();
 		int keyIndex = Lists.indexOf(commonData.getKeys(), key);
 		return getByIndex(keyIndex);
 	}
 
 	@Override
 	public Object getByIndex(int keyIndex) {
+		checkSetup();
 		if (keyIndex < 0)
 			return null;
 		else if (keyIndex < commonData.getColumnCount())
@@ -47,10 +52,16 @@ public class DrainedLine implements ISimpleMapWithIndex<String, Object> {
 		return values[keyIndex];
 	}
 
+	private void checkSetup() {
+		if (commonData == null)
+			throw new IllegalStateException(FastOrmMessages.cannotAccessBeforeItHasBeenSetup);
+	}
+
 	private Object makeDataFromChild(int parentIndex, int childIndex) {
 		IEntityDefn parentDefn = commonData.getEntityDefn();
 		IEntityDefn childDefn = parentDefn.getChildren().get(childIndex);
-		Object value = childDefn.getMaker().findDataIn(commonData.getGetter(), parentDefn, parentIndex, childDefn, childIndex);
+		ISecondaryTempTableMaker maker = childDefn.getMaker();
+		Object value = maker.findDataIn(commonData.getGetter(), parentDefn, parentIndex, childDefn, childIndex);
 		return value;
 	}
 
@@ -76,5 +87,24 @@ public class DrainedLine implements ISimpleMapWithIndex<String, Object> {
 			}
 		}, commonData.getKeys(), "");
 		return "DrainedLine [index=" + index + ", values=" + fold + "]";
+	}
+
+	@Override
+	public void put(int index, Object value) {
+		values[index] = value;
+	}
+
+	@Override
+	public void put(String key, Object value) {
+		int index = keys().indexOf(key);
+		if (index == -1)
+			throw new IllegalKeyException(key, keys());
+		put(index, value);
+	}
+
+	@Override
+	// TODO implement delete
+	public void delete() {
+		throw new UnsupportedOperationException();
 	}
 }

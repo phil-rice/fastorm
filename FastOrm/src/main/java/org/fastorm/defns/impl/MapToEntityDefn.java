@@ -15,7 +15,7 @@ import org.fastorm.utilities.maps.Maps;
 public class MapToEntityDefn {
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public IEntityDefn create(ITempTableMakerFactory factory, Map<String, String> parentParameters, Map<String, Object> from) throws Exception {
+	public IEntityDefn create(ITempTableMakerFactory factory, Map<String, String> parentParameters, Map<String, Object> from) {
 		Map<Class, Map<String, Object>> partitionedMap = Maps.partitionByValueClass(from, LinkedHashMap.class, Map.class, Object.class);
 		List<IEntityDefn> childList = new ArrayList<IEntityDefn>();
 		Map<String, String> parameters = (Map) partitionedMap.get(Object.class);

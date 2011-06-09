@@ -3,6 +3,7 @@ package org.fastorm;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
+import org.fastorm.dataSet.impl.AllDataSetImplTests;
 import org.fastorm.defns.AllDefnsTests;
 import org.fastorm.reader.impl.AllReaderImplTests;
 import org.fastorm.sqlDialects.AllSqlDialectTests;
@@ -15,6 +16,7 @@ public class AllFastOrmTests {
 		TestSuite suite = new TestSuite(AllFastOrmTests.class.getName());
 		// $JUnit-BEGIN$
 		suite.addTest(AllXmlToMapTests.suite());
+		suite.addTest(AllDataSetImplTests.suite());
 		suite.addTest(AllDefnsTests.suite());
 		suite.addTest(AllReaderImplTests.suite());
 		suite.addTest(AllSqlDialectTests.suite());

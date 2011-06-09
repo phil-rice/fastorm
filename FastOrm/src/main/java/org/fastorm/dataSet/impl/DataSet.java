@@ -4,15 +4,17 @@ import java.text.MessageFormat;
 import java.util.List;
 
 import org.fastorm.constants.FastOrmMessages;
-import org.fastorm.dataSet.IDataSet;
 import org.fastorm.dataSet.IDrainedTableData;
 import org.fastorm.dataSet.IGetDrainedTableForEntityDefn;
+import org.fastorm.dataSet.IMutableDataSet;
 import org.fastorm.defns.IEntityDefn;
 import org.fastorm.utilities.annotations.TightLoop;
 import org.fastorm.utilities.collections.Iterables;
+import org.fastorm.utilities.maps.IMutableSimpleMapWithIndex;
+import org.fastorm.utilities.maps.ISimpleMap;
 import org.fastorm.utilities.maps.ISimpleMapWithIndex;
 
-public class DataSet implements IDataSet, IGetDrainedTableForEntityDefn {
+public class DataSet implements IMutableDataSet, IGetDrainedTableForEntityDefn {
 
 	private final List<IDrainedTableData> tableData;
 
@@ -54,6 +56,29 @@ public class DataSet implements IDataSet, IGetDrainedTableForEntityDefn {
 	@Override
 	public String toString() {
 		return "DataSet [primary=" + primaryTable.getEntityDefn().getEntityName() + ", tableData=" + tableData + "]";
+	}
+
+	@Override
+	public IMutableSimpleMapWithIndex<String, Object> getMutableMap(int i) {
+		return null;
+	}
+
+	@Override
+	public IMutableSimpleMapWithIndex<String, Object> getMutableMapById(Object id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void insert(ISimpleMap<String, Object> data) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void addToCollection(ISimpleMap<String, Object> primaryObject, String collectionKey, ISimpleMap<String, Object> newValues) {
+		// TODO Auto-generated method stub
+
 	}
 
 }

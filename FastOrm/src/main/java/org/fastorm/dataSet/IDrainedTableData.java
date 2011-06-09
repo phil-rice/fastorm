@@ -4,10 +4,10 @@ import java.util.List;
 
 import org.fastorm.defns.IEntityDefn;
 import org.fastorm.utilities.functions.IFunction1;
-import org.fastorm.utilities.maps.IListOfSimpleMapWithIndex;
+import org.fastorm.utilities.maps.IListOfMutableSimpleMapWithIndex;
 import org.fastorm.utilities.maps.ISimpleMap;
 
-public interface IDrainedTableData extends IListOfSimpleMapWithIndex<String, Object> {
+public interface IDrainedTableData extends IListOfMutableSimpleMapWithIndex<String, Object> {
 
 	IEntityDefn getEntityDefn();
 

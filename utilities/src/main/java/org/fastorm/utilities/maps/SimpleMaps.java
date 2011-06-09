@@ -33,6 +33,13 @@ public class SimpleMaps {
 
 	}
 
+	public static <K, V, T extends Iterable<? extends ISimpleMap<K, V>>> List<Map<K, V>> toListOfMaps(T from) {
+		List<Map<K, V>> result = Lists.newList();
+		for (ISimpleMap<K, V> map : from)
+			result.add(Maps.fromSimpleMap(map));
+		return result;
+	}
+
 	public static <K, V> ISimpleMap<K, V> fromMap(final Map<K, V> map) {
 		return new ISimpleMap<K, V>() {
 			private final List<K> keyList = Iterables.list(map.keySet());

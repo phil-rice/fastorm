@@ -1,6 +1,5 @@
 package org.fastorm.dataSet.impl;
 
-import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.List;
@@ -17,7 +16,7 @@ public class DrainedLineCommonData {
 	private final int childCount;
 	private List<String> keys;
 	private int columnCount;
-	private int idColumnIndex;
+	private int idColumnIndex = -1;
 
 	public DrainedLineCommonData(IMemoryManager memoryManager, IEntityDefn entityDefn) {
 		this.memoryManager = memoryManager;
@@ -26,10 +25,9 @@ public class DrainedLineCommonData {
 		this.childCount = children.size();
 	}
 
-	public void setData(IGetDrainedTableForEntityDefn getter, ResultSet resultSet) throws SQLException {
+	public void setData(IGetDrainedTableForEntityDefn getter, ResultSetMetaData metaData) throws SQLException {
 		this.getter = getter;
 		if (keys == null) {
-			ResultSetMetaData metaData = resultSet.getMetaData();
 			columnCount = metaData.getColumnCount();
 			keys = Lists.newList(columnCount + childCount);
 			for (int i = 1; i <= columnCount; i++)
@@ -41,11 +39,10 @@ public class DrainedLineCommonData {
 			this.idColumnIndex = Lists.indexOf(keys, entityDefn.getIdColumn());
 
 		}
-		assert sizesMatch(resultSet);
+		assert sizesMatch(metaData);
 	}
 
-	private boolean sizesMatch(ResultSet resultSet) throws SQLException {
-		ResultSetMetaData metaData = resultSet.getMetaData();
+	private boolean sizesMatch(ResultSetMetaData metaData) throws SQLException {
 		return columnCount == metaData.getColumnCount();
 	}
 

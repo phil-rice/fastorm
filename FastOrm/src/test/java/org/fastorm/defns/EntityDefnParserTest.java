@@ -29,54 +29,7 @@ public class EntityDefnParserTest extends TestCase implements IIntegrationTest {
 		String xml = Files.getTextFromClassPath(getClass(), string);
 		XmlToMapParser<String, Object> parser = IEntityDefn.Utils.makeXmlParser();
 		Object actual = parser.parse(xml);
-		// EntityDefn expectedDefn = new EntityDefn(//
-		// Maps.<String, String> makeMap(FastOrmKeys.entityName, "person", FastOrmKeys.tableName, "person", FastOrmKeys.idColumn, "id", FastOrmKeys.versionColumn, "p_version"),//
-		// Arrays.asList(new EntityDefn(Maps.<String, String> makeMap(FastOrmKeys.entityName, "address", FastOrmKeys.tableName, "address", FastOrmKeys.idColumn, "a_id", FastOrmKeys.versionColumn,
-		// "version", FastOrmKeys.childLink, "a_person"), Collections.EMPTY_LIST), new EntityDefn(Maps.<String, String> makeMap(FastOrmKeys.entityName, "telephone", FastOrmKeys.tableName, "telephone",
-		// FastOrmKeys.idColumn, "id", FastOrmKeys.versionColumn, "version", FastOrmKeys.childLink, "t_person"), Collections.EMPTY_LIST), new EntityDefn(Maps.<String, String>
-		// makeMap(FastOrmKeys.entityName, "employer", FastOrmKeys.tableName, "employer", FastOrmKeys.idColumn, "id", FastOrmKeys.versionColumn, "version", FastOrmKeys.parentLink, "p_employer"),
-		// Collections.EMPTY_LIST)));
-
-		Map<Object, Object> expected = Maps.makeMap(//
-				FastOrmKeys.entityName, "person",//
-				FastOrmKeys.tableName, "person",//
-				FastOrmKeys.tempTableName, "person_temp",//
-				FastOrmKeys.idColumn, "id",//
-				FastOrmKeys.idType, "integer",//
-				FastOrmKeys.versionColumn, "p_version",//
-				FastOrmKeys.useTemporaryTable, true,//
-				FastOrmKeys.maxLinesPerBatch, "100",//
-				"address", Maps.makeMap(//
-						FastOrmKeys.entityName, "address",//
-						FastOrmKeys.tableName, "address",//
-						FastOrmKeys.tempTableName, "address_temp",//
-						FastOrmKeys.idColumn, "a_id",//
-						FastOrmKeys.idType, "integer",//
-						FastOrmKeys.versionColumn, "version", //
-						FastOrmKeys.useTemporaryTable, true,//
-						FastOrmKeys.maxLinesPerBatch, "100",//
-						FastOrmKeys.childLink, "a_person"),//
-				"telephone", Maps.makeMap(//
-						FastOrmKeys.entityName, "telephone",//
-						FastOrmKeys.tableName, "telephone",//
-						FastOrmKeys.tempTableName, "telephone_temp",//
-						FastOrmKeys.idColumn, "id",//
-						FastOrmKeys.idType, "integer",//
-						FastOrmKeys.versionColumn, "version", //
-						FastOrmKeys.useTemporaryTable, true,//
-						FastOrmKeys.maxLinesPerBatch, "100",//
-						FastOrmKeys.childLink, "t_person"),//
-				"employer", Maps.makeMap(//
-						FastOrmKeys.entityName, "employer",//
-						FastOrmKeys.tableName, "employer",//
-						FastOrmKeys.tempTableName, "employer_temp",//
-						FastOrmKeys.idColumn, "id",//
-						FastOrmKeys.idType, "integer",//
-						FastOrmKeys.versionColumn, "version", //
-						FastOrmKeys.useTemporaryTable, true,//
-						FastOrmKeys.maxLinesPerBatch, "100",//
-						FastOrmKeys.parentLink, "p_employer"));//
-		assertEquals(expected, actual);
+		assertEquals(EntityDefnTestFixture.person, actual);
 	}
 
 	public void testMakersAreAllocated() {

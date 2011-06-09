@@ -4,7 +4,7 @@ import org.fastorm.api.impl.JobDetails;
 import org.fastorm.defns.IEntityDefn;
 import org.fastorm.temp.IPrimaryTempTableMaker;
 
-public interface IJobDetails extends IJobOptimisiations {
+public interface IJobDetails extends IJobOptimisations {
 	IEntityDefn getEntityDefn();
 
 	IPrimaryTempTableMaker getPrimaryTempTableMaker();

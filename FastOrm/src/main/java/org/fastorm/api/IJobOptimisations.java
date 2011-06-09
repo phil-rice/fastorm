@@ -1,6 +1,6 @@
 package org.fastorm.api;
 
-public interface IJobOptimisiations {
+public interface IJobOptimisations {
 	boolean indexPrimaryTables();
 
 	boolean indexSecondaryTables();
