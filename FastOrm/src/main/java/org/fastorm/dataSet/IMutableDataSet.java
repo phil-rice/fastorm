@@ -1,6 +1,6 @@
 package org.fastorm.dataSet;
 
-import org.fastorm.utilities.maps.IMutableSimpleMapWithIndex;
+import org.fastorm.mutate.IMutableItem;
 import org.fastorm.utilities.maps.ISimpleMap;
 
 /**
@@ -17,9 +17,9 @@ import org.fastorm.utilities.maps.ISimpleMap;
  * */
 public interface IMutableDataSet extends IDataSet {
 
-	IMutableSimpleMapWithIndex<String, Object> getMutableMap(int i);
+	IMutableItem getMutableMap(int i);
 
-	IMutableSimpleMapWithIndex<String, Object> getMutableMapById(Object id);
+	IMutableItem getMutableMapById(Object id);
 
 	/** This adds data to the mutable data set. Child collections will be processed as well */
 	void insert(ISimpleMap<String, Object> data);

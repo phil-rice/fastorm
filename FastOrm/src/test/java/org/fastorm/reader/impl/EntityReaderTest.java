@@ -11,7 +11,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
 import org.fastorm.api.IJob;
-import org.fastorm.dataSet.IDataSet;
+import org.fastorm.dataSet.IMutableDataSet;
 import org.fastorm.defns.impl.EntityDefn;
 import org.fastorm.reader.IEntityReader;
 import org.fastorm.utilities.aggregators.IAggregator;
@@ -38,10 +38,10 @@ public class EntityReaderTest extends AbstractEntityReaderTest {
 		checkMerger(abc, def, gh);
 	}
 
-	private void checkMerger(IDataSet... dataSets) throws Exception {
-		Map<String, Object> expected = SimpleMaps.merge(Iterables.split(Arrays.asList(dataSets), new IFunction1<IDataSet, Iterable<ISimpleMapWithIndex<String, Object>>>() {
+	private void checkMerger(IMutableDataSet... dataSets) throws Exception {
+		Map<String, Object> expected = SimpleMaps.merge(Iterables.split(Arrays.asList(dataSets), new IFunction1<IMutableDataSet, Iterable<ISimpleMapWithIndex<String, Object>>>() {
 			@Override
-			public List<ISimpleMapWithIndex<String, Object>> apply(IDataSet from) throws Exception {
+			public List<ISimpleMapWithIndex<String, Object>> apply(IMutableDataSet from) throws Exception {
 				return SimpleLists.asList(from);
 			}
 		}));
@@ -49,7 +49,7 @@ public class EntityReaderTest extends AbstractEntityReaderTest {
 		EntityReaderThinMock mock = new EntityReaderThinMock(dataSets);
 		IJob expectedFastOrm = job.withThinInterface(mock).withEntityDefn(new EntityDefn());
 		IEntityReader<ISimpleMap<String, Object>> reader = expectedFastOrm.makeReader();
-		mock.setExpectedFastOrm(expectedFastOrm);
+		mock.setExpectedJob(expectedFastOrm);
 
 		SimpleMapFoldFunction<String, Object> aggregatorAndFolder = new SimpleMapFoldFunction<String, Object>();
 		ISimpleMap<String, Object> reduceResult = reader.reduce(aggregatorAndFolder, aggregatorAndFolder, SimpleMaps.<String, Object> empty()).get();
@@ -69,17 +69,17 @@ public class EntityReaderTest extends AbstractEntityReaderTest {
 		assertEquals(expected, Maps.fromSimpleMap(mainMerger.result()));
 	}
 
-	private void checkMaps(IDataSet... dataSets) throws InterruptedException, ExecutionException {
-		Iterable<ISimpleMapWithIndex<String, Object>> maps = Iterables.split(Arrays.asList(dataSets), new IFunction1<IDataSet, Iterable<ISimpleMapWithIndex<String, Object>>>() {
+	private void checkMaps(IMutableDataSet... dataSets) throws InterruptedException, ExecutionException {
+		Iterable<ISimpleMapWithIndex<String, Object>> maps = Iterables.split(Arrays.asList(dataSets), new IFunction1<IMutableDataSet, Iterable<ISimpleMapWithIndex<String, Object>>>() {
 			@Override
-			public Iterable<ISimpleMapWithIndex<String, Object>> apply(IDataSet from) throws Exception {
+			public Iterable<ISimpleMapWithIndex<String, Object>> apply(IMutableDataSet from) throws Exception {
 				return SimpleLists.asList(from);
 			}
 		});
 		EntityReaderThinMock mock = new EntityReaderThinMock(dataSets);
 		IJob actualFastOrm = job.withThinInterface(mock).withEntityDefn(new EntityDefn());
 		IEntityReader<ISimpleMap<String, Object>> reader = actualFastOrm.makeReader();
-		mock.setExpectedFastOrm(actualFastOrm);
+		mock.setExpectedJob(actualFastOrm);
 
 		checkMapsInReader(reader, maps);
 		checkMapsInReader(reader, maps);

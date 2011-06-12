@@ -71,11 +71,6 @@
 		</dependency>
 		<dependency>
 			<groupId>org.fastorm</groupId>
-			<artifactId>Pooling</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.fastorm</groupId>
 			<artifactId>Utilities</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>

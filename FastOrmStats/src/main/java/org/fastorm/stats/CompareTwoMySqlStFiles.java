@@ -8,7 +8,7 @@ import org.springframework.core.io.ClassPathResource;
 public class CompareTwoMySqlStFiles {
 
 	public static void main(String[] args) throws Exception {
-		final IJob initial = FastOrmExerciser.Utils.makeInitial().withCreateAndDropProceduresAtStart(false);
+		final IJob initial = FastOrmExerciser.Utils.makeInitial().withCreateAndDropAtStart(false);
 		final SqlStrings championSqlStrings = new SqlStrings(new ClassPathResource("MySql.st"));
 		final SqlStrings challangerSqlStrings = new SqlStrings(new ClassPathResource("MySql_To_Compare.st"));
 		new FastOrmExerciser(new ExerciseNumbers(), //

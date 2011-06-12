@@ -1,32 +1,25 @@
 package org.fastorm.api.impl;
 
 import org.fastorm.api.IJobDetails;
+import org.fastorm.api.IJobOptimisations;
 import org.fastorm.defns.IEntityDefn;
 import org.fastorm.temp.IPrimaryTempTableMaker;
 
 public class JobDetails implements IJobDetails {
 	protected final IEntityDefn entityDefn;
-	protected final boolean indexPrimaryTables;
-	protected final boolean indexSecondaryTables;
-	protected final boolean useTemporaryTables;
-	protected final boolean createAnddropProceduresAtStartOfRun;
-	protected final boolean optimiseLeafAccess;
 	protected final int batchSize;
 	protected final int maxForOneThread;
-	protected final int byteBufferSize;
 	protected final IPrimaryTempTableMaker primaryTempTableMaker;
+	private final boolean createAndDropProceduresAtStartOfJob;
+	protected final IJobOptimisations optimisations;
 
-	public JobDetails(IEntityDefn entityDefn, IPrimaryTempTableMaker primaryTempTableMaker, boolean indexPrimaryTables, boolean indexSecondaryTables, boolean useTemporaryTables, boolean createAnddropProceduresAtStartOfRun, boolean optimiseLeafAccess, int batchSize, int maxForOneThread, int byteBufferSize) {
+	public JobDetails(IJobOptimisations optimisations, IEntityDefn entityDefn, IPrimaryTempTableMaker primaryTempTableMaker, int batchSize, int maxForOneThread, boolean createAndDropProceduresAtStartOfJob) {
+		this.optimisations = optimisations;
 		this.entityDefn = entityDefn;
 		this.primaryTempTableMaker = primaryTempTableMaker;
-		this.indexPrimaryTables = indexPrimaryTables;
-		this.indexSecondaryTables = indexSecondaryTables;
-		this.useTemporaryTables = useTemporaryTables;
-		this.createAnddropProceduresAtStartOfRun = createAnddropProceduresAtStartOfRun;
-		this.optimiseLeafAccess = optimiseLeafAccess;
 		this.batchSize = batchSize;
 		this.maxForOneThread = maxForOneThread;
-		this.byteBufferSize = byteBufferSize;
+		this.createAndDropProceduresAtStartOfJob = createAndDropProceduresAtStartOfJob;
 	}
 
 	public IEntityDefn getEntityDefn() {
@@ -44,38 +37,18 @@ public class JobDetails implements IJobDetails {
 	}
 
 	@Override
+	public IJobOptimisations getOptimisations() {
+		return optimisations;
+	}
+
+	@Override
 	public int getBatchSize() {
 		return batchSize;
 	}
 
 	@Override
-	public boolean indexPrimaryTables() {
-		return indexPrimaryTables;
-	}
-
-	@Override
-	public boolean indexSecondaryTables() {
-		return indexSecondaryTables;
-	}
-
-	@Override
-	public boolean useTemporaryTables() {
-		return useTemporaryTables;
-	}
-
-	@Override
 	public boolean createAnddropProceduresAtStartOfRun() {
-		return createAnddropProceduresAtStartOfRun;
-	}
-
-	@Override
-	public boolean optimiseLeafAccess() {
-		return optimiseLeafAccess;
-	}
-
-	@Override
-	public int byteBufferSize() {
-		return byteBufferSize;
+		return createAndDropProceduresAtStartOfJob;
 	}
 
 	@Override
@@ -83,13 +56,9 @@ public class JobDetails implements IJobDetails {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + batchSize;
-		result = prime * result + byteBufferSize;
-		result = prime * result + (createAnddropProceduresAtStartOfRun ? 1231 : 1237);
-		result = prime * result + (indexPrimaryTables ? 1231 : 1237);
-		result = prime * result + (indexSecondaryTables ? 1231 : 1237);
+		result = prime * result + ((entityDefn == null) ? 0 : entityDefn.hashCode());
 		result = prime * result + maxForOneThread;
-		result = prime * result + (optimiseLeafAccess ? 1231 : 1237);
-		result = prime * result + (useTemporaryTables ? 1231 : 1237);
+		result = prime * result + ((primaryTempTableMaker == null) ? 0 : primaryTempTableMaker.hashCode());
 		return result;
 	}
 
@@ -104,26 +73,24 @@ public class JobDetails implements IJobDetails {
 		JobDetails other = (JobDetails) obj;
 		if (batchSize != other.batchSize)
 			return false;
-		if (byteBufferSize != other.byteBufferSize)
-			return false;
-		if (createAnddropProceduresAtStartOfRun != other.createAnddropProceduresAtStartOfRun)
-			return false;
-		if (indexPrimaryTables != other.indexPrimaryTables)
-			return false;
-		if (indexSecondaryTables != other.indexSecondaryTables)
+		if (entityDefn == null) {
+			if (other.entityDefn != null)
+				return false;
+		} else if (!entityDefn.equals(other.entityDefn))
 			return false;
 		if (maxForOneThread != other.maxForOneThread)
 			return false;
-		if (optimiseLeafAccess != other.optimiseLeafAccess)
-			return false;
-		if (useTemporaryTables != other.useTemporaryTables)
+		if (primaryTempTableMaker == null) {
+			if (other.primaryTempTableMaker != null)
+				return false;
+		} else if (!primaryTempTableMaker.equals(other.primaryTempTableMaker))
 			return false;
 		return true;
 	}
 
 	@Override
 	public String toString() {
-		return "JobDetails [indexPrimaryTables=" + indexPrimaryTables + ", indexSecondaryTables=" + indexSecondaryTables + ", useTemporaryTables=" + useTemporaryTables + ", createAnddropProceduresAtStartOfRun=" + createAnddropProceduresAtStartOfRun + ", optimiseLeafAccess=" + optimiseLeafAccess + ", batchSize=" + batchSize + ", maxForOneThread=" + maxForOneThread + ", byteBufferSize=" + byteBufferSize + "]";
+		return "JobDetails [entityDefn=" + entityDefn + ", batchSize=" + batchSize + ", maxForOneThread=" + maxForOneThread + ", primaryTempTableMaker=" + primaryTempTableMaker + "]";
 	}
 
 }

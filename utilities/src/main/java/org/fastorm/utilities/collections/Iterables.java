@@ -93,7 +93,7 @@ public class Iterables {
 		});
 	}
 
-	public static <T> void processCallbacks(Iterable<T> iterable, ICallback<T> callback) {
+	public static <T> void processCallbacks(Iterable<? extends T> iterable, ICallback<T> callback) {
 		try {
 			for (T t : iterable)
 				callback.process(t);

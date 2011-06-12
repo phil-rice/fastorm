@@ -6,6 +6,7 @@ import java.util.Arrays;
 
 import junit.framework.TestCase;
 
+import org.fastorm.api.IJobDetails;
 import org.fastorm.defns.EntityDefnTestFixture;
 import org.fastorm.defns.IEntityDefn;
 import org.fastorm.memory.MemoryManager;
@@ -50,7 +51,7 @@ public class DrainedLineCommonDataTest extends TestCase {
 		super.setUp();
 		memoryManager = new MemoryManager();
 		entityDefn = EntityDefnTestFixture.person;
-		commonData = new DrainedLineCommonData(memoryManager, entityDefn);
+		commonData = new DrainedLineCommonData(memoryManager, IJobDetails.Utils.allEntities(entityDefn, 100), entityDefn);
 	}
 
 }

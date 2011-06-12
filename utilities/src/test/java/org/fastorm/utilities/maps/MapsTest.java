@@ -2,6 +2,8 @@ package org.fastorm.utilities.maps;
 
 import java.text.MessageFormat;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -59,6 +61,67 @@ public class MapsTest extends TestCase {
 		checkPartitionMapByValueClass(Maps.makeMap("a", 1, "b", 2, "c", "3", "d", "4"), //
 				Maps.makeMap(Integer.class, Maps.makeMap("a", 1, "b", 2), Object.class, Maps.makeMap("c", "3", "d", "4")),//
 				Integer.class, Object.class);
+	}
+
+	public void testNewMapWithClassParameter() {
+		checkNewMap(HashMap.class);
+		checkNewMap(IdentityHashMap.class);
+		checkNewMap(LinkedHashMap.class);
+	}
+
+	private void checkNewMap(Class<?> clazz) {
+		Map<Object, Object> map = Maps.newMap(clazz);
+		assertTrue(clazz.isAssignableFrom(map.getClass()));
+		assertEquals(0, map.size());
+	}
+
+	public void testNewMapOfSameType() {
+		checkNewMapOfSameType(HashMap.class);
+		checkNewMapOfSameType(IdentityHashMap.class);
+		checkNewMapOfSameType(LinkedHashMap.class);
+	}
+
+	private void checkNewMapOfSameType(Class<?> clazz) {
+		Map<Object, Object> oldMap = Maps.newMap(clazz);
+		Map<Object, Object> map = Maps.newMapOfSameTypeMap(oldMap);
+		assertTrue(clazz.isAssignableFrom(map.getClass()));
+		assertEquals(0, map.size());
+	}
+
+	public void testCopy() {
+		checkCopy(HashMap.class);
+		checkCopy(IdentityHashMap.class);
+		checkCopy(LinkedHashMap.class);
+	}
+
+	private void checkCopy(Class<?> clazz) {
+		Map<Object, Object> oldMap = Maps.newMap(clazz);
+		oldMap.put("a", 1);
+		oldMap.put("b", 2);
+		Map<Object, Object> map = Maps.copyMap(oldMap);
+		assertTrue(clazz.isAssignableFrom(map.getClass()));
+		assertEquals(oldMap, map);
+		assertNotSame(oldMap, map);
+	}
+
+	public void testWith() {
+		checkWith(HashMap.class);
+		checkWith(IdentityHashMap.class);
+		checkWith(LinkedHashMap.class);
+	}
+
+	private void checkWith(Class<?> clazz) {
+		Map<Object, Object> oldMap = Maps.newMap(clazz);
+		oldMap.put("a", 1);
+		oldMap.put("b", 2);
+		Map<Object, Object> copyOfOld = Maps.copyMap(oldMap);
+		Map<Object, Object> expected = Maps.copyMap(oldMap);
+		expected.put("c", 3);
+
+		Map<Object, Object> map = Maps.with(oldMap, "c", 3);
+		assertTrue(clazz.isAssignableFrom(map.getClass()));
+		assertEquals(copyOfOld, oldMap);
+		assertEquals(expected, map);
 	}
 
 	@SuppressWarnings("rawtypes")

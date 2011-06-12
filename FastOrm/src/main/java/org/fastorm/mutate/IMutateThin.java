@@ -2,6 +2,7 @@ package org.fastorm.mutate;
 
 import java.util.Map;
 
+import org.fastorm.dataSet.IMutateDataSetCallback;
 import org.fastorm.sqlDialects.ISqlStrings;
 import org.fastorm.temp.ISecondaryTempTableMaker;
 

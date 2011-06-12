@@ -4,6 +4,7 @@ import javax.sql.DataSource;
 
 import org.fastorm.api.IFastOrmContainer;
 import org.fastorm.api.IJob;
+import org.fastorm.api.IJobOptimisations;
 import org.fastorm.defns.IEntityDefn;
 import org.fastorm.defns.IEntityDefnParentChildVisitor;
 import org.fastorm.reader.IEntityReader;
@@ -21,7 +22,7 @@ public class FastOrmExerciser {
 	public static class Utils {
 		public static final IJob makeInitial() {
 			DataSource dataSource = new XmlBeanFactory(new ClassPathResource("MySqlDataSource.xml")).getBean(DataSource.class);
-			IEntityDefn defn = IEntityDefn.Utils.parse(new TempTableMakerFactory(), new ClassPathResource("sample.xml"));
+			IEntityDefn defn = IEntityDefn.Utils.parse(new TempTableMakerFactory(IJobOptimisations.Utils.usualBest()), new ClassPathResource("sample.xml"));
 			return IJob.Utils.mySqlSingleThreaded(defn, dataSource);
 		}
 
@@ -49,7 +50,7 @@ public class FastOrmExerciser {
 		@SuppressWarnings("unused")
 		public static void warmUp(int walmUpCount, final IJob job, ICallback<Integer> countCallback) throws Exception {
 			IFastOrmContainer container = job.getContainer();
-			new SqlHelper(container.getJdbcTemplate()).dropAllTables();
+			new SqlHelper(container.getDataSource()).dropAllTables();
 			MakeData.makeData(container, 100, ICallback.Utils.<Integer> noCallback());
 			IEntityReader<ISimpleMap<String, Object>> reader = job.makeReader();
 			for (int i = 0; i < walmUpCount; i++) {
@@ -73,7 +74,7 @@ public class FastOrmExerciser {
 				visitor.startDatabase(outerRun, databaseSize, spec);
 				for (final IJob job : spec) {
 					IEntityDefn.Utils.walk(job.getEntityDefn(), new IEntityDefnParentChildVisitor() {
-						SqlHelper helper = new SqlHelper(job.getContainer().getJdbcTemplate());
+						SqlHelper helper = new SqlHelper(job.getContainer().getDataSource());
 
 						@Override
 						public void acceptPrimary(IEntityDefn primary) throws Exception {
@@ -99,7 +100,7 @@ public class FastOrmExerciser {
 
 	public static void main(String[] args) throws Exception {
 		final IFastOrmContainer initial = Utils.makeInitial().//
-				withCreateAndDropProceduresAtStart(false).//
+				withCreateAndDropAtStart(false).//
 				withThinInterface(new StoredProceduresEntityReaderThin()).//
 				getContainer();
 		Utils.warmUp(50, initial, ICallback.Utils.count);

@@ -1,8 +1,8 @@
 package org.fastorm.writer;
 
-import org.fastorm.context.WriteContext;
+import org.fastorm.context.IContext;
 
 public interface IEntityWriterThin {
 
-	void write(WriteContext context);
+	void write(IContext context);
 }

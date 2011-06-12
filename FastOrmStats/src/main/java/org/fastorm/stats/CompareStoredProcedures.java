@@ -8,7 +8,7 @@ import org.fastorm.utilities.functions.IFunction1;
 public class CompareStoredProcedures {
 
 	public static void main(String[] args) throws Exception {
-		final IJob initial = FastOrmExerciser.Utils.makeInitial().withCreateAndDropProceduresAtStart(false);
+		final IJob initial = FastOrmExerciser.Utils.makeInitial().withCreateAndDropAtStart(false);
 		new FastOrmExerciser(new ExerciseNumbers(), //
 				FastOrmExerciser.Utils.specWithBatch1_10_100_1000(initial), //
 				new ChampionChallengerStatsExecutionVisitor(//

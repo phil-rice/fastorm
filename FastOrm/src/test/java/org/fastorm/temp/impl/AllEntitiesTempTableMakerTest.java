@@ -8,7 +8,7 @@ import static org.fastorm.constants.FastOrmTestValues.primaryTempTableName;
 import java.util.Arrays;
 
 import org.fastorm.constants.FastOrmTestValues;
-import org.fastorm.context.ReadContext;
+import org.fastorm.context.IContext;
 import org.fastorm.dataSet.IDrainedTableData;
 import org.fastorm.sql.SysOutSqlLogger;
 import org.fastorm.utilities.callbacks.ICallback;
@@ -21,10 +21,10 @@ public class AllEntitiesTempTableMakerTest extends AbstractTempTableMakerTest {
 
 	public void testCreateTempTable() {
 		emptyDatabase();
-		execute(new ICallback<ReadContext>() {
+		execute(new ICallback<IContext>() {
 			@Override
-			public void process(ReadContext context) throws Exception {
-				maker.create(fastOrm, context);
+			public void process(IContext context) throws Exception {
+				maker.create(context);
 			}
 		});
 		assertEquals(Arrays.asList(primaryTempTableName), sqlHelper.tables());
@@ -37,16 +37,16 @@ public class AllEntitiesTempTableMakerTest extends AbstractTempTableMakerTest {
 		sqlHelper.create(primaryTableName, primaryIdColumn, primaryIdType, "data", "varchar(20)");
 		sqlHelper.insert(primaryTableName, 100, primaryIdColumn, "{1}", "data", "''{0}_{1}''");
 		sqlHelper.assertTableMatches(primaryTableName, 100, 0, primaryIdColumn, "{1}", "data", "{0}_{1}");
-		execute(new ICallback<ReadContext>() {
+		execute(new ICallback<IContext>() {
 			@Override
-			public void process(ReadContext context) throws Exception {
+			public void process(IContext context) throws Exception {
 				fastOrm5 = fastOrm5.withSqlLogger(new SysOutSqlLogger()).getContainer();
-				maker.create(fastOrm5, context);
-				int popCount0 = maker.populate(fastOrm5, context, 0);
+				maker.create(context);
+				int popCount0 = maker.populate(context, 0);
 				assertEquals(5, popCount0);
 				sqlHelper.assertTableMatches(primaryTempTableName, 5, 0, primaryIdColumn, "{1}");
-				maker.truncate(fastOrm, context);
-				int popCount1 = maker.populate(fastOrm5, context, 1);
+				maker.truncate(context);
+				int popCount1 = maker.populate(context, 1);
 				assertEquals(5, popCount1);
 				sqlHelper.assertTableMatches(primaryTempTableName, 5, 5, primaryIdColumn, "{1}");
 			}
@@ -57,13 +57,13 @@ public class AllEntitiesTempTableMakerTest extends AbstractTempTableMakerTest {
 		emptyDatabase();
 		sqlHelper.create(primaryTableName, primaryIdColumn, primaryIdType, "data", "varchar(20)");
 		sqlHelper.insert(primaryTableName, 10, primaryIdColumn, "{1}", "data", "''{0}_{1}''");
-		IDrainedTableData table = query(new IFunction1<ReadContext, IDrainedTableData>() {
+		IDrainedTableData table = query(new IFunction1<IContext, IDrainedTableData>() {
 			@Override
-			public IDrainedTableData apply(ReadContext from) throws Exception {
-				maker.drop(fastOrm5, from);// this is for debugging so that you can drop to stack frame here
-				maker.create(fastOrm5, from);
-				maker.populate(fastOrm5, from, 0);
-				maker.drain(fastOrm5, from);
+			public IDrainedTableData apply(IContext from) throws Exception {
+				maker.drop(from);// this is for debugging so that you can drop to stack frame here
+				maker.create(from);
+				maker.populate(from, 0);
+				maker.drain(from);
 				IDrainedTableData iDrainedTableData = from.get(fastOrm5.getEntityDefn());
 				return iDrainedTableData;
 			}

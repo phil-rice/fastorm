@@ -3,8 +3,9 @@ package org.fastorm.api;
 import javax.sql.DataSource;
 
 import org.fastorm.api.impl.Job;
+import org.fastorm.constants.FastOrmJobOptimisations;
 import org.fastorm.defns.IEntityDefn;
-import org.fastorm.mutate.IMutate;
+import org.fastorm.mutate.IMutator;
 import org.fastorm.reader.IEntityReader;
 import org.fastorm.utilities.functions.IFunction1;
 import org.fastorm.utilities.maps.ISimpleMap;
@@ -13,7 +14,7 @@ public interface IJob extends IJobConfigurator, IJobDetails {
 
 	IEntityReader<ISimpleMap<String, Object>> makeReader();
 
-	<T> IMutate<T> makeMutator();
+	<T> IMutator<T> makeMutator();
 
 	IFastOrmContainer getContainer();
 
@@ -45,13 +46,13 @@ public interface IJob extends IJobConfigurator, IJobDetails {
 
 		public static IFunction1<IJob, Boolean> getUseTemporaryTables() {
 			return new IFunction1<IJob, Boolean>() {
-
 				@Override
 				public Boolean apply(IJob from) throws Exception {
-					return from.useTemporaryTables();
+					return from.getOptimisations().optimise(FastOrmJobOptimisations.useTemporaryTables);
 				}
 			};
 		}
+
 	}
 
 }

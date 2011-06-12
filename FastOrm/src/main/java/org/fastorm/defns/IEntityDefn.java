@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.fastorm.api.IJob;
 import org.fastorm.api.IFastOrmContainer;
+import org.fastorm.api.IJob;
 import org.fastorm.dataGenerator.IExtraDataGenerator;
 import org.fastorm.dataGenerator.NoExtraDataGenerator;
 import org.fastorm.defns.impl.MapToEntityDefn;
@@ -69,7 +69,7 @@ public interface IEntityDefn {
 
 		public static void dropAndMakeTables(IFastOrmContainer fastOrm, IEntityDefn entityDefn, final IExtraDataGenerator extraDataGenerator) {
 			final Map<IEntityDefn, Map<String, String>> entityToColumnsAndTypes = findMinimumColumns(fastOrm);
-			final SqlHelper sqlHelper = new SqlHelper(fastOrm.getJdbcTemplate());
+			final SqlHelper sqlHelper = new SqlHelper(fastOrm.getDataSource());
 			sqlHelper.dropAllTables();
 			walk(fastOrm.getEntityDefn(), new IEntityDefnParentChildVisitor() {
 				@Override

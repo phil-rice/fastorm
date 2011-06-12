@@ -1,12 +1,13 @@
 package org.fastorm.api;
 
+import javax.sql.DataSource;
+
 import org.fastorm.api.impl.JobServices;
 import org.fastorm.memory.IMemoryManager;
 import org.fastorm.reader.IEntityReaderThin;
 import org.fastorm.sql.ISqlLogger;
 import org.fastorm.sqlDialects.ISqlStrings;
 import org.fastorm.temp.ITempTableMakerFactory;
-import org.springframework.jdbc.core.JdbcTemplate;
 
 public interface IFastOrmContainer extends IJob {
 	IMemoryManager getMemoryManager();
@@ -15,7 +16,7 @@ public interface IFastOrmContainer extends IJob {
 
 	ISqlLogger getSqlLogger();
 
-	JdbcTemplate getJdbcTemplate();
+	DataSource getDataSource();
 
 	JobServices getServices();
 

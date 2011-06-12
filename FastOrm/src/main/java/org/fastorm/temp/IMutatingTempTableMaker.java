@@ -1,15 +1,15 @@
 package org.fastorm.temp;
 
-import org.fastorm.context.WriteContext;
+import org.fastorm.context.IContext;
+import org.fastorm.dataSet.IDrainedTableData;
 import org.fastorm.defns.IEntityDefn;
-import org.fastorm.writer.impl.IMutatedDataTable;
 
 public interface IMutatingTempTableMaker {
 
-	void create(WriteContext writeContext, IEntityDefn entityDefn);
+	void create(IContext writeContext, IEntityDefn entityDefn);
 
-	int populateUpdate(WriteContext writeContext, IMutatedDataTable table);
+	int populateUpdate(IContext writeContext, IDrainedTableData table);
 
-	void update(WriteContext writeContext, IEntityDefn entityDefn);
+	void update(IContext writeContext, IEntityDefn entityDefn);
 
 }

@@ -14,7 +14,8 @@ import org.fastorm.api.IFastOrmContainer;
 import org.fastorm.api.impl.Job;
 import org.fastorm.constants.FastOrmKeys;
 import org.fastorm.constants.FastOrmTestValues;
-import org.fastorm.context.ReadContext;
+import org.fastorm.context.Context;
+import org.fastorm.context.IContext;
 import org.fastorm.dataSet.IGetDrainedTableForEntityDefn;
 import org.fastorm.defns.IEntityDefn;
 import org.fastorm.defns.impl.EntityDefn;
@@ -58,9 +59,8 @@ public abstract class AbstractTempTableMakerTest extends TestCase implements IIn
 		XmlBeanFactory beanFactory = new XmlBeanFactory(new ClassPathResource("MySqlTest.xml", getClass()));
 		dataSource = beanFactory.getBean(DataSource.class);
 		jdbcTemplate = new JdbcTemplate(dataSource);
-		sqlHelper = new SqlHelper(jdbcTemplate);
+		sqlHelper = new SqlHelper(dataSource);
 		fastOrm = new Job().withDataSource(dataSource).//
-				withTempTables(false).//
 				withEntityDefn(new EntityDefn(null, parameters, makeChildEntities())).getContainer();
 		fastOrm5 = fastOrm.withBatchSize(5).getContainer();
 	}
@@ -69,12 +69,12 @@ public abstract class AbstractTempTableMakerTest extends TestCase implements IIn
 		return Collections.<IEntityDefn> emptyList();
 	}
 
-	protected void execute(final ICallback<ReadContext> callback) {
+	protected void execute(final ICallback<IContext> callback) {
 		jdbcTemplate.execute(new ConnectionCallback<Void>() {
 			@Override
 			public Void doInConnection(Connection con) throws SQLException, DataAccessException {
 				try {
-					callback.process(new ReadContext(fastOrm5, con));
+					callback.process(new Context(fastOrm5, con));
 				} catch (Exception e) {
 					throw WrappedException.wrap(e);
 				}
@@ -83,12 +83,12 @@ public abstract class AbstractTempTableMakerTest extends TestCase implements IIn
 		});
 	};
 
-	protected <T> T query(final IFunction1<ReadContext, T> fn) {
+	protected <T> T query(final IFunction1<IContext, T> fn) {
 		T result = jdbcTemplate.execute(new ConnectionCallback<T>() {
 			@Override
 			public T doInConnection(Connection con) throws SQLException, DataAccessException {
 				try {
-					T result = fn.apply(new ReadContext(fastOrm5, con));
+					T result = fn.apply(new Context(fastOrm5, con));
 					if (result == null)
 						throw new NullPointerException();
 					return result;
@@ -101,22 +101,22 @@ public abstract class AbstractTempTableMakerTest extends TestCase implements IIn
 	}
 
 	protected IGetDrainedTableForEntityDefn getTheTables(final IFastOrmContainer fastOrm, final ISecondaryTempTableMaker maker, final IEntityDefn child, final int page) {
-		IGetDrainedTableForEntityDefn getter = query(new IFunction1<ReadContext, IGetDrainedTableForEntityDefn>() {
+		IGetDrainedTableForEntityDefn getter = query(new IFunction1<IContext, IGetDrainedTableForEntityDefn>() {
 			@Override
-			public IGetDrainedTableForEntityDefn apply(ReadContext context) throws Exception {
+			public IGetDrainedTableForEntityDefn apply(IContext context) throws Exception {
 				IPrimaryTempTableMaker primaryMaker = fastOrm.getPrimaryTempTableMaker();
 				IEntityDefn primary = fastOrm.getEntityDefn();
-				primaryMaker.drop(fastOrm, context);
-				primaryMaker.dropStoredProcedure(fastOrm, context);
-				primaryMaker.create(fastOrm, context);
-				primaryMaker.populate(fastOrm, context, page);
-				primaryMaker.drain(fastOrm, context);
+				primaryMaker.drop(context);
+				primaryMaker.dropStoredProcedure(context);
+				primaryMaker.create(context);
+				primaryMaker.populate(context, page);
+				primaryMaker.drain(context);
 
-				maker.drop(fastOrm, context, child);
-				maker.dropStoredProcedure(fastOrm, context, primary, child);
-				maker.create(fastOrm, context, primary, child);
-				maker.populate(fastOrm, context, primary, child);
-				maker.drain(fastOrm, context, primary, child);
+				maker.drop(context, child);
+				maker.dropStoredProcedure(context, primary, child);
+				maker.create(context, primary, child);
+				maker.populate(context, primary, child);
+				maker.drain(context, primary, child);
 				return context;
 			}
 		});

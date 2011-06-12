@@ -9,18 +9,16 @@ import org.fastorm.dataSet.impl.DrainedLine;
 import org.fastorm.dataSet.impl.DrainedLineCommonData;
 import org.fastorm.dataSet.impl.DrainedTableData;
 import org.fastorm.defns.IEntityDefn;
-import org.fastorm.pooling.api.IObjectDefinition;
-import org.fastorm.pooling.api.IPool;
-import org.fastorm.pooling.api.PoolOptions;
-import org.fastorm.pooling.impl.Pool;
+import org.fastorm.utilities.pooling.IObjectDefinition;
+import org.fastorm.utilities.pooling.IPool;
+import org.fastorm.utilities.pooling.Pool;
+import org.fastorm.utilities.pooling.PoolOptions;
 
 public interface IMemoryManager {
 
 	DrainedLine makeDrainedLine(DrainedLineCommonData commonData, ResultSet rs, int index) throws SQLException;
 
-	DrainedTableData makeDrainedTableData(IMemoryManager memoryManager, IEntityDefn entityDefn, IGetDrainedTableForEntityDefn getter, ResultSet rs) throws SQLException;
-
-	IMemoryManager withJobDetails(IJobDetails jobDetails);
+	DrainedTableData makeDrainedTableData(IMemoryManager memoryManager, IJobDetails jobDetails, IEntityDefn entityDefn, IGetDrainedTableForEntityDefn getter, ResultSet rs) throws SQLException;
 
 	void dispose();
 
@@ -44,6 +42,11 @@ public interface IMemoryManager {
 				public void clean(DrainedLine oldObject) {
 					oldObject.clean();
 				}
+
+				@Override
+				public String toString() {
+					return "[ObjectDefn/DrainedLine]";
+				}
 			};
 			IPool<DrainedLine> result = new Pool<DrainedLine>(IPool.Utils.findThinInterface(poolOptions, defn));
 			result.prepopulate();
@@ -65,6 +68,11 @@ public interface IMemoryManager {
 				@Override
 				public void clean(DrainedTableData oldObject) {
 					oldObject.clean();
+				}
+
+				@Override
+				public String toString() {
+					return "[ObjectDefn/DrainedTableData]";
 				}
 			};
 			IPool<DrainedTableData> result = new Pool<DrainedTableData>(IPool.Utils.findThinInterface(poolOptions, defn));

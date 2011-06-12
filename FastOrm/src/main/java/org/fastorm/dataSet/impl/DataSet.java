@@ -8,9 +8,9 @@ import org.fastorm.dataSet.IDrainedTableData;
 import org.fastorm.dataSet.IGetDrainedTableForEntityDefn;
 import org.fastorm.dataSet.IMutableDataSet;
 import org.fastorm.defns.IEntityDefn;
+import org.fastorm.mutate.IMutableItem;
 import org.fastorm.utilities.annotations.TightLoop;
 import org.fastorm.utilities.collections.Iterables;
-import org.fastorm.utilities.maps.IMutableSimpleMapWithIndex;
 import org.fastorm.utilities.maps.ISimpleMap;
 import org.fastorm.utilities.maps.ISimpleMapWithIndex;
 
@@ -59,25 +59,22 @@ public class DataSet implements IMutableDataSet, IGetDrainedTableForEntityDefn {
 	}
 
 	@Override
-	public IMutableSimpleMapWithIndex<String, Object> getMutableMap(int i) {
-		return null;
+	public IMutableItem getMutableMap(int i) {
+		return primaryTable.get(i);
 	}
 
 	@Override
-	public IMutableSimpleMapWithIndex<String, Object> getMutableMapById(Object id) {
-		// TODO Auto-generated method stub
+	public IMutableItem getMutableMapById(Object id) {
 		return null;
 	}
 
 	@Override
 	public void insert(ISimpleMap<String, Object> data) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void addToCollection(ISimpleMap<String, Object> primaryObject, String collectionKey, ISimpleMap<String, Object> newValues) {
-		// TODO Auto-generated method stub
 
 	}
 

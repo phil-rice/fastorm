@@ -4,6 +4,8 @@ import java.util.Arrays;
 
 import org.fastorm.api.IFastOrmContainer;
 import org.fastorm.api.IJob;
+import org.fastorm.api.IJobOptimisations;
+import org.fastorm.constants.FastOrmJobOptimisations;
 import org.fastorm.utilities.exceptions.WrappedException;
 import org.fastorm.utilities.functions.IFunction1;
 
@@ -88,7 +90,8 @@ public interface ISpecStage {
 				@Override
 				protected IJob transform(IJob job, Boolean t) {
 					IFastOrmContainer container = job.getContainer();
-					return container.withTempTables(t);
+					IJobOptimisations optimisations = container.getOptimisations();
+					return container.withOptimisations(optimisations.withOptimisation(FastOrmJobOptimisations.useTemporaryTables, t));
 				}
 
 				@Override
@@ -108,7 +111,7 @@ public interface ISpecStage {
 
 				@Override
 				public Object valueFor(IJob job) {
-					return job.useTemporaryTables() ? "temp" : "";
+					return job.getOptimisations().useTemporaryTables() ? "temp" : "";
 				}
 			};
 		}
@@ -118,7 +121,8 @@ public interface ISpecStage {
 				@Override
 				protected IJob transform(IJob job, Boolean t) {
 					IFastOrmContainer container = job.getContainer();
-					return container.withIndexSecondaryTables(t);
+					IJobOptimisations optimisations = container.getOptimisations();
+					return container.withOptimisations(optimisations.withOptimisation(FastOrmJobOptimisations.indexSecondaryTables, t));
 				}
 
 				@Override
@@ -128,7 +132,7 @@ public interface ISpecStage {
 
 				@Override
 				public Object valueFor(IJob job) {
-					return job.indexSecondaryTables() ? "index" : "";
+					return job.getOptimisations().indexSecondaryTables() ? "index" : "";
 				}
 
 				@Override

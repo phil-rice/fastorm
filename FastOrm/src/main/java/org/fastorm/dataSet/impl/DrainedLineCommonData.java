@@ -4,6 +4,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.List;
 
+import org.fastorm.api.IJobDetails;
 import org.fastorm.dataSet.IGetDrainedTableForEntityDefn;
 import org.fastorm.defns.IEntityDefn;
 import org.fastorm.memory.IMemoryManager;
@@ -12,14 +13,16 @@ import org.fastorm.utilities.collections.Lists;
 public class DrainedLineCommonData {
 	private final IMemoryManager memoryManager;
 	private IGetDrainedTableForEntityDefn getter;
+	IJobDetails jobDetails;
 	private final IEntityDefn entityDefn;
 	private final int childCount;
 	private List<String> keys;
 	private int columnCount;
 	private int idColumnIndex = -1;
 
-	public DrainedLineCommonData(IMemoryManager memoryManager, IEntityDefn entityDefn) {
+	public DrainedLineCommonData(IMemoryManager memoryManager, IJobDetails jobDetails, IEntityDefn entityDefn) {
 		this.memoryManager = memoryManager;
+		this.jobDetails = jobDetails;
 		this.entityDefn = entityDefn;
 		List<IEntityDefn> children = entityDefn.getChildren();
 		this.childCount = children.size();
@@ -72,5 +75,9 @@ public class DrainedLineCommonData {
 
 	public int getIdColumnIndex() {
 		return idColumnIndex;
+	}
+
+	public IJobDetails getJobDetails() {
+		return jobDetails;
 	}
 }

@@ -7,14 +7,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.fastorm.api.IJobDetails;
 import org.fastorm.constants.FastOrmMessages;
 import org.fastorm.dataSet.IDrainedTableData;
 import org.fastorm.dataSet.IGetDrainedTableForEntityDefn;
 import org.fastorm.defns.IEntityDefn;
 import org.fastorm.memory.IMemoryManager;
+import org.fastorm.mutate.IMutableItem;
 import org.fastorm.utilities.annotations.TightLoop;
 import org.fastorm.utilities.exceptions.WrappedException;
-import org.fastorm.utilities.maps.IMutableSimpleMapWithIndex;
 import org.fastorm.utilities.maps.ISimpleMap;
 import org.fastorm.utilities.maps.ISimpleMapWithIndex;
 import org.fastorm.utilities.maps.Maps;
@@ -36,9 +37,9 @@ public class DrainedTableData implements IDrainedTableData {
 		return "DrainedTableData [entityDefn=" + entityName + ", data=" + size() + "]";
 	}
 
-	public void setData(IMemoryManager memoryManager, IEntityDefn entityDefn, IGetDrainedTableForEntityDefn getter, ResultSet rs) {
+	public void setData(IMemoryManager memoryManager, IJobDetails jobDetails, IEntityDefn entityDefn, IGetDrainedTableForEntityDefn getter, ResultSet rs) {
 		try {
-			commonData = new DrainedLineCommonData(memoryManager, entityDefn);
+			commonData = new DrainedLineCommonData(memoryManager, jobDetails, entityDefn);
 			commonData.setData(getter, rs.getMetaData());
 			index = 0;
 			while (rs.next()) {
@@ -113,7 +114,7 @@ public class DrainedTableData implements IDrainedTableData {
 	}
 
 	@Override
-	public IMutableSimpleMapWithIndex<String, Object> get(int index) {
+	public IMutableItem get(int index) {
 		return data[index];
 	}
 

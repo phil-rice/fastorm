@@ -5,7 +5,7 @@ import java.util.Set;
 
 import junit.framework.TestCase;
 
-import org.fastorm.api.IJobDetails;
+import org.fastorm.api.IJobOptimisations;
 import org.fastorm.constants.FastOrmStringTemplates;
 import org.fastorm.utilities.collections.Lists;
 import org.fastorm.utilities.collections.Sets;
@@ -18,14 +18,14 @@ import org.springframework.core.io.ClassPathResource;
 
 public class SqlStringsTest extends TestCase {
 
-	private final IJobDetails options = IJobDetails.Utils.withTempTablesForTests(true);
-	private final IJobDetails noTempTables = IJobDetails.Utils.withTempTablesForTests(false);
+	IJobOptimisations noTempTables = IJobOptimisations.Utils.withTempTables(false);
+	IJobOptimisations tempTables = IJobOptimisations.Utils.withTempTables(true);
 
 	public void testGetFromTemplate() {
 		SqlStrings sqlStrings = new SqlStrings(new ClassPathResource("Dummy.st", getClass()));
-		assertEquals("got q1 and q2", sqlStrings.getFromTemplate(options, "template1", Maps.<String, Object> makeMap("p1", "q1", "p2", "q2")));
-		assertEquals("got q1 and q2", sqlStrings.getFromTemplate(options, "template1", Maps.<String, Object> makeMap("p1", "q1"), "p2", "q2"));
-		assertEquals("got q1 and q2", sqlStrings.getFromTemplate(options, "template1", Maps.<String, Object> makeMap(), "p1", "q1", "p2", "q2"));
+		assertEquals("got q1 and q2", sqlStrings.getFromTemplate("template1", noTempTables, Maps.<String, Object> makeMap("p1", "q1", "p2", "q2")));
+		assertEquals("got q1 and q2", sqlStrings.getFromTemplate("template1", noTempTables, Maps.<String, Object> makeMap("p1", "q1"), "p2", "q2"));
+		assertEquals("got q1 and q2", sqlStrings.getFromTemplate("template1", noTempTables, Maps.<String, Object> makeMap(), "p1", "q1", "p2", "q2"));
 	}
 
 	public void testTemplateMatchsFastOrmTemplates() {
@@ -35,13 +35,13 @@ public class SqlStringsTest extends TestCase {
 		assertEquals(Lists.sort(expected), Lists.sort(sqlStrings.getTemplateNames()));
 	}
 
-	public void testUseTemporaryTablesInFastOrmOptionsOverridesParameters() {
+	public void testDontUseTemporaryTablesInFastOrmOptionsOverridesParameters() {
 		SqlStrings sqlStrings = new SqlStrings(new ClassPathResource("DummyWIthTempTables.st", getClass()));
-		assertEquals("got q1 and q2 Temp:true", sqlStrings.getFromTemplate(options, "template1", Maps.<String, Object> makeMap("p1", "q1", "p2", "q2", "useTemporaryTable", true)));
-		assertEquals("got q1 and q2 Temp:true", sqlStrings.getFromTemplate(options, "template1", Maps.<String, Object> makeMap("p1", "q1", "useTemporaryTable", true), "p2", "q2"));
-		assertEquals("got q1 and q2 Temp:", sqlStrings.getFromTemplate(noTempTables, "template1", Maps.<String, Object> makeMap("p1", "q1", "p2", "q2", "useTemporaryTable", true)));
-		assertEquals("got q1 and q2 Temp:", sqlStrings.getFromTemplate(noTempTables, "template1", Maps.<String, Object> makeMap("p1", "q1", "useTemporaryTable", true), "p2", "q2"));
-		assertEquals("got q1 and q2 Temp:", sqlStrings.getFromTemplate(noTempTables, "template1", Maps.<String, Object> makeMap(), "p1", "q1", "p2", "q2"));
+		assertEquals("got q1 and q2 Temp:true", sqlStrings.getFromTemplate("template1", tempTables, Maps.<String, Object> makeMap("p1", "q1", "p2", "q2", "useTemporaryTable", true)));
+		assertEquals("got q1 and q2 Temp:true", sqlStrings.getFromTemplate("template1", tempTables, Maps.<String, Object> makeMap("p1", "q1", "useTemporaryTable", true), "p2", "q2"));
+		assertEquals("got q1 and q2 Temp:", sqlStrings.getFromTemplate("template1", noTempTables, Maps.<String, Object> makeMap("p1", "q1", "p2", "q2", "useTemporaryTable", true)));
+		assertEquals("got q1 and q2 Temp:", sqlStrings.getFromTemplate("template1", noTempTables, Maps.<String, Object> makeMap("p1", "q1", "useTemporaryTable", true), "p2", "q2"));
+		assertEquals("got q1 and q2 Temp:", sqlStrings.getFromTemplate("template1", noTempTables, Maps.<String, Object> makeMap(), "p1", "q1", "p2", "q2"));
 	}
 
 	@SuppressWarnings("unchecked")

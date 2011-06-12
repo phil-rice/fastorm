@@ -7,6 +7,7 @@ public class FastOrmMessages {
 	public static final String fastOrmFactoryIsNotConfiguredWith = "FastOrmFactory is not configured with {0}";
 	public static final String cannotFindTableForEntityDefn = "Cannot find a table for {0} in the data set. Legal entity definitions are {1}";
 	public static final String illegalKey = "Illegal key {0}. Legal values are {1}";
+	public static final String nullPointerForIndex = "Null pointer for index {0}";
 
 	// This are for printf
 	public static final String sqlLoggerUpdated = "Update %10.2f %21d %s";

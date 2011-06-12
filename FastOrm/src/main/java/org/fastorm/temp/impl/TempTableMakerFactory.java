@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.fastorm.api.IJobOptimisations;
 import org.fastorm.defns.IEntityDefn;
 import org.fastorm.temp.IMutatingTempTableMaker;
 import org.fastorm.temp.ISecondaryTempTableMaker;
@@ -15,8 +16,8 @@ public class TempTableMakerFactory implements ITempTableMakerFactory {
 
 	private final List<ISecondaryTempTableMaker> items;
 
-	public TempTableMakerFactory() {
-		this(Arrays.<ISecondaryTempTableMaker> asList(new OneToMany(), new ManyToOne()));
+	public TempTableMakerFactory(IJobOptimisations optimisations) {
+		this(Arrays.<ISecondaryTempTableMaker> asList(new OneToMany(optimisations), new ManyToOne(optimisations)));
 	}
 
 	public TempTableMakerFactory(List<ISecondaryTempTableMaker> items) {

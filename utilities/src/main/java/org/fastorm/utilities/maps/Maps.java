@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -233,5 +234,31 @@ public class Maps {
 	public static <K> int intFor(Map<K, Integer> map, K key) {
 		Integer existing = map.get(key);
 		return existing == null ? 0 : existing;
+	}
+
+	public static <K, V> Map<K, V> with(Map<K, V> map, K key, V value) {
+		Map<K, V> newMap = copyMap(map);
+		newMap.put(key, value);
+		return newMap;
+	}
+
+	public static <K, V> Map<K, V> copyMap(Map<K, V> map) {
+		Map<K, V> newMap = newMapOfSameTypeMap(map);
+		newMap.putAll(map);
+		return newMap;
+	}
+
+	public static <K, V> Map<K, V> newMapOfSameTypeMap(Map<K, V> map) {
+		return newMap(map.getClass());
+	}
+
+	public static <K, V> Map<K, V> newMap(Class<?> clazz) {
+		if (LinkedHashMap.class.isAssignableFrom(clazz))
+			return new LinkedHashMap<K, V>();
+		else if (HashMap.class.isAssignableFrom(clazz))
+			return new HashMap<K, V>();
+		else if (IdentityHashMap.class.isAssignableFrom(clazz))
+			return new IdentityHashMap<K, V>();
+		throw new IllegalArgumentException();
 	}
 }

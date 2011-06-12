@@ -32,16 +32,10 @@ public interface IJobConfigurator {
 
 	IJob withBatchSize(int size);
 
-	IJob withTempTables(boolean useTemporaryTables);
-
-	IJob withByteBufferSize(int byteBufferSize);
-
-	IJob withIndexSecondaryTables(boolean indexSecondaryTables);
-
 	IJob withMaxInOneThread(int maxForOneThread);
 
-	IJob withCreateAndDropProceduresAtStart(boolean createAnddropProceduresAtStartOfRun);
+	IJob withCreateAndDropAtStart(boolean createAndDropAtStart);
 
-	IJob withOptimiseLeafAccess(boolean optimiseLeafAccess);
+	IJob withOptimisations(IJobOptimisations optimisations);
 
 }

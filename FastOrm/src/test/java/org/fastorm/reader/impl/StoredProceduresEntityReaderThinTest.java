@@ -4,6 +4,7 @@ import javax.sql.DataSource;
 
 import org.fastorm.api.IFastOrmContainer;
 import org.fastorm.api.IJob;
+import org.fastorm.api.IJobOptimisations;
 import org.fastorm.dataSet.IDataSet;
 import org.fastorm.defns.IEntityDefn;
 import org.fastorm.sql.SysOutSqlLogger;
@@ -15,8 +16,8 @@ public class StoredProceduresEntityReaderThinTest extends AbstractEntityReaderTe
 
 	public void testMakesStoredProcedures() {
 		DataSource dataSource = new XmlBeanFactory(new ClassPathResource("MySqlDataSource.xml")).getBean(DataSource.class);
-		IEntityDefn defn = IEntityDefn.Utils.parse(new TempTableMakerFactory(), new ClassPathResource("sample.xml"));
-		IFastOrmContainer fastOrm = IJob.Utils.mySqlSingleThreaded(defn, dataSource).withBatchSize(10).withTempTables(false).getContainer();
+		IEntityDefn defn = IEntityDefn.Utils.parse(new TempTableMakerFactory(IJobOptimisations.Utils.withNoOptimisation()), new ClassPathResource("sample.xml"));
+		IFastOrmContainer fastOrm = IJob.Utils.mySqlSingleThreaded(defn, dataSource).withBatchSize(10).getContainer();
 		StoredProceduresEntityReaderThin thin = new StoredProceduresEntityReaderThin();
 		for (IDataSet dataSet : thin.dataSets(fastOrm.withSqlLogger(new SysOutSqlLogger()).getContainer()))
 			System.out.println(dataSet);

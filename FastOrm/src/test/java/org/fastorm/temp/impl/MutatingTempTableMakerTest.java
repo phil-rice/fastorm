@@ -6,7 +6,7 @@ import static org.fastorm.constants.FastOrmTestValues.primaryTableName;
 
 import org.fastorm.defns.IEntityDefn;
 import org.fastorm.mutate.IMutableItem;
-import org.fastorm.mutate.IMutate;
+import org.fastorm.mutate.IMutator;
 import org.fastorm.utilities.annotations.IntegrationTest;
 import org.fastorm.utilities.callbacks.ICallback;
 
@@ -16,13 +16,16 @@ public class MutatingTempTableMakerTest extends AbstractTempTableMakerTest {
 	public void testReadModifyWriteOfItems() {
 		populate();
 		final IEntityDefn entityDefn = fastOrm5.getEntityDefn();
-		IMutate<Object> mutate = fastOrm5.makeMutator();
+		IMutator<Object> mutate = fastOrm5.makeMutator();
 		mutate.readModifyWrite(new AllEntitiesTempTableMaker(), new ICallback<IMutableItem>() {
+			private int i;
+
 			@Override
 			public void process(IMutableItem old) throws Exception {
-				assertEquals("data_0", old.get("data"));
-				old.put("data", "newData_1");
-				assertEquals("name1", old.get("data")); // hasn't changed
+				assertEquals("data_" + i, old.get("data"));
+				old.put("data", "newData_" + i);
+				assertEquals("newData_" + i, old.get("data"));
+				i++;
 			}
 		});
 		checkName(entityDefn, 1, "newData_1");
@@ -38,7 +41,7 @@ public class MutatingTempTableMakerTest extends AbstractTempTableMakerTest {
 
 	private void checkName(final IEntityDefn entityDefn, Object id, String expectedName) {
 		String tableName = entityDefn.getTableName();
-		String actualName = jdbcTemplate.queryForObject("select name from " + tableName + " where " + entityDefn.getIdColumn() + " =" + id, String.class);
+		String actualName = jdbcTemplate.queryForObject("select data from " + tableName + " where " + entityDefn.getIdColumn() + " =" + id, String.class);
 		assertEquals(expectedName, actualName);
 	}
 }

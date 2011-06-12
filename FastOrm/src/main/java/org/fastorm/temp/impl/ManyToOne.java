@@ -3,10 +3,10 @@ package org.fastorm.temp.impl;
 import java.util.List;
 import java.util.Map;
 
-import org.fastorm.api.IFastOrmContainer;
+import org.fastorm.api.IJobOptimisations;
 import org.fastorm.constants.FastOrmKeys;
 import org.fastorm.constants.FastOrmStringTemplates;
-import org.fastorm.context.ReadContext;
+import org.fastorm.context.IContext;
 import org.fastorm.dataGenerator.IGenerator;
 import org.fastorm.dataGenerator.ParentForeignKeyGenerator;
 import org.fastorm.dataGenerator.SizeIntegerGenerator;
@@ -19,34 +19,40 @@ import org.fastorm.utilities.maps.Maps;
 
 public class ManyToOne extends AbstractSqlExecutor implements ISecondaryTempTableMaker {
 
+	private final IJobOptimisations optimisations;
+
+	public ManyToOne(IJobOptimisations optimisations) {
+		this.optimisations = optimisations;
+	}
+
 	@Override
 	public boolean accept(Map<String, String> parent, Map<String, String> child) {
 		return child.containsKey(FastOrmKeys.parentLink);
 	}
 
 	@Override
-	public void create(IFastOrmContainer fastOrm, ReadContext context, IEntityDefn parent, IEntityDefn child) {
-		update(fastOrm, context, FastOrmStringTemplates.createManyToOneTempTable, child);
+	public void create(IContext context, IEntityDefn parent, IEntityDefn child) {
+		update(context, FastOrmStringTemplates.createManyToOneTempTable, child);
 	}
 
 	@Override
-	public void drop(IFastOrmContainer fastOrm, ReadContext context, IEntityDefn child) {
-		update(fastOrm, context, FastOrmStringTemplates.dropTempTable, child);
+	public void drop(IContext context, IEntityDefn child) {
+		update(context, FastOrmStringTemplates.dropTempTable, child);
 	}
 
 	@Override
-	public void truncate(IFastOrmContainer fastOrm, ReadContext context, IEntityDefn parent, IEntityDefn child) {
-		update(fastOrm, context, FastOrmStringTemplates.truncateTempTable, child);
+	public void truncate(IContext context, IEntityDefn parent, IEntityDefn child) {
+		update(context, FastOrmStringTemplates.truncateTempTable, child);
 	}
 
 	@Override
-	public int populate(IFastOrmContainer fastOrm, ReadContext context, IEntityDefn parent, IEntityDefn child) {
-		return update(fastOrm, context, FastOrmStringTemplates.populateManyToOneTempTable, child);
+	public int populate(IContext context, IEntityDefn parent, IEntityDefn child) {
+		return update(context, FastOrmStringTemplates.populateManyToOneTempTable, child);
 	}
 
 	@Override
-	public void drain(IFastOrmContainer fastOrm, ReadContext context, IEntityDefn parent, IEntityDefn child) {
-		drainSecondary(fastOrm, context, child, FastOrmStringTemplates.drainSecondaryTable);
+	public void drain(IContext context, IEntityDefn parent, IEntityDefn child) {
+		drainSecondary(context, child, FastOrmStringTemplates.drainSecondaryTable);
 	}
 
 	@Override
@@ -81,17 +87,17 @@ public class ManyToOne extends AbstractSqlExecutor implements ISecondaryTempTabl
 	}
 
 	@Override
-	public void createStoredProcedure(IFastOrmContainer fastOrm, ReadContext context, IEntityDefn parent, IEntityDefn child) {
-		update(fastOrm, context, FastOrmStringTemplates.createManyToOneStoredProcedure, child, "procname", makeProcName(child));
+	public void createStoredProcedure(IContext context, IEntityDefn parent, IEntityDefn child) {
+		update(context, FastOrmStringTemplates.createManyToOneStoredProcedure, child, "procname", makeProcName(child));
 	}
 
 	@Override
-	public void drainFromStoredProcedure(IFastOrmContainer fastOrm, ReadContext readContext, IEntityDefn parent, IEntityDefn child) {
-		drainSecondary(fastOrm, readContext, child, FastOrmStringTemplates.drainFromStoredProcedure, FastOrmKeys.procName, makeProcName(child));
+	public void drainFromStoredProcedure(IContext readContext, IEntityDefn parent, IEntityDefn child) {
+		drainSecondary(readContext, child, FastOrmStringTemplates.drainFromStoredProcedure, FastOrmKeys.procName, makeProcName(child));
 	}
 
 	@Override
-	public void dropStoredProcedure(IFastOrmContainer fastOrm, ReadContext readContext, IEntityDefn parent, IEntityDefn child) {
-		update(fastOrm, readContext, FastOrmStringTemplates.dropStoredProcedure, child, FastOrmKeys.procName, makeProcName(child));
+	public void dropStoredProcedure(IContext readContext, IEntityDefn parent, IEntityDefn child) {
+		update(readContext, FastOrmStringTemplates.dropStoredProcedure, child, FastOrmKeys.procName, makeProcName(child));
 	}
 }

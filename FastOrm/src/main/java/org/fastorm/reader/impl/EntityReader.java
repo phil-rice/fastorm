@@ -1,15 +1,19 @@
 package org.fastorm.reader.impl;
 
+import java.sql.Connection;
 import java.util.Iterator;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.fastorm.api.IFastOrmContainer;
 import org.fastorm.api.impl.JobServices;
+import org.fastorm.context.Context;
 import org.fastorm.dataSet.IDataSet;
 import org.fastorm.reader.IEntityReader;
 import org.fastorm.utilities.aggregators.IAggregator;
 import org.fastorm.utilities.callbacks.ICallback;
+import org.fastorm.utilities.collections.AbstractFindNextIterable;
 import org.fastorm.utilities.collections.Iterables;
 import org.fastorm.utilities.collections.SimpleLists;
 import org.fastorm.utilities.exceptions.WrappedException;
@@ -111,8 +115,24 @@ public class EntityReader<T> implements IEntityReader<T> {
 
 	@Override
 	public Iterable<IDataSet> getDataSets() {
-		Iterable<IDataSet> dataSets = fastOrm.getEntityReaderThin().dataSets(fastOrm);
-		return dataSets;
+		assert fastOrm.getDataSource() != null;
+		return new AbstractFindNextIterable<IDataSet, AtomicInteger>() {
+			@Override
+			protected IDataSet findNext(AtomicInteger page) throws Exception {
+				Connection connection = fastOrm.getDataSource().getConnection();
+				Context context = new Context(fastOrm, connection);
+				try {
+					return fastOrm.getEntityReaderThin().readPage(page.getAndIncrement(), context);
+				} finally {
+					connection.close();
+				}
+			}
+
+			@Override
+			protected AtomicInteger reset() throws Exception {
+				return new AtomicInteger();
+			}
+		};
 	}
 
 	@Override

@@ -6,7 +6,7 @@ import org.fastorm.api.IFastOrmContainer;
 import org.fastorm.constants.FastOrmConstants;
 import org.fastorm.constants.FastOrmKeys;
 import org.fastorm.constants.FastOrmStringTemplates;
-import org.fastorm.context.ReadContext;
+import org.fastorm.context.IContext;
 import org.fastorm.dataGenerator.IGenerator;
 import org.fastorm.dataGenerator.SizeIntegerGenerator;
 import org.fastorm.defns.IEntityDefn;
@@ -15,33 +15,36 @@ import org.fastorm.utilities.maps.Maps;
 
 public class AllEntitiesTempTableMaker extends AbstractSqlExecutor implements IPrimaryTempTableMaker {
 
+	private boolean indexPrimaryTables;
+
 	@Override
-	public void drop(IFastOrmContainer fastOrm, ReadContext context) {
-		updatePrimary(fastOrm, context, FastOrmStringTemplates.dropTempTable);
+	public void drop(IContext context) {
+		updatePrimary(context, FastOrmStringTemplates.dropTempTable);
 	}
 
 	@Override
-	public void create(IFastOrmContainer fastOrm, ReadContext context) {
-		updatePrimary(fastOrm, context, FastOrmStringTemplates.createAllEntitiesTempTable);
-		if (fastOrm.indexPrimaryTables())
-			updatePrimary(fastOrm, context, FastOrmStringTemplates.addIndexToTempTable);
+	public void create(IContext context) {
+		updatePrimary(context, FastOrmStringTemplates.createAllEntitiesTempTable);
+		if (indexPrimaryTables)
+			updatePrimary(context, FastOrmStringTemplates.addIndexToTempTable);
 	}
 
 	@Override
-	public void truncate(IFastOrmContainer fastOrm, ReadContext context) {
-		updatePrimary(fastOrm, context, FastOrmStringTemplates.truncateTempTable);
+	public void truncate(IContext context) {
+		updatePrimary(context, FastOrmStringTemplates.truncateTempTable);
 	}
 
 	@Override
-	public int populate(IFastOrmContainer fastOrm, ReadContext context, int page) {
+	public int populate(IContext context, int page) {
+		IFastOrmContainer fastOrm = context.getFastOrm();
 		int size = fastOrm.getBatchSize();
 		int start = size * page;
-		return updatePrimary(fastOrm, context, FastOrmStringTemplates.populateAllEntitiesTempTable, FastOrmKeys.start, start, FastOrmKeys.size, size);
+		return updatePrimary(context, FastOrmStringTemplates.populateAllEntitiesTempTable, FastOrmKeys.start, start, FastOrmKeys.size, size);
 	}
 
 	@Override
-	public void drain(final IFastOrmContainer fastOrm, ReadContext context) {
-		drainPrimary(fastOrm, context, FastOrmStringTemplates.drainPrimaryTable);
+	public void drain(IContext context) {
+		drainPrimary(context, FastOrmStringTemplates.drainPrimaryTable);
 	}
 
 	@Override
@@ -56,24 +59,25 @@ public class AllEntitiesTempTableMaker extends AbstractSqlExecutor implements IP
 	}
 
 	@Override
-	public void createStoredProcedure(IFastOrmContainer fastOrm, ReadContext context) {
-		updatePrimary(fastOrm, context, FastOrmStringTemplates.createAllEntitiesStoredProcedure, FastOrmKeys.procName, myProcName(fastOrm));
+	public void createStoredProcedure(IContext context) {
+		updatePrimary(context, FastOrmStringTemplates.createAllEntitiesStoredProcedure, FastOrmKeys.procName, myProcName(context));
 	}
 
 	@Override
-	public void drainFromStoredProcedure(IFastOrmContainer fastOrm, ReadContext readContext, int page) {
+	public void drainFromStoredProcedure(IContext readContext, int page) {
+		IFastOrmContainer fastOrm = readContext.getFastOrm();
 		int size = fastOrm.getBatchSize();
 		int start = size * page;
-		drainPrimary(fastOrm, readContext, FastOrmStringTemplates.drainFromStoredProcedureWithStartAndSize,//
-				FastOrmKeys.procName, myProcName(fastOrm), FastOrmKeys.start, start, FastOrmKeys.size, size);
+		drainPrimary(readContext, FastOrmStringTemplates.drainFromStoredProcedureWithStartAndSize,//
+				FastOrmKeys.procName, myProcName(readContext), FastOrmKeys.start, start, FastOrmKeys.size, size);
 	}
 
-	private Object myProcName(IFastOrmContainer fastOrm) {
-		return makeProcName(fastOrm.getEntityDefn(), FastOrmConstants.allEntitiesPostfix);
+	private Object myProcName(IContext context) {
+		return makeProcName(context.getFastOrm().getEntityDefn(), FastOrmConstants.allEntitiesPostfix);
 	}
 
 	@Override
-	public void dropStoredProcedure(IFastOrmContainer fastOrm, ReadContext readContext) {
-		updatePrimary(fastOrm, readContext, FastOrmStringTemplates.dropStoredProcedure, "procName", super.makeProcName(fastOrm.getEntityDefn(), FastOrmConstants.allEntitiesPostfix));
+	public void dropStoredProcedure(IContext readContext) {
+		updatePrimary(readContext, FastOrmStringTemplates.dropStoredProcedure, "procName", super.makeProcName(readContext.getFastOrm().getEntityDefn(), FastOrmConstants.allEntitiesPostfix));
 	}
 }

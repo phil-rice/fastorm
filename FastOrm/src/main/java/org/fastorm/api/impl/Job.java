@@ -1,19 +1,21 @@
 package org.fastorm.api.impl;
 
 import java.text.MessageFormat;
-import java.util.Map;
 
 import javax.sql.DataSource;
 
 import org.fastorm.api.IFastOrmContainer;
 import org.fastorm.api.IJob;
+import org.fastorm.api.IJobOptimisations;
 import org.fastorm.constants.FastOrmMessages;
+import org.fastorm.dataSet.IDataSet;
 import org.fastorm.dataSet.IMutableDataSet;
 import org.fastorm.defns.IEntityDefn;
+import org.fastorm.defns.IMutableMakerAndEntityDefnVisitor;
 import org.fastorm.memory.IMemoryManager;
 import org.fastorm.memory.MemoryManager;
 import org.fastorm.mutate.IMutableItem;
-import org.fastorm.mutate.IMutate;
+import org.fastorm.mutate.IMutator;
 import org.fastorm.reader.IEntityReader;
 import org.fastorm.reader.IEntityReaderThin;
 import org.fastorm.reader.impl.EntityReader;
@@ -22,132 +24,117 @@ import org.fastorm.sql.ISqlLogger;
 import org.fastorm.sql.NoSqlLogger;
 import org.fastorm.sqlDialects.ISqlStrings;
 import org.fastorm.sqlDialects.SqlStrings;
+import org.fastorm.temp.IMutatingTempTableMaker;
 import org.fastorm.temp.IPrimaryTempTableMaker;
 import org.fastorm.temp.ISecondaryTempTableMaker;
 import org.fastorm.temp.ITempTableMakerFactory;
 import org.fastorm.temp.impl.AllEntitiesTempTableMaker;
 import org.fastorm.temp.impl.TempTableMakerFactory;
 import org.fastorm.utilities.callbacks.ICallback;
-import org.fastorm.utilities.functions.IFunction1;
 import org.fastorm.utilities.maps.ISimpleMap;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.jdbc.core.JdbcTemplate;
 
 public class Job extends JobDetails implements IFastOrmContainer {
 	private JobServices services = new JobServices();
 	private final IEntityReaderThin entityReaderThin;
 	private final ISqlStrings sqlStrings;
 	private final ITempTableMakerFactory tempTableMakerFactory;
-	private final JdbcTemplate jdbcTemplate;
 	private final IMemoryManager memoryManager;
 
 	private final ISqlLogger sqlLogger;
+	private final DataSource dataSource;
+	private final boolean createAndDropAtStart;
 
 	public Job() {
 		this(null, null);
 	}
 
-	public Job(JobServices services, IEntityReaderThin entityReaderThin, ISqlStrings sqlStrings, //
-			IEntityDefn entityDefn, ITempTableMakerFactory tempTableMakerFactory, JdbcTemplate jdbcTemplate, //
+	private Job(JobServices services, IJobOptimisations optimisations, IEntityReaderThin entityReaderThin, ISqlStrings sqlStrings, //
+			IEntityDefn entityDefn, ITempTableMakerFactory tempTableMakerFactory, DataSource dataSource, //
 			IPrimaryTempTableMaker primaryTempTableMaker, IMemoryManager memoryManager, ISqlLogger sqlLogger, //
-			final boolean indexPrimaryTables, boolean indexSecondaryTables, boolean useTemporaryTables, boolean createAnddropProceduresAtStartOfRun,//
-			boolean optimiseLeafAccess, int batchSize, int maxForOneThread, int byteBufferSize) {
-		super(entityDefn, primaryTempTableMaker, indexPrimaryTables, indexSecondaryTables, useTemporaryTables, createAnddropProceduresAtStartOfRun, optimiseLeafAccess, batchSize, maxForOneThread, byteBufferSize);
+			int batchSize, int maxForOneThread, boolean createAndDropAtStart) {
+		super(optimisations, entityDefn, primaryTempTableMaker, batchSize, maxForOneThread, createAndDropAtStart);
 		this.services = services;
 		this.entityReaderThin = entityReaderThin;
 		this.sqlStrings = sqlStrings;
 		this.tempTableMakerFactory = tempTableMakerFactory;
-		this.jdbcTemplate = jdbcTemplate;
-		this.memoryManager = memoryManager.withJobDetails(this);
+		this.createAndDropAtStart = createAndDropAtStart;
+		this.memoryManager = memoryManager;
 		this.sqlLogger = sqlLogger;
+		this.dataSource = dataSource;
 	}
 
 	public Job(IEntityDefn entityDefn, DataSource dataSource) {
-		this(new JobServices(), new EntityReaderThin(),//
-				new SqlStrings(new ClassPathResource("MySql.st")), entityDefn, new TempTableMakerFactory(), //
-				dataSource == null ? null : new JdbcTemplate(dataSource),//
+		this(new JobServices(), IJobOptimisations.Utils.usualBest(), new EntityReaderThin(),//
+				new SqlStrings(new ClassPathResource("MySql.st")), entityDefn, new TempTableMakerFactory(IJobOptimisations.Utils.withNoOptimisation()), //
+				dataSource,//
 				new AllEntitiesTempTableMaker(), new MemoryManager(), new NoSqlLogger(), //
-				true, true, true, true, true, 100, 1000, 1000000);
+				100, 1000, true);
 	}
 
 	@Override
 	public IJob withServices(JobServices services) {
-		return new Job(services, entityReaderThin, sqlStrings, entityDefn, tempTableMakerFactory, jdbcTemplate, primaryTempTableMaker, memoryManager, sqlLogger, indexPrimaryTables, indexSecondaryTables, useTemporaryTables, createAnddropProceduresAtStartOfRun, optimiseLeafAccess, batchSize, maxForOneThread, byteBufferSize);
+		return new Job(services, optimisations, entityReaderThin, sqlStrings, entityDefn, tempTableMakerFactory, dataSource, primaryTempTableMaker, memoryManager, sqlLogger, batchSize, maxForOneThread, createAndDropAtStart);
 	}
 
 	@Override
 	public IJob withThinInterface(IEntityReaderThin entityReaderThin) {
-		return new Job(services, entityReaderThin, sqlStrings, entityDefn, tempTableMakerFactory, jdbcTemplate, primaryTempTableMaker, memoryManager, sqlLogger, indexPrimaryTables, indexSecondaryTables, useTemporaryTables, createAnddropProceduresAtStartOfRun, optimiseLeafAccess, batchSize, maxForOneThread, byteBufferSize);
+		return new Job(services, optimisations, entityReaderThin, sqlStrings, entityDefn, tempTableMakerFactory, dataSource, primaryTempTableMaker, memoryManager, sqlLogger, batchSize, maxForOneThread, createAndDropAtStart);
 	}
 
 	@Override
 	public IJob withSqlDialect(ISqlStrings sqlStrings) {
-		return new Job(services, entityReaderThin, sqlStrings, entityDefn, tempTableMakerFactory, jdbcTemplate, primaryTempTableMaker, memoryManager, sqlLogger, indexPrimaryTables, indexSecondaryTables, useTemporaryTables, createAnddropProceduresAtStartOfRun, optimiseLeafAccess, batchSize, maxForOneThread, byteBufferSize);
+		return new Job(services, optimisations, entityReaderThin, sqlStrings, entityDefn, tempTableMakerFactory, dataSource, primaryTempTableMaker, memoryManager, sqlLogger, batchSize, maxForOneThread, createAndDropAtStart);
 	}
 
 	@Override
 	public IJob withEntityDefn(IEntityDefn entityDefn) {
-		return new Job(services, entityReaderThin, sqlStrings, entityDefn, tempTableMakerFactory, jdbcTemplate, primaryTempTableMaker, memoryManager, sqlLogger, indexPrimaryTables, indexSecondaryTables, useTemporaryTables, createAnddropProceduresAtStartOfRun, optimiseLeafAccess, batchSize, maxForOneThread, byteBufferSize);
+		return new Job(services, optimisations, entityReaderThin, sqlStrings, entityDefn, tempTableMakerFactory, dataSource, primaryTempTableMaker, memoryManager, sqlLogger, batchSize, maxForOneThread, createAndDropAtStart);
 	}
 
 	@Override
 	public IJob withTempTableMaker(ISecondaryTempTableMaker intermediateTempTableMaker) {
-		return new Job(services, entityReaderThin, sqlStrings, entityDefn, tempTableMakerFactory, jdbcTemplate, primaryTempTableMaker, memoryManager, sqlLogger, indexPrimaryTables, indexSecondaryTables, useTemporaryTables, createAnddropProceduresAtStartOfRun, optimiseLeafAccess, batchSize, maxForOneThread, byteBufferSize);
+		return new Job(services, optimisations, entityReaderThin, sqlStrings, entityDefn, tempTableMakerFactory, dataSource, primaryTempTableMaker, memoryManager, sqlLogger, batchSize, maxForOneThread, createAndDropAtStart);
 	}
 
 	@Override
 	public IJob withMemoryManager(IMemoryManager memoryManager) {
-		return new Job(services, entityReaderThin, sqlStrings, entityDefn, tempTableMakerFactory, jdbcTemplate, primaryTempTableMaker, memoryManager, sqlLogger, indexPrimaryTables, indexSecondaryTables, useTemporaryTables, createAnddropProceduresAtStartOfRun, optimiseLeafAccess, batchSize, maxForOneThread, byteBufferSize);
+		return new Job(services, optimisations, entityReaderThin, sqlStrings, entityDefn, tempTableMakerFactory, dataSource, primaryTempTableMaker, memoryManager, sqlLogger, batchSize, maxForOneThread, createAndDropAtStart);
 	}
 
 	@Override
 	public IJob withDataSource(DataSource dataSource) {
-		return new Job(services, entityReaderThin, sqlStrings, entityDefn, tempTableMakerFactory, new JdbcTemplate(dataSource), primaryTempTableMaker, memoryManager, sqlLogger, indexPrimaryTables, indexSecondaryTables, useTemporaryTables, createAnddropProceduresAtStartOfRun, optimiseLeafAccess, batchSize, maxForOneThread, byteBufferSize);
+		return new Job(services, optimisations, entityReaderThin, sqlStrings, entityDefn, tempTableMakerFactory, dataSource, primaryTempTableMaker, memoryManager, sqlLogger, batchSize, maxForOneThread, createAndDropAtStart);
 	}
 
 	@Override
 	public IJob withMaxForOneThread(int maxForOneThread) {
-		return new Job(services, entityReaderThin, sqlStrings, entityDefn, tempTableMakerFactory, jdbcTemplate, primaryTempTableMaker, memoryManager, sqlLogger, indexPrimaryTables, indexSecondaryTables, useTemporaryTables, createAnddropProceduresAtStartOfRun, optimiseLeafAccess, batchSize, maxForOneThread, byteBufferSize);
+		return new Job(services, optimisations, entityReaderThin, sqlStrings, entityDefn, tempTableMakerFactory, dataSource, primaryTempTableMaker, memoryManager, sqlLogger, batchSize, maxForOneThread, createAndDropAtStart);
 	}
 
 	@Override
 	public IJob withBatchSize(int batchSize) {
-		return new Job(services, entityReaderThin, sqlStrings, entityDefn, tempTableMakerFactory, jdbcTemplate, primaryTempTableMaker, memoryManager, sqlLogger, indexPrimaryTables, indexSecondaryTables, useTemporaryTables, createAnddropProceduresAtStartOfRun, optimiseLeafAccess, batchSize, maxForOneThread, byteBufferSize);
+		return new Job(services, optimisations, entityReaderThin, sqlStrings, entityDefn, tempTableMakerFactory, dataSource, primaryTempTableMaker, memoryManager, sqlLogger, batchSize, maxForOneThread, createAndDropAtStart);
 	}
 
 	@Override
 	public IJob withSqlLogger(ISqlLogger sqlLogger) {
-		return new Job(services, entityReaderThin, sqlStrings, entityDefn, tempTableMakerFactory, jdbcTemplate, primaryTempTableMaker, memoryManager, sqlLogger, indexPrimaryTables, indexSecondaryTables, useTemporaryTables, createAnddropProceduresAtStartOfRun, optimiseLeafAccess, batchSize, maxForOneThread, byteBufferSize);
-	}
-
-	@Override
-	public IJob withTempTables(boolean useTemporaryTables) {
-		return new Job(services, entityReaderThin, sqlStrings, entityDefn, tempTableMakerFactory, jdbcTemplate, primaryTempTableMaker, memoryManager, sqlLogger, indexPrimaryTables, indexSecondaryTables, useTemporaryTables, createAnddropProceduresAtStartOfRun, optimiseLeafAccess, batchSize, maxForOneThread, byteBufferSize);
-	}
-
-	@Override
-	public IJob withByteBufferSize(int byteBufferSize) {
-		return new Job(services, entityReaderThin, sqlStrings, entityDefn, tempTableMakerFactory, jdbcTemplate, primaryTempTableMaker, memoryManager, sqlLogger, indexPrimaryTables, indexSecondaryTables, useTemporaryTables, createAnddropProceduresAtStartOfRun, optimiseLeafAccess, batchSize, maxForOneThread, byteBufferSize);
-	}
-
-	@Override
-	public IJob withIndexSecondaryTables(boolean indexSecondaryTables) {
-		return new Job(services, entityReaderThin, sqlStrings, entityDefn, tempTableMakerFactory, jdbcTemplate, primaryTempTableMaker, memoryManager, sqlLogger, indexPrimaryTables, indexSecondaryTables, useTemporaryTables, createAnddropProceduresAtStartOfRun, optimiseLeafAccess, batchSize, maxForOneThread, byteBufferSize);
+		return new Job(services, optimisations, entityReaderThin, sqlStrings, entityDefn, tempTableMakerFactory, dataSource, primaryTempTableMaker, memoryManager, sqlLogger, batchSize, maxForOneThread, createAndDropAtStart);
 	}
 
 	@Override
 	public IJob withMaxInOneThread(int maxForOneThread) {
-		return new Job(services, entityReaderThin, sqlStrings, entityDefn, tempTableMakerFactory, jdbcTemplate, primaryTempTableMaker, memoryManager, sqlLogger, indexPrimaryTables, indexSecondaryTables, useTemporaryTables, createAnddropProceduresAtStartOfRun, optimiseLeafAccess, batchSize, maxForOneThread, byteBufferSize);
+		return new Job(services, optimisations, entityReaderThin, sqlStrings, entityDefn, tempTableMakerFactory, dataSource, primaryTempTableMaker, memoryManager, sqlLogger, batchSize, maxForOneThread, createAndDropAtStart);
 	}
 
 	@Override
-	public IJob withCreateAndDropProceduresAtStart(boolean createAnddropProceduresAtStartOfRun) {
-		return new Job(services, entityReaderThin, sqlStrings, entityDefn, tempTableMakerFactory, jdbcTemplate, primaryTempTableMaker, memoryManager, sqlLogger, indexPrimaryTables, indexSecondaryTables, useTemporaryTables, createAnddropProceduresAtStartOfRun, optimiseLeafAccess, batchSize, maxForOneThread, byteBufferSize);
+	public IJob withCreateAndDropAtStart(boolean createAndDropAtStart) {
+		return new Job(services, optimisations, entityReaderThin, sqlStrings, entityDefn, tempTableMakerFactory, dataSource, primaryTempTableMaker, memoryManager, sqlLogger, batchSize, maxForOneThread, createAndDropAtStart);
 	}
 
 	@Override
-	public IJob withOptimiseLeafAccess(boolean optimiseLeafAccess) {
-		return new Job(services, entityReaderThin, sqlStrings, entityDefn, tempTableMakerFactory, jdbcTemplate, primaryTempTableMaker, memoryManager, sqlLogger, indexPrimaryTables, indexSecondaryTables, useTemporaryTables, createAnddropProceduresAtStartOfRun, optimiseLeafAccess, batchSize, maxForOneThread, byteBufferSize);
+	public IJob withOptimisations(IJobOptimisations optimisations) {
+		return new Job(services, optimisations, entityReaderThin, sqlStrings, entityDefn, tempTableMakerFactory, dataSource, primaryTempTableMaker, memoryManager, sqlLogger, batchSize, maxForOneThread, createAndDropAtStart);
 	}
 
 	@Override
@@ -157,28 +144,44 @@ public class Job extends JobDetails implements IFastOrmContainer {
 	}
 
 	@Override
-	public <T> IMutate<T> makeMutator() {
+	public <T> IMutator<T> makeMutator() {
 		checkSetup();
-		return new IMutate<T>() {
+		return new IMutator<T>() {
+			IEntityReader<ISimpleMap<String, Object>> reader = makeReader();
 
 			@Override
-			public void mutate(IFunction1<T, T> mutateFunction) {
-
+			public void readModifyWrite(IPrimaryTempTableMaker maker, final ICallback<IMutableDataSet> callback) {
+				reader.processDataSets(new ICallback<IDataSet>() {
+					@Override
+					public void process(IDataSet t) throws Exception {
+						IMutableDataSet mutableDataSet = (IMutableDataSet) t;
+						callback.process(mutableDataSet);
+						update(mutableDataSet);
+					}
+				});
 			}
 
 			@Override
-			public void mutateMap(IFunction1<Map<String, Object>, Map<String, Object>> mutateFunction) {
-
+			public void readModifyWrite(AllEntitiesTempTableMaker maker, final ICallback<IMutableItem> callback) {
+				reader.processDataSets(new ICallback<IDataSet>() {
+					@Override
+					public void process(IDataSet t) throws Exception {
+						IMutableDataSet mutableDataSet = (IMutableDataSet) t;
+						for (int i = 0; i < t.size(); i++) {
+							IMutableItem item = mutableDataSet.getMutableMap(i);
+							callback.process(item);
+						}
+						update(mutableDataSet);
+					}
+				});
 			}
 
-			@Override
-			public void readModifyWrite(IPrimaryTempTableMaker maker, ICallback<IMutableDataSet> callback) {
-
-			}
-
-			@Override
-			public void readModifyWrite(AllEntitiesTempTableMaker maker, ICallback<IMutableItem> iCallback) {
-
+			private void update(IMutableDataSet dataSet) {
+				IEntityDefn.Utils.walk(Job.this, new IMutableMakerAndEntityDefnVisitor() {
+					@Override
+					public void accept(IMutatingTempTableMaker maker, IEntityDefn entityDefn) throws Exception {
+					}
+				});
 			}
 
 		};
@@ -225,8 +228,8 @@ public class Job extends JobDetails implements IFastOrmContainer {
 	}
 
 	@Override
-	public JdbcTemplate getJdbcTemplate() {
-		return jdbcTemplate;
+	public DataSource getDataSource() {
+		return dataSource;
 	}
 
 	@Override
@@ -260,7 +263,7 @@ public class Job extends JobDetails implements IFastOrmContainer {
 		int result = super.hashCode();
 		result = prime * result + ((entityDefn == null) ? 0 : entityDefn.hashCode());
 		result = prime * result + ((entityReaderThin == null) ? 0 : entityReaderThin.hashCode());
-		result = prime * result + ((jdbcTemplate == null) ? 0 : jdbcTemplate.hashCode());
+		result = prime * result + ((dataSource == null) ? 0 : dataSource.hashCode());
 		result = prime * result + ((memoryManager == null) ? 0 : memoryManager.hashCode());
 		result = prime * result + ((primaryTempTableMaker == null) ? 0 : primaryTempTableMaker.hashCode());
 		result = prime * result + ((services == null) ? 0 : services.hashCode());
@@ -289,10 +292,10 @@ public class Job extends JobDetails implements IFastOrmContainer {
 				return false;
 		} else if (!entityReaderThin.equals(other.entityReaderThin))
 			return false;
-		if (jdbcTemplate == null) {
-			if (other.jdbcTemplate != null)
+		if (dataSource == null) {
+			if (other.dataSource != null)
 				return false;
-		} else if (!jdbcTemplate.equals(other.jdbcTemplate))
+		} else if (!dataSource.equals(other.dataSource))
 			return false;
 		if (memoryManager == null) {
 			if (other.memoryManager != null)
@@ -329,7 +332,7 @@ public class Job extends JobDetails implements IFastOrmContainer {
 
 	@Override
 	public String toString() {
-		return "Job [services=" + services + ", entityReaderThin=" + entityReaderThin + ", sqlStrings=" + sqlStrings + ", entityDefn=" + entityDefn + ", tempTableMakerFactory=" + tempTableMakerFactory + ", jdbcTemplate=" + jdbcTemplate + ", primaryTempTableMaker=" + primaryTempTableMaker + ", memoryManager=" + memoryManager + ", sqlLogger=" + sqlLogger + "]";
+		return "Job [services=" + services + ", entityReaderThin=" + entityReaderThin + ", sqlStrings=" + sqlStrings + ", entityDefn=" + entityDefn + ", tempTableMakerFactory=" + tempTableMakerFactory + ", dataSource=" + dataSource + ", primaryTempTableMaker=" + primaryTempTableMaker + ", memoryManager=" + memoryManager + ", sqlLogger=" + sqlLogger + "]";
 	}
 
 }

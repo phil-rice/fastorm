@@ -16,6 +16,8 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import javax.sql.DataSource;
+
 import junit.framework.Assert;
 
 import org.fastorm.api.IJob;
@@ -36,8 +38,8 @@ import org.springframework.jdbc.core.ResultSetExtractor;
 public class SqlHelper {
 	private final JdbcTemplate template;
 
-	public SqlHelper(JdbcTemplate template) {
-		this.template = template;
+	public SqlHelper(DataSource dataSource) {
+		this.template = new JdbcTemplate(dataSource);
 	}
 
 	public void execute(String sql) {

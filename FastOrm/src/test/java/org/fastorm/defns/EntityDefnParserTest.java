@@ -4,6 +4,7 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
+import org.fastorm.api.IJobOptimisations;
 import org.fastorm.constants.FastOrmKeys;
 import org.fastorm.temp.ISecondaryTempTableMaker;
 import org.fastorm.temp.impl.TempTableMakerFactory;
@@ -29,11 +30,11 @@ public class EntityDefnParserTest extends TestCase implements IIntegrationTest {
 		String xml = Files.getTextFromClassPath(getClass(), string);
 		XmlToMapParser<String, Object> parser = IEntityDefn.Utils.makeXmlParser();
 		Object actual = parser.parse(xml);
-		assertEquals(EntityDefnTestFixture.person, actual);
+		assertEquals(EntityDefnTestFixture.personAddressTelephoneEmployerMap, actual);
 	}
 
 	public void testMakersAreAllocated() {
-		final TempTableMakerFactory factory = new TempTableMakerFactory();
+		final TempTableMakerFactory factory = new TempTableMakerFactory(IJobOptimisations.Utils.withNoOptimisation());
 		ClassPathResource resource = new ClassPathResource("sample1.xml", getClass());
 		IEntityDefn entityDefn = IEntityDefn.Utils.parse(factory, resource);
 		IEntityDefn.Utils.walk(entityDefn, new IEntityDefnParentChildVisitor() {

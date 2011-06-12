@@ -2,6 +2,7 @@ package org.fastorm.defns;
 
 import java.util.Map;
 
+import org.fastorm.api.IJobOptimisations;
 import org.fastorm.constants.FastOrmKeys;
 import org.fastorm.defns.impl.MapToEntityDefn;
 import org.fastorm.temp.impl.TempTableMakerFactory;
@@ -16,7 +17,7 @@ public class EntityDefnTestFixture {
 			FastOrmKeys.idType, "integer",//
 			FastOrmKeys.versionColumn, "p_version",//
 			FastOrmKeys.useTemporaryTable, true,//
-			FastOrmKeys.maxLinesPerBatch, "100",//
+			FastOrmKeys.maxLinesPerBatch, "500",//
 			"address", Maps.makeMap(//
 					FastOrmKeys.entityName, "address",//
 					FastOrmKeys.tableName, "address",//
@@ -25,7 +26,7 @@ public class EntityDefnTestFixture {
 					FastOrmKeys.idType, "integer",//
 					FastOrmKeys.versionColumn, "version", //
 					FastOrmKeys.useTemporaryTable, true,//
-					FastOrmKeys.maxLinesPerBatch, "100",//
+					FastOrmKeys.maxLinesPerBatch, "500",//
 					FastOrmKeys.childLink, "a_person"),//
 			"telephone", Maps.makeMap(//
 					FastOrmKeys.entityName, "telephone",//
@@ -35,7 +36,7 @@ public class EntityDefnTestFixture {
 					FastOrmKeys.idType, "integer",//
 					FastOrmKeys.versionColumn, "version", //
 					FastOrmKeys.useTemporaryTable, true,//
-					FastOrmKeys.maxLinesPerBatch, "100",//
+					FastOrmKeys.maxLinesPerBatch, "500",//
 					FastOrmKeys.childLink, "t_person"),//
 			"employer", Maps.makeMap(//
 					FastOrmKeys.entityName, "employer",//
@@ -45,10 +46,10 @@ public class EntityDefnTestFixture {
 					FastOrmKeys.idType, "integer",//
 					FastOrmKeys.versionColumn, "version", //
 					FastOrmKeys.useTemporaryTable, true,//
-					FastOrmKeys.maxLinesPerBatch, "100",//
+					FastOrmKeys.maxLinesPerBatch, "500",//
 					FastOrmKeys.parentLink, "p_employer"));//
 
-	public static IEntityDefn person = new MapToEntityDefn().create(new TempTableMakerFactory(), null, personAddressTelephoneEmployerMap);
+	public static IEntityDefn person = new MapToEntityDefn().create(new TempTableMakerFactory(IJobOptimisations.Utils.withNoOptimisation()), null, personAddressTelephoneEmployerMap);
 	public static IEntityDefn address = person.getChildren().get(0);
 	public static IEntityDefn telephone = person.getChildren().get(1);
 	public static IEntityDefn employer = person.getChildren().get(2);

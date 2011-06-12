@@ -24,7 +24,7 @@ public class CompareHibernate {
 		IJob warmUp = FastOrmExerciser.Utils.makeInitial();
 		// FastOrmExerciser.Utils.warmUp(1, warmUp.withOptions(new FastOrmOptions()), ICallback.Utils.<Integer> noCallback());
 
-		final IJob initial = warmUp.withThinInterface(new StoredProceduresEntityReaderThin()).withCreateAndDropProceduresAtStart(false);
+		final IJob initial = warmUp.withThinInterface(new StoredProceduresEntityReaderThin()).withCreateAndDropAtStart(false);
 		new FastOrmExerciser(new ExerciseNumbers().withOuterRuns(1).withInnerRuns(1), //
 				new Spec(initial, //
 						ISpecStage.Utils.batchSize(100, 1, 10, 100, 1000)), //

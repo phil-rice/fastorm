@@ -12,6 +12,7 @@ import org.fastorm.defns.EntityDefnTestFixture;
 import org.fastorm.defns.IEntityDefn;
 import org.fastorm.memory.IMemoryManager;
 import org.fastorm.memory.MemoryManager;
+import org.fastorm.utilities.maps.IMutableSimpleMapWithIndex;
 import org.fastorm.utilities.maps.ISimpleMap;
 import org.fastorm.utilities.maps.SimpleMaps;
 import org.fastorm.utilities.mocks.ResultSetMock;
@@ -27,6 +28,7 @@ public class DrainedLineTest extends TestCase {
 	private GetDrainedTableForEntityDefnMock getter;
 	private DrainedTableData addressData;
 	private DrainedTableData personData;
+	private IJobDetails jobDetails;
 
 	public void testGetOfColumns() throws SQLException {
 		assertEquals(1, line0.get("id"));
@@ -47,19 +49,23 @@ public class DrainedLineTest extends TestCase {
 	@SuppressWarnings("unchecked")
 	public void testGettingChildObjects() {
 		// This requires the getters to be set up
-		personData.setData(memoryManager, EntityDefnTestFixture.person, getter, resultSet.resetMock());
-		addressData.setData(memoryManager, EntityDefnTestFixture.address, getter, new ResultSetMock(Arrays.asList("id", "a_person", "data"), Arrays.asList(0, 1, "P0C0"), Arrays.asList(1, 1, "P0C1"), Arrays.asList(2, 3, "P1C0")));
+		personData.setData(memoryManager, jobDetails, EntityDefnTestFixture.person, getter, resultSet.resetMock());
+		addressData.setData(memoryManager, jobDetails, EntityDefnTestFixture.address, getter, new ResultSetMock(Arrays.asList("id", "a_person", "data"), Arrays.asList(0, 1, "P0C0"), Arrays.asList(1, 1, "P0C1"), Arrays.asList(2, 3, "P1C0")));
 		checkChild(line0.get("address"), line0.getByIndex(2),//
 				SimpleMaps.<String, Object> makeMap("id", 0, "a_person", 1, "data", "P0C0"), //
 				SimpleMaps.<String, Object> makeMap("id", 1, "a_person", 1, "data", "P0C1"));
 		checkChild(line1.get("address"), line1.getByIndex(2),//
 				SimpleMaps.<String, Object> makeMap("id", 2, "a_person", 3, "data", "P1C0"));
+
 	}
 
 	@SuppressWarnings("unchecked")
 	private void checkChild(Object object, Object objectByIndex, ISimpleMap<String, Object>... expected) {
 		assertSame(object, objectByIndex);
-		assertEquals(SimpleMaps.toListOfMaps(Arrays.asList(expected)), SimpleMaps.toListOfMaps((List<ISimpleMap<String, Object>>) object));
+		List<ISimpleMap<String, Object>> actual = (List<ISimpleMap<String, Object>>) object;
+		assertEquals(SimpleMaps.toListOfMaps(Arrays.asList(expected)), SimpleMaps.toListOfMaps(actual));
+		for (ISimpleMap<String, Object> map : actual)
+			assertTrue(map instanceof IMutableSimpleMapWithIndex);
 	}
 
 	public void testClean() {
@@ -86,9 +92,10 @@ public class DrainedLineTest extends TestCase {
 	protected void setUp() throws Exception {
 		super.setUp();
 		resultSet = new ResultSetMock(Arrays.asList("id", "data"), Arrays.asList(1, "a"), Arrays.asList(3, "c"));
-		memoryManager = new MemoryManager().withJobDetails(IJobDetails.Utils.withTempTablesForTests(false));
+		memoryManager = new MemoryManager();
 		entityDefn = EntityDefnTestFixture.person;
-		commonData = new DrainedLineCommonData(memoryManager, entityDefn);
+		jobDetails = IJobDetails.Utils.allEntities(EntityDefnTestFixture.person, 100);
+		commonData = new DrainedLineCommonData(memoryManager, jobDetails, entityDefn);
 		addressData = new DrainedTableData(100);
 		personData = new DrainedTableData(100);
 		getter = new GetDrainedTableForEntityDefnMock(//

@@ -7,13 +7,13 @@ import java.util.List;
 import org.fastorm.constants.FastOrmMessages;
 import org.fastorm.defns.IEntityDefn;
 import org.fastorm.exceptions.IllegalKeyException;
+import org.fastorm.mutate.IMutableItem;
 import org.fastorm.temp.ISecondaryTempTableMaker;
 import org.fastorm.utilities.collections.Iterables;
 import org.fastorm.utilities.collections.Lists;
 import org.fastorm.utilities.functions.IFoldFunction;
-import org.fastorm.utilities.maps.IMutableSimpleMapWithIndex;
 
-public class DrainedLine implements IMutableSimpleMapWithIndex<String, Object> {
+public class DrainedLine implements IMutableItem {
 
 	private DrainedLineCommonData commonData;
 	private int index;

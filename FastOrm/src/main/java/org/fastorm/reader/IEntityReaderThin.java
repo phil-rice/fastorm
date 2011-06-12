@@ -1,10 +1,10 @@
 package org.fastorm.reader;
 
-import org.fastorm.api.IFastOrmContainer;
-import org.fastorm.dataSet.IDataSet;
+import org.fastorm.context.IContext;
+import org.fastorm.dataSet.IMutableDataSet;
 
 public interface IEntityReaderThin {
 
-	<T> Iterable<IDataSet> dataSets(IFastOrmContainer fastOrm);
+	IMutableDataSet readPage(int page, IContext context);
 
 }

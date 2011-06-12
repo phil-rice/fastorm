@@ -9,5 +9,6 @@ public class UtilityMessages {
 	public static final String illegalKey = "Illegal key {0}. Legal values are {1}";
 	public static final String cannotSetLength = "Cannot set length. Desired value {0}. Max value {1}";
 	public static final String tooManyBytes = "Too large a parameter from. Parameter length is {0}. Max length is {1}";
+	public static final String objectPoolFull = "Object pool is full. Asked for item index {0} and maximum is {1}. Object defn is {2}";
 
 }

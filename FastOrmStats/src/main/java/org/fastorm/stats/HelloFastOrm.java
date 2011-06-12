@@ -3,6 +3,7 @@ package org.fastorm.stats;
 import javax.sql.DataSource;
 
 import org.fastorm.api.IJob;
+import org.fastorm.api.IJobOptimisations;
 import org.fastorm.defns.IEntityDefn;
 import org.fastorm.reader.IEntityReader;
 import org.fastorm.reader.impl.StoredProceduresEntityReaderThin;
@@ -18,7 +19,7 @@ public class HelloFastOrm {
 	public static void main(String[] args) throws Exception {
 		Class.forName(MakeData.class.getName());
 		DataSource dataSource = new XmlBeanFactory(new ClassPathResource("MySqlDataSource.xml")).getBean(DataSource.class);
-		IEntityDefn defn = IEntityDefn.Utils.parse(new TempTableMakerFactory(), new ClassPathResource("sample.xml"));
+		IEntityDefn defn = IEntityDefn.Utils.parse(new TempTableMakerFactory(IJobOptimisations.Utils.withNoOptimisation()), new ClassPathResource("sample.xml"));
 		System.out.println("Starting");
 		while (true) {
 			int count = 0;

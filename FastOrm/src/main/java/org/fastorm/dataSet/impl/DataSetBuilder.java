@@ -3,11 +3,11 @@ package org.fastorm.dataSet.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.fastorm.dataSet.IDataSet;
 import org.fastorm.dataSet.IDrainedTableData;
+import org.fastorm.dataSet.IMutableDataSet;
 import org.fastorm.utilities.aggregators.IAggregator;
 
-public class DataSetBuilder implements IAggregator<IDrainedTableData, IDataSet> {
+public class DataSetBuilder implements IAggregator<IDrainedTableData, IMutableDataSet> {
 
 	private final List<IDrainedTableData> tableData = new ArrayList<IDrainedTableData>();
 
@@ -17,7 +17,7 @@ public class DataSetBuilder implements IAggregator<IDrainedTableData, IDataSet> 
 	}
 
 	@Override
-	public IDataSet result() {
+	public IMutableDataSet result() {
 		return new DataSet(tableData);
 	}
 }

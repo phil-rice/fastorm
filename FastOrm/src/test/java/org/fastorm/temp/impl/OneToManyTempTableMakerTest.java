@@ -23,8 +23,9 @@ import java.util.Collections;
 import java.util.List;
 
 import org.fastorm.api.IFastOrmContainer;
+import org.fastorm.api.IJobOptimisations;
 import org.fastorm.constants.FastOrmTestValues;
-import org.fastorm.context.ReadContext;
+import org.fastorm.context.IContext;
 import org.fastorm.dataSet.IDrainedTableData;
 import org.fastorm.dataSet.IGetDrainedTableForEntityDefn;
 import org.fastorm.defns.IEntityDefn;
@@ -37,7 +38,7 @@ import org.fastorm.utilities.maps.Maps;
 import org.fastorm.utilities.maps.SimpleMaps;
 
 public class OneToManyTempTableMakerTest extends AbstractTempTableMakerTest {
-	final IEntityDefn child = new EntityDefn(new OneToMany(), Maps.<String, String> makeMap(//
+	final IEntityDefn child = new EntityDefn(new OneToMany(IJobOptimisations.Utils.withNoOptimisation()), Maps.<String, String> makeMap(//
 			entityName, childEntityName,//
 			tableName, childTableName,//
 			tempTableName, childTempTableName,//
@@ -51,10 +52,10 @@ public class OneToManyTempTableMakerTest extends AbstractTempTableMakerTest {
 
 	public void testCreateTempTable() {
 		emptyDatabase();
-		execute(new ICallback<ReadContext>() {
+		execute(new ICallback<IContext>() {
 			@Override
-			public void process(ReadContext context) throws Exception {
-				maker.create(fastOrm, context, primary, child);
+			public void process(IContext context) throws Exception {
+				maker.create(context, primary, child);
 			}
 		});
 		assertEquals(Arrays.asList(childTempTableName), sqlHelper.tables());
@@ -64,45 +65,45 @@ public class OneToManyTempTableMakerTest extends AbstractTempTableMakerTest {
 
 	public void testPopulate() {
 		makePrimaryAndChildTables();
-		final IFastOrmContainer fastOrm5 = fastOrm.withOptimiseLeafAccess(false).withBatchSize(5).withSqlLogger(new SysOutSqlLogger()).getContainer();
+		final IFastOrmContainer fastOrm5 = fastOrm.withBatchSize(5).withSqlLogger(new SysOutSqlLogger()).getContainer();
 		sqlHelper.insert(childTableName, childIdColumn, 1, childLinkColumn, 1);
 		sqlHelper.insert(childTableName, childIdColumn, 2, childLinkColumn, 1);
 		sqlHelper.insert(childTableName, childIdColumn, 3, childLinkColumn, 1);
 		sqlHelper.insert(childTableName, childIdColumn, 4, childLinkColumn, 5);
 		populateSecondary(fastOrm5, 0);
-		assertEquals(3, fastOrm5.getJdbcTemplate().queryForInt("select count(*) from " + childTempTableName));
+		assertEquals(3, jdbcTemplate.queryForInt("select count(*) from " + childTempTableName));
 		truncatePrimaryAndSecondary();
 		populateSecondary(fastOrm5, 1);
-		assertEquals(1, fastOrm5.getJdbcTemplate().queryForInt("select count(*) from " + childTempTableName));
+		assertEquals(1, jdbcTemplate.queryForInt("select count(*) from " + childTempTableName));
 	}
 
 	private void truncatePrimaryAndSecondary() {
-		execute(new ICallback<ReadContext>() {
+		execute(new ICallback<IContext>() {
 			@Override
-			public void process(ReadContext context) throws Exception {
-				primaryMaker.truncate(fastOrm, context);
-				maker.truncate(fastOrm, context, primary, child);
+			public void process(IContext context) throws Exception {
+				primaryMaker.truncate(context);
+				maker.truncate(context, primary, child);
 			}
 		});
 	}
 
 	private void populateSecondary(final IFastOrmContainer fastOrm5, final int page) {
-		execute(new ICallback<ReadContext>() {
+		execute(new ICallback<IContext>() {
 			@Override
-			public void process(ReadContext context) throws Exception {
-				primaryMaker.populate(fastOrm5, context, page);
-				maker.populate(fastOrm5, context, primary, child);
+			public void process(IContext context) throws Exception {
+				primaryMaker.populate(context, page);
+				maker.populate(context, primary, child);
 			}
 		});
 	}
 
 	private void makePrimaryAndChildTables() {
 		emptyDatabase();
-		execute(new ICallback<ReadContext>() {
+		execute(new ICallback<IContext>() {
 			@Override
-			public void process(ReadContext context) throws Exception {
-				primaryMaker.create(fastOrm5, context);
-				maker.create(fastOrm5, context, primary, child);
+			public void process(IContext context) throws Exception {
+				primaryMaker.create(context);
+				maker.create(context, primary, child);
 
 			}
 		});
@@ -165,7 +166,7 @@ public class OneToManyTempTableMakerTest extends AbstractTempTableMakerTest {
 	protected void setUp() throws Exception {
 		super.setUp();
 		primaryMaker = new AllEntitiesTempTableMaker();
-		maker = new OneToMany();
+		maker = new OneToMany(IJobOptimisations.Utils.withNoOptimisation());
 		primary = fastOrm.getEntityDefn();
 	}
 
