@@ -8,7 +8,7 @@ import org.fastorm.memory.IMemoryManager;
 import org.fastorm.reader.IEntityReaderThin;
 import org.fastorm.sql.ISqlLogger;
 import org.fastorm.sqlDialects.ISqlStrings;
-import org.fastorm.temp.ISecondaryTempTableMaker;
+import org.fastorm.temp.ITempTableMakerFactory;
 
 public interface IJobConfigurator {
 
@@ -26,7 +26,7 @@ public interface IJobConfigurator {
 
 	IJob withEntityDefn(IEntityDefn entityDefn);
 
-	IJob withTempTableMaker(ISecondaryTempTableMaker intermediateTempTableMaker);
+	IJob withTempTableMaker(ITempTableMakerFactory tempTableMaker);
 
 	IJob withMaxForOneThread(int max);
 

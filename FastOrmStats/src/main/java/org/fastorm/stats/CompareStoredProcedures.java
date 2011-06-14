@@ -1,8 +1,7 @@
 package org.fastorm.stats;
 
 import org.fastorm.api.IJob;
-import org.fastorm.reader.impl.EntityReaderThin;
-import org.fastorm.reader.impl.StoredProceduresEntityReaderThin;
+import org.fastorm.temp.ITempTableMakerFactory;
 import org.fastorm.utilities.functions.IFunction1;
 
 public class CompareStoredProcedures {
@@ -16,13 +15,13 @@ public class CompareStoredProcedures {
 						"Mysql.st", new IFunction1<IJob, IJob>() {
 							@Override
 							public IJob apply(IJob from) throws Exception {
-								return from.withThinInterface(new EntityReaderThin());
+								return from.withTempTableMaker(ITempTableMakerFactory.Utils.withoutStoredProcedures());
 							}
 						}, //
 						"StoredProcs", new IFunction1<IJob, IJob>() {
 							@Override
 							public IJob apply(IJob from) throws Exception {
-								return from.withThinInterface(new StoredProceduresEntityReaderThin());
+								return from.withTempTableMaker(ITempTableMakerFactory.Utils.withStoredProcedures());
 							}
 						}));
 

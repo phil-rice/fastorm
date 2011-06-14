@@ -15,5 +15,13 @@ public interface ITempTableMakerFactory {
 		public static ITempTableMakerFactory withUsualBestOptions() {
 			return new TempTableMakerFactory(IJobOptimisations.Utils.usualBest());
 		}
+
+		public static ITempTableMakerFactory withStoredProcedures() {
+			return new TempTableMakerFactory(IJobOptimisations.Utils.usualBest());
+		}
+
+		public static ITempTableMakerFactory withoutStoredProcedures() {
+			return new TempTableMakerFactory(IJobOptimisations.Utils.usualBest());
+		}
 	}
 }

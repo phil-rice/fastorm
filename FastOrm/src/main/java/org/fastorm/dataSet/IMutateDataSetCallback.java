@@ -1,5 +1,7 @@
 package org.fastorm.dataSet;
 
-public interface IMutateDataSetCallback {
+import org.fastorm.utilities.callbacks.ICallback;
+
+public interface IMutateDataSetCallback extends ICallback<IMutableDataSet> {
 
 }

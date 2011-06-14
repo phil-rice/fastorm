@@ -3,7 +3,6 @@ package org.fastorm.writer.impl;
 import org.fastorm.api.IFastOrmContainer;
 import org.fastorm.context.IContext;
 import org.fastorm.dataSet.IDrainedTableData;
-import org.fastorm.dataSet.IMutableDataSet;
 import org.fastorm.defns.IEntityDefn;
 import org.fastorm.defns.IMutableMakerAndEntityDefnVisitor;
 import org.fastorm.temp.IMutatingTempTableMaker;
@@ -23,8 +22,6 @@ public class EntityWriterThin implements IEntityWriterThin {
 
 	private final IMutableMakerAndEntityDefnVisitor populateUpdateTempTables(final IContext writeContext) {
 		return new IMutableMakerAndEntityDefnVisitor() {
-			private final IMutableDataSet dataSet = writeContext.buildDataSet();
-
 			@Override
 			public void accept(IMutatingTempTableMaker maker, IEntityDefn entityDefn) throws Exception {
 				IDrainedTableData table = writeContext.get(entityDefn);

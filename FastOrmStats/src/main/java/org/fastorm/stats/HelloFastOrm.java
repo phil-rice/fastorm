@@ -6,8 +6,8 @@ import org.fastorm.api.IJob;
 import org.fastorm.api.IJobOptimisations;
 import org.fastorm.defns.IEntityDefn;
 import org.fastorm.reader.IEntityReader;
-import org.fastorm.reader.impl.StoredProceduresEntityReaderThin;
-import org.fastorm.sql.SysOutSqlLogger;
+import org.fastorm.reader.impl.EntityReaderThin;
+import org.fastorm.sql.NoSqlLogger;
 import org.fastorm.temp.impl.TempTableMakerFactory;
 import org.fastorm.utilities.maps.ISimpleMap;
 import org.springframework.beans.factory.xml.XmlBeanFactory;
@@ -15,7 +15,6 @@ import org.springframework.core.io.ClassPathResource;
 
 public class HelloFastOrm {
 
-	@SuppressWarnings("unused")
 	public static void main(String[] args) throws Exception {
 		Class.forName(MakeData.class.getName());
 		DataSource dataSource = new XmlBeanFactory(new ClassPathResource("MySqlDataSource.xml")).getBean(DataSource.class);
@@ -25,12 +24,12 @@ public class HelloFastOrm {
 			int count = 0;
 			// IFastOrmContainer fastOrm = IFastOrm.Utils.mySqlSingleThreaded(defn, dataSource).withDataSize(100).getContainer();
 			IJob job = IJob.Utils.mySqlSingleThreaded(defn, dataSource).withBatchSize(100).//
-					withSqlLogger(new SysOutSqlLogger()).withThinInterface(new StoredProceduresEntityReaderThin());
+					withSqlLogger(new NoSqlLogger()).withThinInterface(new EntityReaderThin());
 			IEntityReader<ISimpleMap<String, Object>> reader = job.makeReader();
 			long forStartTime = System.currentTimeMillis();
 			for (ISimpleMap<String, Object> item : reader) {
 				count++;
-				// System.out.println(item);
+				System.out.println(item);
 			}
 			System.out.println(count + " Took " + (System.currentTimeMillis() - forStartTime));
 

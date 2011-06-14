@@ -30,6 +30,7 @@ import org.fastorm.dataSet.IDrainedTableData;
 import org.fastorm.dataSet.IGetDrainedTableForEntityDefn;
 import org.fastorm.defns.IEntityDefn;
 import org.fastorm.defns.impl.EntityDefn;
+import org.fastorm.oneToMany.OneToMany;
 import org.fastorm.sql.SysOutSqlLogger;
 import org.fastorm.utilities.callbacks.ICallback;
 import org.fastorm.utilities.collections.Lists;
@@ -72,27 +73,16 @@ public class OneToManyTempTableMakerTest extends AbstractTempTableMakerTest {
 		sqlHelper.insert(childTableName, childIdColumn, 4, childLinkColumn, 5);
 		populateSecondary(fastOrm5, 0);
 		assertEquals(3, jdbcTemplate.queryForInt("select count(*) from " + childTempTableName));
-		truncatePrimaryAndSecondary();
 		populateSecondary(fastOrm5, 1);
 		assertEquals(1, jdbcTemplate.queryForInt("select count(*) from " + childTempTableName));
-	}
-
-	private void truncatePrimaryAndSecondary() {
-		execute(new ICallback<IContext>() {
-			@Override
-			public void process(IContext context) throws Exception {
-				primaryMaker.truncate(context);
-				maker.truncate(context, primary, child);
-			}
-		});
 	}
 
 	private void populateSecondary(final IFastOrmContainer fastOrm5, final int page) {
 		execute(new ICallback<IContext>() {
 			@Override
 			public void process(IContext context) throws Exception {
-				primaryMaker.populate(context, page);
-				maker.populate(context, primary, child);
+				primaryMaker.startOfBatch(context, page);
+				maker.startOfBatch(context, primary, child);
 			}
 		});
 	}

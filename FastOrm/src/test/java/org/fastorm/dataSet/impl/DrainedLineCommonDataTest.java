@@ -7,9 +7,9 @@ import java.util.Arrays;
 import junit.framework.TestCase;
 
 import org.fastorm.api.IJobDetails;
-import org.fastorm.defns.EntityDefnTestFixture;
 import org.fastorm.defns.IEntityDefn;
 import org.fastorm.memory.MemoryManager;
+import org.fastorm.testFixtures.EntityDefnTestFixture;
 import org.fastorm.utilities.mocks.ResultSetMetaDataMock;
 
 public class DrainedLineCommonDataTest extends TestCase {

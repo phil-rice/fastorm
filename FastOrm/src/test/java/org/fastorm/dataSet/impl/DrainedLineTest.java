@@ -8,10 +8,10 @@ import junit.framework.TestCase;
 
 import org.fastorm.api.IJobDetails;
 import org.fastorm.constants.FastOrmMessages;
-import org.fastorm.defns.EntityDefnTestFixture;
 import org.fastorm.defns.IEntityDefn;
 import org.fastorm.memory.IMemoryManager;
 import org.fastorm.memory.MemoryManager;
+import org.fastorm.testFixtures.EntityDefnTestFixture;
 import org.fastorm.utilities.maps.IMutableSimpleMapWithIndex;
 import org.fastorm.utilities.maps.ISimpleMap;
 import org.fastorm.utilities.maps.SimpleMaps;

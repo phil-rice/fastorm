@@ -6,8 +6,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.fastorm.api.IFastOrmContainer;
 import org.fastorm.api.IJob;
-import org.fastorm.dataGenerator.IExtraDataGenerator;
-import org.fastorm.dataGenerator.NoExtraDataGenerator;
 import org.fastorm.defns.impl.MapToEntityDefn;
 import org.fastorm.temp.IPrimaryTempTableMaker;
 import org.fastorm.temp.ISecondaryTempTableMaker;

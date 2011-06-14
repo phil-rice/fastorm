@@ -8,6 +8,7 @@ import org.fastorm.api.IJobOptimisations;
 import org.fastorm.constants.FastOrmKeys;
 import org.fastorm.temp.ISecondaryTempTableMaker;
 import org.fastorm.temp.impl.TempTableMakerFactory;
+import org.fastorm.testFixtures.EntityDefnTestFixture;
 import org.fastorm.utilities.collections.Files;
 import org.fastorm.utilities.maps.Maps;
 import org.fastorm.utilities.tests.IIntegrationTest;

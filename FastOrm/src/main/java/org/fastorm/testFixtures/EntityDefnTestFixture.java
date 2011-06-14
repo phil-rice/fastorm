@@ -1,9 +1,10 @@
-package org.fastorm.defns;
+package org.fastorm.testFixtures;
 
 import java.util.Map;
 
 import org.fastorm.api.IJobOptimisations;
 import org.fastorm.constants.FastOrmKeys;
+import org.fastorm.defns.IEntityDefn;
 import org.fastorm.defns.impl.MapToEntityDefn;
 import org.fastorm.temp.impl.TempTableMakerFactory;
 import org.fastorm.utilities.maps.Maps;
@@ -37,7 +38,18 @@ public class EntityDefnTestFixture {
 					FastOrmKeys.versionColumn, "version", //
 					FastOrmKeys.useTemporaryTable, true,//
 					FastOrmKeys.maxLinesPerBatch, "500",//
-					FastOrmKeys.childLink, "t_person"),//
+					FastOrmKeys.childLink, "t_person",//
+					"favourites", Maps.makeMap(//
+							FastOrmKeys.entityName, "favourites",//
+							FastOrmKeys.tableName, "favourites",//
+							FastOrmKeys.tempTableName, "favourites_temp",//
+							FastOrmKeys.idColumn, "id",//
+							FastOrmKeys.idType, "integer",//
+							FastOrmKeys.versionColumn, "version", //
+							FastOrmKeys.useTemporaryTable, true,//
+							FastOrmKeys.maxLinesPerBatch, "500",//
+							FastOrmKeys.childLink, "f_telephone"//
+					)),//
 			"employer", Maps.makeMap(//
 					FastOrmKeys.entityName, "employer",//
 					FastOrmKeys.tableName, "employer",//
@@ -52,6 +64,7 @@ public class EntityDefnTestFixture {
 	public static IEntityDefn person = new MapToEntityDefn().create(new TempTableMakerFactory(IJobOptimisations.Utils.withNoOptimisation()), null, personAddressTelephoneEmployerMap);
 	public static IEntityDefn address = person.getChildren().get(0);
 	public static IEntityDefn telephone = person.getChildren().get(1);
+	public static IEntityDefn favourites = telephone.getChildren().get(0);
 	public static IEntityDefn employer = person.getChildren().get(2);
 
 }

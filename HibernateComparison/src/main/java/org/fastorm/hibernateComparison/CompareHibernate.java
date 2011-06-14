@@ -3,7 +3,7 @@ package org.fastorm.hibernateComparison;
 import java.util.List;
 
 import org.fastorm.api.IJob;
-import org.fastorm.reader.impl.StoredProceduresEntityReaderThin;
+import org.fastorm.reader.impl.EntityReaderThin;
 import org.fastorm.stats.ChampionChallengerStatsExecutionVisitor;
 import org.fastorm.stats.ChampionChallengerStatsExecutionVisitorRaw;
 import org.fastorm.stats.ExerciseNumbers;
@@ -24,7 +24,7 @@ public class CompareHibernate {
 		IJob warmUp = FastOrmExerciser.Utils.makeInitial();
 		// FastOrmExerciser.Utils.warmUp(1, warmUp.withOptions(new FastOrmOptions()), ICallback.Utils.<Integer> noCallback());
 
-		final IJob initial = warmUp.withThinInterface(new StoredProceduresEntityReaderThin()).withCreateAndDropAtStart(false);
+		final IJob initial = warmUp.withThinInterface(new EntityReaderThin()).withCreateAndDropAtStart(false);
 		new FastOrmExerciser(new ExerciseNumbers().withOuterRuns(1).withInnerRuns(1), //
 				new Spec(initial, //
 						ISpecStage.Utils.batchSize(100, 1, 10, 100, 1000)), //

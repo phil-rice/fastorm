@@ -8,7 +8,7 @@ import org.fastorm.api.IJobOptimisations;
 import org.fastorm.defns.IEntityDefn;
 import org.fastorm.defns.IEntityDefnParentChildVisitor;
 import org.fastorm.reader.IEntityReader;
-import org.fastorm.reader.impl.StoredProceduresEntityReaderThin;
+import org.fastorm.reader.impl.EntityReaderThin;
 import org.fastorm.temp.impl.SqlHelper;
 import org.fastorm.temp.impl.TempTableMakerFactory;
 import org.fastorm.utilities.callbacks.ICallback;
@@ -101,7 +101,7 @@ public class FastOrmExerciser {
 	public static void main(String[] args) throws Exception {
 		final IFastOrmContainer initial = Utils.makeInitial().//
 				withCreateAndDropAtStart(false).//
-				withThinInterface(new StoredProceduresEntityReaderThin()).//
+				withThinInterface(new EntityReaderThin()).//
 				getContainer();
 		Utils.warmUp(50, initial, ICallback.Utils.count);
 		final Spec initialSpec = Utils.specWithBatch1_10_100_1000_10000(initial);

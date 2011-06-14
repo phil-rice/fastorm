@@ -26,7 +26,6 @@ import org.fastorm.sqlDialects.ISqlStrings;
 import org.fastorm.sqlDialects.SqlStrings;
 import org.fastorm.temp.IMutatingTempTableMaker;
 import org.fastorm.temp.IPrimaryTempTableMaker;
-import org.fastorm.temp.ISecondaryTempTableMaker;
 import org.fastorm.temp.ITempTableMakerFactory;
 import org.fastorm.temp.impl.AllEntitiesTempTableMaker;
 import org.fastorm.temp.impl.TempTableMakerFactory;
@@ -93,7 +92,7 @@ public class Job extends JobDetails implements IFastOrmContainer {
 	}
 
 	@Override
-	public IJob withTempTableMaker(ISecondaryTempTableMaker intermediateTempTableMaker) {
+	public IJob withTempTableMaker(ITempTableMakerFactory tempTableMakerFactory) {
 		return new Job(services, optimisations, entityReaderThin, sqlStrings, entityDefn, tempTableMakerFactory, dataSource, primaryTempTableMaker, memoryManager, sqlLogger, batchSize, maxForOneThread, createAndDropAtStart);
 	}
 

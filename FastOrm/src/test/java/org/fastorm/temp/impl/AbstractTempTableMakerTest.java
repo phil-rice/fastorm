@@ -106,16 +106,14 @@ public abstract class AbstractTempTableMakerTest extends TestCase implements IIn
 			public IGetDrainedTableForEntityDefn apply(IContext context) throws Exception {
 				IPrimaryTempTableMaker primaryMaker = fastOrm.getPrimaryTempTableMaker();
 				IEntityDefn primary = fastOrm.getEntityDefn();
-				primaryMaker.drop(context);
-				primaryMaker.dropStoredProcedure(context);
+				primaryMaker.clean(context);
 				primaryMaker.create(context);
-				primaryMaker.populate(context, page);
-				primaryMaker.drain(context);
+				primaryMaker.startOfBatch(context, page);
+				primaryMaker.drain(context, page);
 
-				maker.drop(context, child);
-				maker.dropStoredProcedure(context, primary, child);
+				maker.clean(context, child);
 				maker.create(context, primary, child);
-				maker.populate(context, primary, child);
+				maker.startOfBatch(context, primary, child);
 				maker.drain(context, primary, child);
 				return context;
 			}

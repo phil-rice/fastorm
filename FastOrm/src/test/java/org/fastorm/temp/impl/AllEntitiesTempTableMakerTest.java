@@ -42,11 +42,10 @@ public class AllEntitiesTempTableMakerTest extends AbstractTempTableMakerTest {
 			public void process(IContext context) throws Exception {
 				fastOrm5 = fastOrm5.withSqlLogger(new SysOutSqlLogger()).getContainer();
 				maker.create(context);
-				int popCount0 = maker.populate(context, 0);
+				int popCount0 = maker.startOfBatch(context, 0);
 				assertEquals(5, popCount0);
 				sqlHelper.assertTableMatches(primaryTempTableName, 5, 0, primaryIdColumn, "{1}");
-				maker.truncate(context);
-				int popCount1 = maker.populate(context, 1);
+				int popCount1 = maker.startOfBatch(context, 1);
 				assertEquals(5, popCount1);
 				sqlHelper.assertTableMatches(primaryTempTableName, 5, 5, primaryIdColumn, "{1}");
 			}
@@ -60,10 +59,11 @@ public class AllEntitiesTempTableMakerTest extends AbstractTempTableMakerTest {
 		IDrainedTableData table = query(new IFunction1<IContext, IDrainedTableData>() {
 			@Override
 			public IDrainedTableData apply(IContext from) throws Exception {
-				maker.drop(from);// this is for debugging so that you can drop to stack frame here
+				maker.clean(from);// this is for debugging so that you can drop to stack frame here
 				maker.create(from);
-				maker.populate(from, 0);
-				maker.drain(from);
+				int page = 0;
+				maker.startOfBatch(from, page);
+				maker.drain(from, page);
 				IDrainedTableData iDrainedTableData = from.get(fastOrm5.getEntityDefn());
 				return iDrainedTableData;
 			}

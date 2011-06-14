@@ -7,11 +7,10 @@ public class AllReaderImplTests {
 
 	public static Test suite() {
 		TestSuite suite = new TestSuite(AllReaderImplTests.class.getName());
-		//$JUnit-BEGIN$
+		// $JUnit-BEGIN$
 		suite.addTestSuite(EntityReaderTest.class);
-		suite.addTestSuite(StoredProceduresEntityReaderThinTest.class);
 		suite.addTestSuite(AbstractEntityReaderTest.class);
-		//$JUnit-END$
+		// $JUnit-END$
 		return suite;
 	}
 

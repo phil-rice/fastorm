@@ -10,6 +10,7 @@ import org.fastorm.api.IFastOrmContainer;
 import org.fastorm.api.impl.JobServices;
 import org.fastorm.context.Context;
 import org.fastorm.dataSet.IDataSet;
+import org.fastorm.dataSet.IMutableDataSet;
 import org.fastorm.reader.IEntityReader;
 import org.fastorm.utilities.aggregators.IAggregator;
 import org.fastorm.utilities.callbacks.ICallback;
@@ -122,7 +123,11 @@ public class EntityReader<T> implements IEntityReader<T> {
 				Connection connection = fastOrm.getDataSource().getConnection();
 				Context context = new Context(fastOrm, connection);
 				try {
-					return fastOrm.getEntityReaderThin().readPage(page.getAndIncrement(), context);
+					IMutableDataSet result = fastOrm.getEntityReaderThin().readPage(page.getAndIncrement(), context);
+					if (result == null || result.size() == 0)
+						return null;
+					else
+						return result;
 				} finally {
 					connection.close();
 				}
